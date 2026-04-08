@@ -18,38 +18,43 @@ import 'package:uuid/uuid.dart';
 
 class LoginUtils {
   static Future refreshLoginStatus(bool status) async {
-    try {
-      // 更改我的页面登录状态
-      await Get.find<MineController>().resetUserInfo();
+    if (Get.isRegistered<MineController>()) {
+      try {
+        final mineCtr = Get.find<MineController>();
+        await mineCtr.resetUserInfo();
+        mineCtr.userLogin.value = status;
+      } catch (e) {
+        debugPrint('Update MineController failed: $e');
+      }
+    }
 
-      // 更改主页登录状态
-      HomeController homeCtr = Get.find<HomeController>();
-      homeCtr.updateLoginStatus(status);
+    if (Get.isRegistered<HomeController>()) {
+      try {
+        final homeCtr = Get.find<HomeController>();
+        homeCtr.updateLoginStatus(status);
+      } catch (e) {
+        debugPrint('Update HomeController failed: $e');
+      }
+    }
 
-      MineController mineCtr = Get.find<MineController>();
-      mineCtr.userLogin.value = status;
+    if (Get.isRegistered<DynamicsController>()) {
+      Get.find<DynamicsController>().userLogin.value = status;
+    }
 
-      DynamicsController dynamicsCtr = Get.find<DynamicsController>();
-      dynamicsCtr.userLogin.value = status;
-
-      MediaController mediaCtr = Get.find<MediaController>();
-      mediaCtr.userLogin.value = status;
-    } catch (err) {
-      SmartDialog.showToast('refreshLoginStatus error: ${err.toString()}');
+    if (Get.isRegistered<MediaController>()) {
+      Get.find<MediaController>().userLogin.value = status;
     }
   }
 
   static String buvid() {
     var mac = <String>[];
     var random = Random();
-
     for (var i = 0; i < 6; i++) {
       var min = 0;
       var max = 0xff;
       var num = (random.nextInt(max - min + 1) + min).toRadixString(16);
-      mac.add(num);
+      mac.add(num.padLeft(2, '0'));
     }
-
     var md5Str = md5.convert(utf8.encode(mac.join(':'))).toString();
     var md5Arr = md5Str.split('');
     return 'XY${md5Arr[2]}${md5Arr[12]}${md5Arr[22]}$md5Str';
@@ -64,29 +69,38 @@ class LoginUtils {
     return 'XY${uuid.substring(0, 35).toUpperCase()}';
   }
 
-  static confirmLogin(url, controller) async {
-    var content = '';
-    if (url != null) {
-      content = '${content + url}; \n';
-    }
+  static Future confirmLogin(url, controller) async {
+    var content = url != null ? '$url; \n' : '';
+
     try {
       await SetCookie.onSet();
       final result = await UserHttp.userInfo();
+
       if (result['status'] && result['data'].isLogin) {
         SmartDialog.showToast('登录成功');
+
         try {
-          Box userInfoCache = GStrorage.userInfo;
-          if (!userInfoCache.isOpen) {
+          Box userInfoCache;
+          if (Hive.isBoxOpen('userInfo')) {
+            userInfoCache = Hive.box('userInfo');
+          } else {
             userInfoCache = await Hive.openBox('userInfo');
+            GStrorage.userInfo = userInfoCache;
           }
           await userInfoCache.put('userInfoCache', result['data']);
 
-          final HomeController homeCtr = Get.find<HomeController>();
-          homeCtr.updateLoginStatus(true);
-          homeCtr.userFace.value = result['data'].face;
-          final MediaController mediaCtr = Get.find<MediaController>();
-          mediaCtr.mid = result['data'].mid;
-          await LoginUtils.refreshLoginStatus(true);
+          if (Get.isRegistered<HomeController>()) {
+            final HomeController homeCtr = Get.find<HomeController>();
+            homeCtr.updateLoginStatus(true);
+            homeCtr.userFace.value = result['data'].face;
+          }
+
+          if (Get.isRegistered<MediaController>()) {
+            final MediaController mediaCtr = Get.find<MediaController>();
+            mediaCtr.mid = result['data'].mid;
+          }
+
+          await refreshLoginStatus(true);
         } catch (err) {
           SmartDialog.show(builder: (BuildContext context) {
             return AlertDialog(
