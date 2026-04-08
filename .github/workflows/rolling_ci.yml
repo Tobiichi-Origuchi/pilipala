@@ -84,7 +84,9 @@ jobs:
 
   upload_release:
     runs-on: ubuntu-latest
-    needs: android
+    needs: [android]
+    permissions:
+      contents: write
     steps:
       - name: 下载全部产物
         uses: actions/download-artifact@v4
@@ -100,7 +102,7 @@ jobs:
           body: |
             这是最新的代码滚动构建版本。
             **当前提交**: `${{ github.sha }}`
-          token: ${{ secrets.GIT_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           allowUpdates: true
           prerelease: true
           replacesArtifacts: true
