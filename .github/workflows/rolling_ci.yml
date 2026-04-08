@@ -82,38 +82,9 @@ jobs:
           path: build/app/outputs/flutter-apk/Pili-rolling-*.apk
           retention-days: 3
 
-  iOS:
-    runs-on: macos-latest
-    steps:
-      - name: 代码迁出
-        uses: actions/checkout@v4
-
-      - name: 获取短 Commit SHA
-        id: vars
-        run: echo "short_sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
-
-      - name: 安装Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          cache: true
-          flutter-version: 3.19.6
-
-      - name: Flutter Build IPA
-        run: |
-          flutter build ios --release --no-codesign
-          ln -sf ./build/ios/iphoneos Payload
-          zip -r9 Pili-rolling.ipa Payload/runner.app
-
-      - name: 上传构建产物
-        uses: actions/upload-artifact@v4
-        with:
-          name: Pilipala-Rolling-Artifacts
-          path: Pili-rolling.ipa
-          retention-days: 3
-
   upload_release:
     runs-on: ubuntu-latest
-    needs: [android, iOS]
+    needs: android
     steps:
       - name: 下载全部产物
         uses: actions/download-artifact@v4
