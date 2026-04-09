@@ -20,11 +20,11 @@ import 'package:pilipala/pages/main/view.dart';
 import 'package:pilipala/services/service_locator.dart';
 import 'package:pilipala/utils/app_scheme.dart';
 import 'package:pilipala/utils/data.dart';
-import 'package:pilipala/utils/global_data_cache.dart';
 import 'package:pilipala/utils/storage.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:pilipala/utils/recommend_filter.dart';
 import 'package:catcher_2/catcher_2.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import './services/loggeer.dart';
 
 void main() async {
@@ -46,7 +46,7 @@ void main() async {
   Catcher2(
     releaseConfig: releaseConfig,
     runAppFunction: () {
-      runApp(const MyApp());
+      runApp(const ProviderScope(child: MyApp()));
     },
   );
 
@@ -64,7 +64,6 @@ void main() async {
   }
 
   PiliSchame.init();
-  await GlobalDataCache().initialize();
 }
 
 class MyApp extends StatelessWidget {

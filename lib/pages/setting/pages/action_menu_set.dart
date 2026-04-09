@@ -2,17 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:hive/hive.dart';
 import 'package:pilipala/models/common/action_type.dart';
-import 'package:pilipala/utils/global_data_cache.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pilipala/core/settings/settings_provider.dart';
 import '../../../utils/storage.dart';
 
-class ActionMenuSetPage extends StatefulWidget {
+class ActionMenuSetPage extends ConsumerStatefulWidget {
   const ActionMenuSetPage({super.key});
 
   @override
-  State<ActionMenuSetPage> createState() => _ActionMenuSetPageState();
+  ConsumerState<ActionMenuSetPage> createState() => _ActionMenuSetPageState();
 }
 
-class _ActionMenuSetPageState extends State<ActionMenuSetPage> {
+class _ActionMenuSetPageState extends ConsumerState<ActionMenuSetPage> {
   Box setting = GStrorage.setting;
   late List<String> actionTypeSort;
   late List<Map> allLabels;
@@ -37,8 +38,9 @@ class _ActionMenuSetPageState extends State<ActionMenuSetPage> {
         .where((i) => actionTypeSort.contains((i['value'] as ActionType).value))
         .map<String>((i) => (i['value'] as ActionType).value)
         .toList();
-    setting.put(SettingBoxKey.actionTypeSort, sortedTabbar);
-    GlobalDataCache().actionTypeSort = sortedTabbar;
+    ref
+        .read(appSettingsNotifierProvider.notifier)
+        .setActionTypeSort(sortedTabbar);
     SmartDialog.showToast('操作成功');
   }
 

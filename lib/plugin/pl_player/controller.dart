@@ -18,7 +18,6 @@ import 'package:pilipala/plugin/pl_player/index.dart';
 import 'package:pilipala/plugin/pl_player/models/play_repeat.dart';
 import 'package:pilipala/services/service_locator.dart';
 import 'package:pilipala/utils/feed_back.dart';
-import 'package:pilipala/utils/global_data_cache.dart';
 import 'package:pilipala/utils/storage.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 import 'package:status_bar_control/status_bar_control.dart';
@@ -278,26 +277,46 @@ class PlPlayerController {
 
   // 添加一个私有构造函数
   PlPlayerController._internal(this.videoType) {
-    final cache = GlobalDataCache();
-    isOpenDanmu.value = cache.isOpenDanmu;
-    blockTypes = cache.blockTypes;
-    showArea = cache.showArea;
-    opacityVal = cache.opacityVal;
-    fontSizeVal = cache.fontSizeVal;
-    danmakuDurationVal = cache.danmakuDurationVal;
-    strokeWidth = cache.strokeWidth;
-    playRepeat = cache.playRepeat;
-    _playbackSpeed.value = cache.playbackSpeed;
-    enableAutoLongPressSpeed = cache.enableAutoLongPressSpeed;
-    _longPressSpeed.value = cache.longPressSpeed;
-    speedsList = cache.speedsList;
-    // _playerEventSubs = onPlayerStatusChanged.listen((PlayerStatus status) {
-    //   if (status == PlayerStatus.playing) {
-    //     WakelockPlus.enable();
-    //   } else {
-    //     WakelockPlus.disable();
-    //   }
-    // });
+    // 弹幕相关
+    isOpenDanmu.value =
+        setting.get(SettingBoxKey.enableShowDanmaku, defaultValue: false);
+    blockTypes =
+        localCache.get(LocalCacheKey.danmakuBlockType, defaultValue: []);
+    showArea = localCache.get(LocalCacheKey.danmakuShowArea, defaultValue: 0.5);
+    opacityVal =
+        localCache.get(LocalCacheKey.danmakuOpacity, defaultValue: 1.0);
+    fontSizeVal =
+        localCache.get(LocalCacheKey.danmakuFontScale, defaultValue: 1.0);
+    danmakuDurationVal =
+        localCache.get(LocalCacheKey.danmakuDuration, defaultValue: 4.0);
+    strokeWidth = localCache.get(LocalCacheKey.strokeWidth, defaultValue: 1.5);
+
+    // 播放器相关
+    var defaultPlayRepeat =
+        videoStorage.get(VideoBoxKey.playRepeat, defaultValue: 'pause');
+    playRepeat = PlayRepeat.values
+        .toList()
+        .firstWhere((e) => e.value == defaultPlayRepeat, orElse: () => PlayRepeat.pause);
+
+    _playbackSpeed.value =
+        videoStorage.get(VideoBoxKey.playSpeedDefault, defaultValue: 1.0);
+
+    enableAutoLongPressSpeed =
+        setting.get(SettingBoxKey.enableAutoLongPressSpeed, defaultValue: false);
+    if (!enableAutoLongPressSpeed) {
+      _longPressSpeed.value = videoStorage
+          .get(VideoBoxKey.longPressSpeedDefault, defaultValue: 2.0);
+    } else {
+      _longPressSpeed.value = 2.0;
+    }
+
+    speedsList = List<double>.from(
+        videoStorage.get(VideoBoxKey.customSpeedsList, defaultValue: <double>[]));
+    final List<double> playSpeedSystem = List<double>.from(
+        videoStorage.get(VideoBoxKey.playSpeedSystem, defaultValue: [1.0, 1.25, 1.5, 2.0]));
+    speedsList.addAll(playSpeedSystem);
+    speedsList = speedsList.toSet().toList();
+    speedsList.sort();
   }
 
   // 获取实例 传参

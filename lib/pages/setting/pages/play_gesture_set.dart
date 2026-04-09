@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:pilipala/utils/global_data_cache.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pilipala/core/settings/settings_provider.dart';
 
 import '../../../models/common/gesture_mode.dart';
 import '../../../utils/storage.dart';
 import '../widgets/select_dialog.dart';
 import '../widgets/switch_item.dart';
 
-class PlayGesturePage extends StatefulWidget {
+class PlayGesturePage extends ConsumerStatefulWidget {
   const PlayGesturePage({super.key});
 
   @override
-  State<PlayGesturePage> createState() => _PlayGesturePageState();
+  ConsumerState<PlayGesturePage> createState() => _PlayGesturePageState();
 }
 
-class _PlayGesturePageState extends State<PlayGesturePage> {
+class _PlayGesturePageState extends ConsumerState<PlayGesturePage> {
   Box setting = GStrorage.setting;
   late int fullScreenGestureMode;
 
@@ -64,13 +65,12 @@ class _PlayGesturePageState extends State<PlayGesturePage> {
                 },
               );
               if (result != null) {
-                GlobalDataCache().fullScreenGestureMode = FullScreenGestureMode
-                    .values
+                final mode = FullScreenGestureMode.values
                     .firstWhere((element) => element.values == result);
-                fullScreenGestureMode =
-                    GlobalDataCache().fullScreenGestureMode.index;
-                setting.put(
-                    SettingBoxKey.fullScreenGestureMode, fullScreenGestureMode);
+                ref
+                    .read(appSettingsNotifierProvider.notifier)
+                    .setFullScreenGestureMode(mode);
+                fullScreenGestureMode = mode.index;
                 setState(() {});
               }
             },

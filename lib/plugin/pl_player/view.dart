@@ -18,8 +18,9 @@ import 'package:pilipala/plugin/pl_player/utils.dart';
 import 'package:pilipala/utils/feed_back.dart';
 import 'package:pilipala/utils/storage.dart';
 import 'package:screen_brightness/screen_brightness.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pilipala/core/settings/settings_provider.dart';
 
-import '../../utils/global_data_cache.dart';
 import 'models/bottom_control_type.dart';
 import 'models/bottom_progress_behavior.dart';
 import 'widgets/app_bar_ani.dart';
@@ -30,7 +31,7 @@ import 'widgets/control_bar.dart';
 import 'widgets/forward_seek.dart';
 import 'widgets/play_pause_btn.dart';
 
-class PLVideoPlayer extends StatefulWidget {
+class PLVideoPlayer extends ConsumerStatefulWidget {
   const PLVideoPlayer({
     required this.controller,
     this.headerControl,
@@ -59,10 +60,10 @@ class PLVideoPlayer extends StatefulWidget {
   final Alignment? alignment;
 
   @override
-  State<PLVideoPlayer> createState() => _PLVideoPlayerState();
+  ConsumerState<PLVideoPlayer> createState() => _PLVideoPlayerState();
 }
 
-class _PLVideoPlayerState extends State<PLVideoPlayer>
+class _PLVideoPlayerState extends ConsumerState<PLVideoPlayer>
     with TickerProviderStateMixin {
   late AnimationController animationController;
   late VideoController videoController;
@@ -89,8 +90,6 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
   late bool enableQuickDouble;
   late bool enableBackgroundPlay;
   late double screenWidth;
-  final FullScreenGestureMode fullScreenGestureMode =
-      GlobalDataCache().fullScreenGestureMode;
 
   // 用于记录上一次全屏切换手势触发时间，避免误触
   DateTime? lastFullScreenToggleTime;
@@ -133,9 +132,12 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
   void initState() {
     super.initState();
     screenWidth = Get.size.width;
+    final appSettings = ref.read(appSettingsNotifierProvider).value;
+    final enablePlayerControlAnimation =
+        appSettings?.enablePlayerControlAnimation ?? true;
     animationController = AnimationController(
       vsync: this,
-      duration: GlobalDataCache().enablePlayerControlAnimation
+      duration: enablePlayerControlAnimation
           ? const Duration(milliseconds: 150)
           : const Duration(milliseconds: 10),
     );
@@ -372,6 +374,9 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
 
   @override
   Widget build(BuildContext context) {
+    final appSettings = ref.watch(appSettingsNotifierProvider).value;
+    final fullScreenGestureMode = appSettings?.fullScreenGestureMode ??
+        FullScreenGestureMode.values.last;
     final PlPlayerController _ = widget.controller;
     final Color colorTheme = Theme.of(context).colorScheme.primary;
     const TextStyle subTitleStyle = TextStyle(

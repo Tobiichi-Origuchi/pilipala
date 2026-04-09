@@ -17,7 +17,8 @@ import 'package:pilipala/models/video_detail_res.dart';
 import 'package:pilipala/pages/video/detail/introduction/controller.dart';
 import 'package:pilipala/pages/video/detail/widgets/ai_detail.dart';
 import 'package:pilipala/utils/feed_back.dart';
-import 'package:pilipala/utils/global_data_cache.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pilipala/core/settings/settings_provider.dart';
 import 'package:pilipala/utils/storage.dart';
 import 'package:pilipala/utils/utils.dart';
 import '../../../../http/user.dart';
@@ -28,17 +29,17 @@ import 'widgets/page_panel.dart';
 import 'widgets/season_panel.dart';
 import 'widgets/staff_up_item.dart';
 
-class VideoIntroPanel extends StatefulWidget {
+class VideoIntroPanel extends ConsumerStatefulWidget {
   final String bvid;
   final String? cid;
 
   const VideoIntroPanel({super.key, required this.bvid, this.cid});
 
   @override
-  State<VideoIntroPanel> createState() => _VideoIntroPanelState();
+  ConsumerState<VideoIntroPanel> createState() => _VideoIntroPanelState();
 }
 
-class _VideoIntroPanelState extends State<VideoIntroPanel>
+class _VideoIntroPanelState extends ConsumerState<VideoIntroPanel>
     with AutomaticKeepAliveClientMixin {
   late String heroTag;
   late VideoIntroController videoIntroController;
@@ -117,7 +118,7 @@ class _VideoIntroPanelState extends State<VideoIntroPanel>
   }
 }
 
-class VideoInfo extends StatefulWidget {
+class VideoInfo extends ConsumerStatefulWidget {
   final VideoDetailData? videoDetail;
   final String? heroTag;
   final String bvid;
@@ -130,10 +131,11 @@ class VideoInfo extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<VideoInfo> createState() => _VideoInfoState();
+  ConsumerState<VideoInfo> createState() => _VideoInfoState();
 }
 
-class _VideoInfoState extends State<VideoInfo> with TickerProviderStateMixin {
+class _VideoInfoState extends ConsumerState<VideoInfo>
+    with TickerProviderStateMixin {
   late String heroTag;
   late final VideoIntroController videoIntroController;
   late final VideoDetailController videoDetailCtr;
@@ -541,7 +543,9 @@ class _VideoInfoState extends State<VideoInfo> with TickerProviderStateMixin {
   }
 
   Widget actionGrid(BuildContext context, videoIntroController) {
-    final actionTypeSort = GlobalDataCache().actionTypeSort;
+    final actionTypeSort =
+        ref.watch(appSettingsNotifierProvider).value?.actionTypeSort ??
+            ['like', 'coin', 'collect', 'watchLater', 'share'];
 
     Map<String, Widget> menuListWidgets = {
       'like': Obx(

@@ -19,7 +19,8 @@ import 'package:pilipala/plugin/pl_gallery/index.dart';
 import 'package:pilipala/plugin/pl_popup/index.dart';
 import 'package:pilipala/utils/app_scheme.dart';
 import 'package:pilipala/utils/feed_back.dart';
-import 'package:pilipala/utils/global_data_cache.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pilipala/core/settings/settings_provider.dart';
 import 'package:pilipala/utils/id_utils.dart';
 import 'package:pilipala/utils/storage.dart';
 import 'package:pilipala/utils/url_utils.dart';
@@ -29,7 +30,7 @@ import 'zan.dart';
 
 Box setting = GStrorage.setting;
 
-class ReplyItem extends StatelessWidget {
+class ReplyItem extends ConsumerWidget {
   const ReplyItem({
     this.replyItem,
     this.addReply,
@@ -49,9 +50,9 @@ class ReplyItem extends StatelessWidget {
   final bool? replySave;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final bool isOwner = int.parse(replyItem!.member!.mid!) ==
-        (GlobalDataCache().userInfo?.mid ?? -1);
+        (ref.watch(appSettingsNotifierProvider).value?.userInfo?.mid ?? -1);
     return Material(
       child: InkWell(
         // 点击整个评论区 评论详情/回复

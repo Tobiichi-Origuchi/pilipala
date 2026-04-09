@@ -8,7 +8,8 @@ import 'package:pilipala/models/common/theme_type.dart';
 import 'package:pilipala/pages/setting/pages/color_select.dart';
 import 'package:pilipala/pages/setting/widgets/select_dialog.dart';
 import 'package:pilipala/pages/setting/widgets/slide_dialog.dart';
-import 'package:pilipala/utils/global_data_cache.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pilipala/core/settings/settings_provider.dart';
 import 'package:pilipala/utils/storage.dart';
 
 import '../../models/common/dynamic_badge_mode.dart';
@@ -16,14 +17,14 @@ import '../../models/common/nav_bar_config.dart';
 import 'controller.dart';
 import 'widgets/switch_item.dart';
 
-class StyleSetting extends StatefulWidget {
+class StyleSetting extends ConsumerStatefulWidget {
   const StyleSetting({super.key});
 
   @override
-  State<StyleSetting> createState() => _StyleSettingState();
+  ConsumerState<StyleSetting> createState() => _StyleSettingState();
 }
 
-class _StyleSettingState extends State<StyleSetting> {
+class _StyleSettingState extends ConsumerState<StyleSetting> {
   final SettingController settingController = Get.put(SettingController());
   final ColorSelectController colorSelectController =
       Get.put(ColorSelectController());
@@ -176,7 +177,9 @@ class _StyleSettingState extends State<StyleSetting> {
                                   SettingBoxKey.defaultPicQa, picQuality);
                               Get.back();
                               settingController.picQuality.value = picQuality;
-                              GlobalDataCache().imgQuality = picQuality;
+                              ref
+                                  .read(appSettingsNotifierProvider.notifier)
+                                  .setImgQuality(picQuality);
                               SmartDialog.showToast('设置成功');
                             },
                             child: const Text('确定'),

@@ -2,13 +2,14 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:pilipala/utils/extension.dart';
-import 'package:pilipala/utils/global_data_cache.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pilipala/core/settings/settings_provider.dart';
 import '../../utils/storage.dart';
 import '../constants.dart';
 
 Box<dynamic> setting = GStrorage.setting;
 
-class NetworkImgLayer extends StatelessWidget {
+class NetworkImgLayer extends ConsumerWidget {
   const NetworkImgLayer({
     super.key,
     this.src,
@@ -32,8 +33,9 @@ class NetworkImgLayer extends StatelessWidget {
   final double? origAspectRatio;
 
   @override
-  Widget build(BuildContext context) {
-    final int defaultImgQuality = GlobalDataCache().imgQuality;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final int defaultImgQuality =
+        ref.watch(appSettingsNotifierProvider).value?.imgQuality ?? 10;
     if (src == '' || src == null) {
       return placeholder(context);
     }

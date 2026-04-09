@@ -9,20 +9,21 @@ import 'package:pilipala/models/video/play/quality.dart';
 import 'package:pilipala/pages/setting/widgets/select_dialog.dart';
 import 'package:pilipala/plugin/pl_player/index.dart';
 import 'package:pilipala/services/service_locator.dart';
-import 'package:pilipala/utils/global_data_cache.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pilipala/core/settings/settings_provider.dart';
 import 'package:pilipala/utils/storage.dart';
 
 import '../../models/live/quality.dart';
 import 'widgets/switch_item.dart';
 
-class PlaySetting extends StatefulWidget {
+class PlaySetting extends ConsumerStatefulWidget {
   const PlaySetting({super.key});
 
   @override
-  State<PlaySetting> createState() => _PlaySettingState();
+  ConsumerState<PlaySetting> createState() => _PlaySettingState();
 }
 
-class _PlaySettingState extends State<PlaySetting> {
+class _PlaySettingState extends ConsumerState<PlaySetting> {
   Box setting = GStrorage.setting;
   late dynamic defaultVideoQa;
   late dynamic defaultLiveQa;
@@ -150,11 +151,14 @@ class _PlaySettingState extends State<PlaySetting> {
             setKey: SettingBoxKey.enableAutoBrightness,
             defaultVal: false,
           ),
-          const SetSwitchItem(
+          SetSwitchItem(
             title: '弹幕开关',
             subTitle: '展示弹幕',
             setKey: SettingBoxKey.enableShowDanmaku,
             defaultVal: false,
+            callFn: (bool val) {
+              ref.read(appSettingsNotifierProvider.notifier).setIsOpenDanmu(val);
+            },
           ),
           SetSwitchItem(
               title: '控制栏动画',
@@ -162,7 +166,9 @@ class _PlaySettingState extends State<PlaySetting> {
               setKey: SettingBoxKey.enablePlayerControlAnimation,
               defaultVal: true,
               callFn: (bool val) {
-                GlobalDataCache().enablePlayerControlAnimation = val;
+                ref
+                    .read(appSettingsNotifierProvider.notifier)
+                    .setEnablePlayerControlAnimation(val);
               }),
           SetSwitchItem(
             title: '港澳台模式',
