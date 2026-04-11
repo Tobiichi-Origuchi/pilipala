@@ -547,10 +547,15 @@ class VideoHttp {
 
   // 获取字幕内容
   static Future<Map<String, dynamic>> getSubtitleContent(url) async {
-    var res = await Request().get('https:$url');
-    final dynamic bodyRaw = res.data?['body'];
-    final List<dynamic> body = bodyRaw is List ? bodyRaw : [];
-    final String content = await SubTitleUtils.convertToWebVTT(bodyRaw);
-    return {'content': content, 'body': body};
+    try {
+      var res = await Request().get('https:$url');
+      final dynamic bodyRaw = res.data?['body'];
+      final List<dynamic> body = bodyRaw is List ? bodyRaw : [];
+      final String content = await SubTitleUtils.convertToWebVTT(body);
+      return {'content': content, 'body': body};
+    } catch (e) {
+      debugPrint('getSubtitleContent error: $e');
+      return {'content': '', 'body': <dynamic>[]};
+    }
   }
 }

@@ -1,17 +1,29 @@
 import 'dart:async';
 import 'dart:isolate';
 
+import 'package:flutter/rendering.dart';
+
 class SubTitleUtils {
   // 格式整理
-  static Future<String> convertToWebVTT(List jsonData) async {
+  static Future<String> convertToWebVTT(List? jsonData) async {
+    // 防止 null 传入
+    final List<dynamic> safeData = jsonData is List ? jsonData : [];
+    // 如果数据为空，直接返回空字幕
+    if (safeData.isEmpty) {
+      return '';
+    }
     final receivePort = ReceivePort();
     await Isolate.spawn(_convertToWebVTTIsolate, receivePort.sendPort);
-
     final sendPort = await receivePort.first as SendPort;
     final response = ReceivePort();
-    sendPort.send([jsonData, response.sendPort]);
-
-    return await response.first as String;
+    sendPort.send([safeData, response.sendPort]);
+    final result = await response.first;
+    if (result is String) {
+      return result;
+    } else {
+      debugPrint('convertToWebVTT: ${result.runtimeType}');
+      return '';
+    }
   }
 
   static void _convertToWebVTTIsolate(SendPort sendPort) async {
@@ -52,8 +64,10 @@ class SubTitleUtils {
     final String h = (seconds / 3600).floor().toString().padLeft(2, '0');
     final String m = (seconds % 3600 / 60).floor().toString().padLeft(2, '0');
     final String s = (seconds % 60).floor().toString().padLeft(2, '0');
-    final String ms =
-        (seconds * 1000 % 1000).floor().toString().padLeft(3, '0');
+    final String ms = (seconds * 1000 % 1000).floor().toString().padLeft(
+      3,
+      '0',
+    );
     if (h == '00') {
       return "$m:$s.$ms";
     }
