@@ -109,7 +109,7 @@ class MemberController extends GetxController {
                 memberInfo.update((val) {});
               },
               child: const Text('确认'),
-            )
+            ),
           ],
         );
       },
@@ -183,7 +183,7 @@ class MemberController extends GetxController {
                 }
               },
               child: const Text('确认'),
-            )
+            ),
           ],
         );
       },
@@ -191,7 +191,11 @@ class MemberController extends GetxController {
   }
 
   void shareUser() {
-    Share.share('${memberInfo.value.name} - https://space.bilibili.com/$mid');
+    SharePlus.instance.share(
+      ShareParams(
+        text: '${memberInfo.value.name} - https://space.bilibili.com/$mid',
+      ),
+    );
   }
 
   // 请求合集
@@ -203,8 +207,9 @@ class MemberController extends GetxController {
     } else {
       // 只取前四个专栏
       res['data'].seasonsList.map((e) {
-        e.archives =
-            e.archives!.length > 4 ? e.archives!.sublist(0, 4) : e.archives!;
+        e.archives = e.archives!.length > 4
+            ? e.archives!.sublist(0, 4)
+            : e.archives!;
       }).toList();
     }
     return res;

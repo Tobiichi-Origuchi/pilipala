@@ -63,7 +63,7 @@ class SubItem extends StatelessWidget {
                     subFolderItem: subFolderItem,
                     isOwner: isOwner,
                     cancelSub: cancelSub,
-                  )
+                  ),
                 ],
               ),
             );
@@ -126,7 +126,7 @@ class VideoContent extends StatelessWidget {
                     children: [
                       IconButton(
                         style: ButtonStyle(
-                          padding: MaterialStateProperty.all(EdgeInsets.zero),
+                          padding: WidgetStateProperty.all(EdgeInsets.zero),
                         ),
                         onPressed: () => cancelSub?.call(subFolderItem),
                         icon: Icon(
@@ -134,10 +134,10 @@ class VideoContent extends StatelessWidget {
                           color: Theme.of(context).colorScheme.outline,
                           size: 18,
                         ),
-                      )
+                      ),
                     ],
                   )
-                : const SizedBox()
+                : const SizedBox(),
           ],
         ),
       ),

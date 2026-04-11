@@ -23,11 +23,11 @@ class VideoCardV extends StatelessWidget {
   final Function? blockUserCb;
 
   const VideoCardV({
-    Key? key,
+    super.key,
     required this.videoItem,
     required this.crossAxisCount,
     this.blockUserCb,
-  }) : super(key: key);
+  });
 
   bool isStringNumeric(String str) {
     RegExp numericRegex = RegExp(r'^\d+$');
@@ -43,19 +43,18 @@ class VideoCardV extends StatelessWidget {
           return;
         }
         int epId = videoItem.param;
-        RoutePush.bangumiPush(
-          null,
-          epId,
-          heroTag: heroTag,
-        );
+        RoutePush.bangumiPush(null, epId, heroTag: heroTag);
         break;
       case 'av':
         String bvid = videoItem.bvid ?? IdUtils.av2bv(videoItem.aid);
-        Get.toNamed('/video?bvid=$bvid&cid=${videoItem.cid}', arguments: {
-          // 'videoItem': videoItem,
-          'pic': videoItem.pic,
-          'heroTag': heroTag,
-        });
+        Get.toNamed(
+          '/video?bvid=$bvid&cid=${videoItem.cid}',
+          arguments: {
+            // 'videoItem': videoItem,
+            'pic': videoItem.pic,
+            'heroTag': heroTag,
+          },
+        );
         break;
       // 动态
       case 'picture':
@@ -72,23 +71,30 @@ class VideoCardV extends StatelessWidget {
             String path = Uri.parse(uri).path;
             if (isStringNumeric(path.split('/')[1])) {
               // 请求接口
-              var res =
-                  await DynamicsHttp.dynamicDetail(id: path.split('/')[1]);
+              var res = await DynamicsHttp.dynamicDetail(
+                id: path.split('/')[1],
+              );
               if (res['status']) {
-                Get.toNamed('/dynamicDetail', arguments: {
-                  'item': res['data'],
-                  'floor': 1,
-                  'action': 'detail'
-                });
+                Get.toNamed(
+                  '/dynamicDetail',
+                  arguments: {
+                    'item': res['data'],
+                    'floor': 1,
+                    'action': 'detail',
+                  },
+                );
               }
               return;
             }
           }
-          Get.toNamed('/read', parameters: {
-            'title': videoItem.title,
-            'id': videoItem.param,
-            'articleType': 'read'
-          });
+          Get.toNamed(
+            '/read',
+            parameters: {
+              'title': videoItem.title,
+              'id': videoItem.param,
+              'articleType': 'read',
+            },
+          );
         } catch (err) {
           SmartDialog.showToast(err.toString());
         }
@@ -111,54 +117,53 @@ class VideoCardV extends StatelessWidget {
     String heroTag = Utils.makeHeroTag(videoItem.id);
     return InkWell(
       onTap: () async => onPushDetail(heroTag),
-      onLongPress: () => imageSaveDialog(
-        context,
-        videoItem,
-        SmartDialog.dismiss,
-      ),
+      onLongPress: () =>
+          imageSaveDialog(context, videoItem, SmartDialog.dismiss),
       borderRadius: BorderRadius.circular(16),
       child: Column(
         children: [
           AspectRatio(
             aspectRatio: StyleString.aspectRatio,
-            child: LayoutBuilder(builder: (context, boxConstraints) {
-              double maxWidth = boxConstraints.maxWidth;
-              double maxHeight = boxConstraints.maxHeight;
-              return Stack(
-                children: [
-                  Hero(
-                    tag: heroTag,
-                    child: NetworkImgLayer(
-                      src: videoItem.pic,
-                      width: maxWidth,
-                      height: maxHeight,
+            child: LayoutBuilder(
+              builder: (context, boxConstraints) {
+                double maxWidth = boxConstraints.maxWidth;
+                double maxHeight = boxConstraints.maxHeight;
+                return Stack(
+                  children: [
+                    Hero(
+                      tag: heroTag,
+                      child: NetworkImgLayer(
+                        src: videoItem.pic,
+                        width: maxWidth,
+                        height: maxHeight,
+                      ),
                     ),
-                  ),
-                  if (videoItem.duration > 0)
-                    if (crossAxisCount == 1) ...[
-                      PBadge(
-                        bottom: 10,
-                        right: 10,
-                        text: Utils.timeFormat(videoItem.duration),
-                      )
-                    ] else ...[
-                      PBadge(
-                        bottom: 6,
-                        right: 7,
-                        size: 'small',
-                        type: 'gray',
-                        text: Utils.timeFormat(videoItem.duration),
-                      )
-                    ],
-                ],
-              );
-            }),
+                    if (videoItem.duration > 0)
+                      if (crossAxisCount == 1) ...[
+                        PBadge(
+                          bottom: 10,
+                          right: 10,
+                          text: Utils.timeFormat(videoItem.duration),
+                        ),
+                      ] else ...[
+                        PBadge(
+                          bottom: 6,
+                          right: 7,
+                          size: 'small',
+                          type: 'gray',
+                          text: Utils.timeFormat(videoItem.duration),
+                        ),
+                      ],
+                  ],
+                );
+              },
+            ),
           ),
           VideoContent(
             videoItem: videoItem,
             crossAxisCount: crossAxisCount,
             blockUserCb: blockUserCb,
-          )
+          ),
         ],
       ),
     );
@@ -171,11 +176,11 @@ class VideoContent extends StatelessWidget {
   final Function? blockUserCb;
 
   const VideoContent({
-    Key? key,
+    super.key,
     required this.videoItem,
     required this.crossAxisCount,
     this.blockUserCb,
-  }) : super(key: key);
+  });
 
   Widget _buildBadge(String text, String type, [double fs = 12]) {
     return PBadge(
@@ -196,11 +201,7 @@ class VideoContent extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            videoItem.title,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
+          Text(videoItem.title, maxLines: 2, overflow: TextOverflow.ellipsis),
           if (crossAxisCount > 1) ...[
             const SizedBox(height: 2),
             VideoStat(videoItem: videoItem, crossAxisCount: crossAxisCount),
@@ -227,10 +228,7 @@ class VideoContent extends StatelessWidget {
               ),
               if (crossAxisCount == 1) ...[
                 const SizedBox(width: 10),
-                VideoStat(
-                  videoItem: videoItem,
-                  crossAxisCount: crossAxisCount,
-                ),
+                VideoStat(videoItem: videoItem, crossAxisCount: crossAxisCount),
                 const Spacer(),
               ],
               if (videoItem.goto == 'av')
@@ -259,7 +257,7 @@ class VideoContent extends StatelessWidget {
                       size: 14,
                     ),
                   ),
-                )
+                ),
             ],
           ),
         ],
@@ -273,10 +271,10 @@ class VideoStat extends StatelessWidget {
   final int crossAxisCount;
 
   const VideoStat({
-    Key? key,
+    super.key,
     required this.videoItem,
     required this.crossAxisCount,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -290,14 +288,15 @@ class VideoStat extends StatelessWidget {
           RichText(
             maxLines: 1,
             text: TextSpan(
-                style: TextStyle(
-                  fontSize: Theme.of(context).textTheme.labelSmall!.fontSize,
-                  color: Theme.of(context).colorScheme.outline,
-                ),
-                text: Utils.formatTimestampToRelativeTime(videoItem.pubdate)),
+              style: TextStyle(
+                fontSize: Theme.of(context).textTheme.labelSmall!.fontSize,
+                color: Theme.of(context).colorScheme.outline,
+              ),
+              text: Utils.formatTimestampToRelativeTime(videoItem.pubdate),
+            ),
           ),
           const SizedBox(width: 4),
-        ]
+        ],
       ],
     );
   }
@@ -306,11 +305,7 @@ class VideoStat extends StatelessWidget {
 class MorePanel extends StatelessWidget {
   final dynamic videoItem;
   final Function? blockUserCb;
-  const MorePanel({
-    super.key,
-    required this.videoItem,
-    this.blockUserCb,
-  });
+  const MorePanel({super.key, required this.videoItem, this.blockUserCb});
 
   Future<dynamic> menuActionHandler(String type) async {
     switch (type) {
@@ -334,8 +329,10 @@ class MorePanel extends StatelessWidget {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('提示'),
-          content: Text('确定拉黑:${videoItem.owner.name}(${videoItem.owner.mid})?'
-              '\n\n注：被拉黑的Up可以在隐私设置-黑名单管理中解除'),
+          content: Text(
+            '确定拉黑:${videoItem.owner.name}(${videoItem.owner.mid})?'
+            '\n\n注：被拉黑的Up可以在隐私设置-黑名单管理中解除',
+          ),
           actions: [
             TextButton(
               onPressed: () => SmartDialog.dismiss(),
@@ -358,7 +355,7 @@ class MorePanel extends StatelessWidget {
                 SmartDialog.showToast(res['msg']);
               },
               child: const Text('确认'),
-            )
+            ),
           ],
         );
       },
@@ -382,8 +379,9 @@ class MorePanel extends StatelessWidget {
                   width: 32,
                   height: 3,
                   decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.outline,
-                      borderRadius: const BorderRadius.all(Radius.circular(3))),
+                    color: Theme.of(context).colorScheme.outline,
+                    borderRadius: const BorderRadius.all(Radius.circular(3)),
+                  ),
                 ),
               ),
             ),
@@ -401,16 +399,20 @@ class MorePanel extends StatelessWidget {
             onTap: () async => await menuActionHandler('watchLater'),
             minLeadingWidth: 0,
             leading: const Icon(Icons.watch_later_outlined, size: 19),
-            title:
-                Text('添加至稍后再看', style: Theme.of(context).textTheme.titleSmall),
+            title: Text(
+              '添加至稍后再看',
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
           ),
           ListTile(
             onTap: () =>
                 imageSaveDialog(context, videoItem, SmartDialog.dismiss),
             minLeadingWidth: 0,
             leading: const Icon(Icons.photo_outlined, size: 19),
-            title:
-                Text('查看视频封面', style: Theme.of(context).textTheme.titleSmall),
+            title: Text(
+              '查看视频封面',
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
           ),
           const SizedBox(height: 20),
         ],

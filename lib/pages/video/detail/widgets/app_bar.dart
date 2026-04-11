@@ -6,12 +6,12 @@ class ScrollAppBar extends StatelessWidget {
   final Function callback;
   final PlayerStatus playerStatus;
 
-  const ScrollAppBar(
-    this.scrollVal,
-    this.callback,
-    this.playerStatus,
-    Key? key,
-  ) : super(key: key);
+  const ScrollAppBar({
+    super.key,
+    required this.scrollVal,
+    required this.callback,
+    required this.playerStatus,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -46,9 +46,9 @@ class ScrollAppBar extends StatelessWidget {
                     playerStatus == PlayerStatus.paused
                         ? '继续播放'
                         : playerStatus == PlayerStatus.completed
-                            ? '重新播放'
-                            : '播放中',
-                  )
+                        ? '重新播放'
+                        : '播放中',
+                  ),
                 ],
               ),
             ),

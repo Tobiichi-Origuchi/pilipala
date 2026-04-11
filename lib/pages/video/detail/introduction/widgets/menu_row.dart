@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pilipala/utils/feed_back.dart';
 
 class MenuRow extends StatelessWidget {
-  const MenuRow({
-    super.key,
-    this.loadingStatus,
-  });
+  const MenuRow({super.key, this.loadingStatus});
   final bool? loadingStatus;
 
   @override
@@ -16,53 +13,56 @@ class MenuRow extends StatelessWidget {
       padding: const EdgeInsets.only(top: 9, bottom: 9, left: 12),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
-        child: Row(children: [
-          ActionRowLineItem(
-            onTap: () => {},
-            loadingStatus: loadingStatus,
-            text: '推荐',
-            selectStatus: false,
-          ),
-          const SizedBox(width: 8),
-          ActionRowLineItem(
-            onTap: () => {},
-            loadingStatus: loadingStatus,
-            text: '弹幕',
-            selectStatus: false,
-          ),
-          const SizedBox(width: 8),
-          ActionRowLineItem(
-            onTap: () => {},
-            loadingStatus: loadingStatus,
-            text: '评论列表',
-            selectStatus: false,
-          ),
-          const SizedBox(width: 8),
-          ActionRowLineItem(
-            onTap: () => {},
-            loadingStatus: loadingStatus,
-            text: '播放列表',
-            selectStatus: false,
-          ),
-        ]),
+        child: Row(
+          children: [
+            ActionRowLineItem(
+              onTap: () => {},
+              loadingStatus: loadingStatus,
+              text: '推荐',
+              selectStatus: false,
+            ),
+            const SizedBox(width: 8),
+            ActionRowLineItem(
+              onTap: () => {},
+              loadingStatus: loadingStatus,
+              text: '弹幕',
+              selectStatus: false,
+            ),
+            const SizedBox(width: 8),
+            ActionRowLineItem(
+              onTap: () => {},
+              loadingStatus: loadingStatus,
+              text: '评论列表',
+              selectStatus: false,
+            ),
+            const SizedBox(width: 8),
+            ActionRowLineItem(
+              onTap: () => {},
+              loadingStatus: loadingStatus,
+              text: '播放列表',
+              selectStatus: false,
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget actionRowLineItem(
-      BuildContext context, Function? onTap, bool? loadingStatus, String? text,
-      {bool selectStatus = false}) {
+    BuildContext context,
+    Function? onTap,
+    bool? loadingStatus,
+    String? text, {
+    bool selectStatus = false,
+  }) {
     return Material(
       color: selectStatus
-          ? Theme.of(context).highlightColor.withOpacity(0.2)
+          ? Theme.of(context).highlightColor.withValues(alpha: 0.2)
           : Colors.transparent,
       borderRadius: const BorderRadius.all(Radius.circular(30)),
       clipBehavior: Clip.hardEdge,
       child: InkWell(
-        onTap: () => {
-          feedBack(),
-          onTap!(),
-        },
+        onTap: () => {feedBack(), onTap!()},
         child: Container(
           padding: const EdgeInsets.fromLTRB(13, 5.5, 13, 4.5),
           decoration: BoxDecoration(
@@ -70,7 +70,7 @@ class MenuRow extends StatelessWidget {
             border: Border.all(
               color: selectStatus
                   ? Colors.transparent
-                  : Theme.of(context).highlightColor.withOpacity(0.2),
+                  : Theme.of(context).highlightColor.withValues(alpha: 0.2),
             ),
           ),
           child: Row(
@@ -82,10 +82,11 @@ class MenuRow extends StatelessWidget {
                 child: Text(
                   text!,
                   style: TextStyle(
-                      fontSize: 13,
-                      color: selectStatus
-                          ? Theme.of(context).colorScheme.onSurface
-                          : Theme.of(context).colorScheme.outline),
+                    fontSize: 13,
+                    color: selectStatus
+                        ? Theme.of(context).colorScheme.onSurface
+                        : Theme.of(context).colorScheme.outline,
+                  ),
                 ),
               ),
             ],
@@ -118,10 +119,7 @@ class ActionRowLineItem extends StatelessWidget {
       borderRadius: const BorderRadius.all(Radius.circular(30)),
       clipBehavior: Clip.hardEdge,
       child: InkWell(
-        onTap: () => {
-          feedBack(),
-          onTap!(),
-        },
+        onTap: () => {feedBack(), onTap!()},
         child: Container(
           padding: const EdgeInsets.fromLTRB(13, 5.5, 13, 4.5),
           decoration: BoxDecoration(
@@ -141,10 +139,11 @@ class ActionRowLineItem extends StatelessWidget {
                 child: Text(
                   text!,
                   style: TextStyle(
-                      fontSize: 13,
-                      color: selectStatus!
-                          ? Theme.of(context).colorScheme.onSecondaryContainer
-                          : Theme.of(context).colorScheme.outline),
+                    fontSize: 13,
+                    color: selectStatus!
+                        ? Theme.of(context).colorScheme.onSecondaryContainer
+                        : Theme.of(context).colorScheme.outline,
+                  ),
                 ),
               ),
             ],

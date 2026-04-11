@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import '../models/dynamics/result.dart';
 import '../models/dynamics/up.dart';
 import 'index.dart';
+import 'package:flutter/foundation.dart';
 
 class DynamicsHttp {
   static Future followDynamic({
@@ -16,7 +17,7 @@ class DynamicsHttp {
       'page': page ?? 1,
       'timezone_offset': '-480',
       'offset': page == 1 ? '' : offset,
-      'features': 'itemOpusStyle'
+      'features': 'itemOpusStyle',
     };
     if (mid != -1) {
       data['host_mid'] = mid;
@@ -30,12 +31,8 @@ class DynamicsHttp {
           'data': DynamicsDataModel.fromJson(res.data['data']),
         };
       } catch (err) {
-        print(err);
-        return {
-          'status': false,
-          'data': [],
-          'msg': err.toString(),
-        };
+        debugPrint('$err');
+        return {'status': false, 'data': [], 'msg': err.toString()};
       }
     } else {
       return {
@@ -50,16 +47,9 @@ class DynamicsHttp {
   static Future followUp() async {
     var res = await Request().get(Api.followUp);
     if (res.data['code'] == 0) {
-      return {
-        'status': true,
-        'data': FollowUpModel.fromJson(res.data['data']),
-      };
+      return {'status': true, 'data': FollowUpModel.fromJson(res.data['data'])};
     } else {
-      return {
-        'status': false,
-        'data': [],
-        'msg': res.data['message'],
-      };
+      return {'status': false, 'data': [], 'msg': res.data['message']};
     }
   }
 
@@ -77,28 +67,18 @@ class DynamicsHttp {
       },
     );
     if (res.data['code'] == 0) {
-      return {
-        'status': true,
-        'data': res.data['data'],
-      };
+      return {'status': true, 'data': res.data['data']};
     } else {
-      return {
-        'status': false,
-        'data': [],
-        'msg': res.data['message'],
-      };
+      return {'status': false, 'data': [], 'msg': res.data['message']};
     }
   }
 
   //
-  static Future dynamicDetail({
-    String? id,
-  }) async {
-    var res = await Request().get(Api.dynamicDetail, data: {
-      'timezone_offset': -480,
-      'id': id,
-      'features': 'itemOpusStyle',
-    });
+  static Future dynamicDetail({String? id}) async {
+    var res = await Request().get(
+      Api.dynamicDetail,
+      data: {'timezone_offset': -480, 'id': id, 'features': 'itemOpusStyle'},
+    );
     if (res.data['code'] == 0) {
       try {
         return {
@@ -106,18 +86,10 @@ class DynamicsHttp {
           'data': DynamicItemModel.fromJson(res.data['data']['item']),
         };
       } catch (err) {
-        return {
-          'status': false,
-          'data': [],
-          'msg': err.toString(),
-        };
+        return {'status': false, 'data': [], 'msg': err.toString()};
       }
     } else {
-      return {
-        'status': false,
-        'data': [],
-        'msg': res.data['message'],
-      };
+      return {'status': false, 'data': [], 'msg': res.data['message']};
     }
   }
 
@@ -134,22 +106,15 @@ class DynamicsHttp {
         'scene': 4,
         'content': {
           'conetents': [
-            {'raw_text': "2", 'type': 1, 'biz_id': ""}
-          ]
-        }
+            {'raw_text': "2", 'type': 1, 'biz_id': ""},
+          ],
+        },
       },
     );
     if (res.data['code'] == 0) {
-      return {
-        'status': true,
-        'data': res.data['data'],
-      };
+      return {'status': true, 'data': res.data['data']};
     } else {
-      return {
-        'status': false,
-        'data': [],
-        'msg': res.data['message'],
-      };
+      return {'status': false, 'data': [], 'msg': res.data['message']};
     }
   }
 
@@ -166,14 +131,12 @@ class DynamicsHttp {
     int randomNumber = random.nextInt(9000) + 1000;
     String uploadId = '${mid}_${timestamp}_$randomNumber';
 
-    Map<String, dynamic> webRepostSrc = {
-      'dyn_id_str': dynIdStr ?? '',
-    };
+    Map<String, dynamic> webRepostSrc = {'dyn_id_str': dynIdStr ?? ''};
 
     /// 投稿转发
     if (scene == 5) {
       webRepostSrc = {
-        'revs_id': {'dyn_type': 8, 'rid': oid}
+        'revs_id': {'dyn_type': 8, 'rid': oid},
       };
     }
     var res = await Request().post(
@@ -188,31 +151,24 @@ class DynamicsHttp {
         'dyn_req': {
           'content': {
             'contents': [
-              {'raw_text': rawText ?? '', 'type': 1, 'biz_id': ''}
-            ]
+              {'raw_text': rawText ?? '', 'type': 1, 'biz_id': ''},
+            ],
           },
           'scene': scene,
           'attach_card': null,
           'upload_id': uploadId,
           'meta': {
-            'app_meta': {'from': 'create.dynamic.web', 'mobi_app': 'web'}
-          }
+            'app_meta': {'from': 'create.dynamic.web', 'mobi_app': 'web'},
+          },
         },
-        'web_repost_src': webRepostSrc
+        'web_repost_src': webRepostSrc,
       },
       options: Options(contentType: 'application/json'),
     );
     if (res.data['code'] == 0) {
-      return {
-        'status': true,
-        'data': res.data['data'],
-      };
+      return {'status': true, 'data': res.data['data']};
     } else {
-      return {
-        'status': false,
-        'data': [],
-        'msg': res.data['message'],
-      };
+      return {'status': false, 'data': [], 'msg': res.data['message']};
     }
   }
 }

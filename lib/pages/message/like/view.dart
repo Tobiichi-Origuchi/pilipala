@@ -18,8 +18,9 @@ class MessageLikePage extends StatefulWidget {
 }
 
 class _MessageLikePageState extends State<MessageLikePage> {
-  final MessageLikeController _messageLikeCtr =
-      Get.put(MessageLikeController());
+  final MessageLikeController _messageLikeCtr = Get.put(
+    MessageLikeController(),
+  );
   late Future _futureBuilderFuture;
   final ScrollController scrollController = ScrollController();
 
@@ -27,16 +28,14 @@ class _MessageLikePageState extends State<MessageLikePage> {
   void initState() {
     super.initState();
     _futureBuilderFuture = _messageLikeCtr.queryMessageLike();
-    scrollController.addListener(
-      () async {
-        if (scrollController.position.pixels >=
-            scrollController.position.maxScrollExtent - 200) {
-          EasyThrottle.throttle('follow', const Duration(seconds: 1), () {
-            _messageLikeCtr.queryMessageLike(type: 'onLoad');
-          });
-        }
-      },
-    );
+    scrollController.addListener(() async {
+      if (scrollController.position.pixels >=
+          scrollController.position.maxScrollExtent - 200) {
+        EasyThrottle.throttle('follow', const Duration(seconds: 1), () {
+          _messageLikeCtr.queryMessageLike(type: 'onLoad');
+        });
+      }
+    });
   }
 
   @override
@@ -48,9 +47,7 @@ class _MessageLikePageState extends State<MessageLikePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('收到的赞'),
-      ),
+      appBar: AppBar(title: const Text('收到的赞')),
       body: RefreshIndicator(
         onRefresh: () async {
           await _messageLikeCtr.queryMessageLike(type: 'init');
@@ -78,7 +75,7 @@ class _MessageLikePageState extends State<MessageLikePage> {
                         indent: 66,
                         endIndent: 14,
                         height: 1,
-                        color: Colors.grey.withOpacity(0.1),
+                        color: Colors.grey.withValues(alpha: 0.1),
                       );
                     },
                   ),
@@ -91,11 +88,11 @@ class _MessageLikePageState extends State<MessageLikePage> {
                       errMsg: snapshot.data['msg'],
                       fn: () {
                         setState(() {
-                          _futureBuilderFuture =
-                              _messageLikeCtr.queryMessageLike();
+                          _futureBuilderFuture = _messageLikeCtr
+                              .queryMessageLike();
                         });
                       },
-                    )
+                    ),
                   ],
                 );
               }
@@ -114,11 +111,12 @@ class LikeItem extends StatelessWidget {
   final int index;
   final MessageLikeController messageLikeCtr;
 
-  const LikeItem(
-      {super.key,
-      required this.item,
-      required this.index,
-      required this.messageLikeCtr});
+  const LikeItem({
+    super.key,
+    required this.item,
+    required this.index,
+    required this.messageLikeCtr,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -126,15 +124,22 @@ class LikeItem extends StatelessWidget {
     final nickNameList = item.users!.map((e) => e.nickname).take(2).toList();
     int usersLen = item.users!.length > 3 ? 3 : item.users!.length;
     final String bvid = item.item!.uri!.split('/').last;
-    // 页码
-    final String page =
-        item.item!.nativeUri!.split('page=').last.split('&').first;
-    // 根评论id
-    final String commentRootId =
-        item.item!.nativeUri!.split('comment_root_id=').last.split('&').first;
-    // 二级评论id
-    final String commentSecondaryId =
-        item.item!.nativeUri!.split('comment_secondary_id=').last;
+    // // 页码
+    // final String page = item.item!.nativeUri!
+    //     .split('page=')
+    //     .last
+    //     .split('&')
+    //     .first;
+    // // 根评论id
+    // final String commentRootId = item.item!.nativeUri!
+    //     .split('comment_root_id=')
+    //     .last
+    //     .split('&')
+    //     .first;
+    // // 二级评论id
+    // final String commentSecondaryId = item.item!.nativeUri!
+    //     .split('comment_secondary_id=')
+    //     .last;
 
     return InkWell(
       onTap: () async {
@@ -143,10 +148,7 @@ class LikeItem extends StatelessWidget {
           final String heroTag = Utils.makeHeroTag(bvid);
           Get.toNamed<dynamic>(
             '/video?bvid=$bvid&cid=$cid',
-            arguments: <String, String?>{
-              'pic': '',
-              'heroTag': heroTag,
-            },
+            arguments: <String, String?>{'pic': '', 'heroTag': heroTag},
           );
         } catch (_) {
           SmartDialog.showToast('视频可能失效了');
@@ -163,13 +165,16 @@ class LikeItem extends StatelessWidget {
                   behavior: HitTestBehavior.translucent,
                   onTap: () {
                     if (usersLen == 1) {
-                      final String heroTag =
-                          Utils.makeHeroTag(item.users!.first.mid);
-                      Get.toNamed('/member?mid=${item.users!.first.mid}',
-                          arguments: {
-                            'face': item.users!.first.avatar,
-                            'heroTag': heroTag
-                          });
+                      final String heroTag = Utils.makeHeroTag(
+                        item.users!.first.mid,
+                      );
+                      Get.toNamed(
+                        '/member?mid=${item.users!.first.mid}',
+                        arguments: {
+                          'face': item.users!.first.avatar,
+                          'heroTag': heroTag,
+                        },
+                      );
                     } else {
                       messageLikeCtr.expandedUsersAvatar(index);
                     }
@@ -200,19 +205,23 @@ class LikeItem extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text.rich(TextSpan(children: [
-                        TextSpan(text: nickNameList.join('、')),
-                        const TextSpan(text: ' '),
-                        if (item.counts! > 1)
-                          TextSpan(
-                            text: '等总计${item.counts}人',
-                            style: TextStyle(color: outline),
-                          ),
+                      Text.rich(
                         TextSpan(
-                          text: '赞了我的${item.item!.business}',
-                          style: TextStyle(color: outline),
+                          children: [
+                            TextSpan(text: nickNameList.join('、')),
+                            const TextSpan(text: ' '),
+                            if (item.counts! > 1)
+                              TextSpan(
+                                text: '等总计${item.counts}人',
+                                style: TextStyle(color: outline),
+                              ),
+                            TextSpan(
+                              text: '赞了我的${item.item!.business}',
+                              style: TextStyle(color: outline),
+                            ),
+                          ],
                         ),
-                      ])),
+                      ),
                       const SizedBox(height: 4),
                       Text(
                         Utils.dateFormat(item.likeTime!, formatType: 'detail'),
@@ -235,11 +244,7 @@ class LikeItem extends StatelessWidget {
                     ),
                   ),
                 if (item.item!.type! == 'video')
-                  NetworkImgLayer(
-                    width: 60,
-                    height: 60,
-                    src: item.item!.image,
-                  ),
+                  NetworkImgLayer(width: 60, height: 60, src: item.item!.image),
               ],
             ),
           ),
@@ -262,13 +267,14 @@ class LikeItem extends StatelessWidget {
                       children: [
                         GestureDetector(
                           onTap: () {
-                            final String heroTag =
-                                Utils.makeHeroTag(item.users![i].mid);
+                            final String heroTag = Utils.makeHeroTag(
+                              item.users![i].mid,
+                            );
                             Get.toNamed(
                               '/member?mid=${item.users![i].mid}',
                               arguments: {
                                 'face': item.users![i].avatar,
-                                'heroTag': heroTag
+                                'heroTag': heroTag,
                               },
                             );
                           },
@@ -308,7 +314,7 @@ class LikeItem extends StatelessWidget {
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 300),
                 width: item.isExpand ? 74 : 0,
-                color: Colors.black.withOpacity(0.3),
+                color: Colors.black.withValues(alpha: 0.3),
               ),
             ),
           ),

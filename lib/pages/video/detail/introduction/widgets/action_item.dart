@@ -12,24 +12,21 @@ class ActionItem extends StatelessWidget {
   final bool selectStatus;
 
   const ActionItem({
-    Key? key,
+    super.key,
     this.icon,
     this.selectIcon,
     this.onTap,
     this.onLongPress,
     this.text,
     this.selectStatus = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => {
-        feedBack(),
-        onTap!(),
-      },
+      onTap: () => {feedBack(), onTap!()},
       onLongPress: () => {
-        if (onLongPress != null) {onLongPress!()}
+        if (onLongPress != null) {onLongPress!()},
       },
       borderRadius: StyleString.mdRadius,
       child: SizedBox(
@@ -66,8 +63,9 @@ class ActionItem extends StatelessWidget {
             Text(
               text ?? '',
               style: TextStyle(
-                color:
-                    selectStatus ? Theme.of(context).colorScheme.primary : null,
+                color: selectStatus
+                    ? Theme.of(context).colorScheme.primary
+                    : null,
                 fontSize: Theme.of(context).textTheme.labelSmall!.fontSize,
               ),
             ),

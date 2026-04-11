@@ -84,23 +84,20 @@ class _LiveRoomPageState extends State<LiveRoomPage>
     if (_scrollController.hasClients) {
       _scrollController
           .animateTo(
-        _scrollController.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOut,
-      )
+            _scrollController.position.maxScrollExtent,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeOut,
+          )
           .then((value) {
-        _shouldAutoScroll = true;
-        // fabAnimationCtr.forward();
-      });
+            _shouldAutoScroll = true;
+            // fabAnimationCtr.forward();
+          });
     }
   }
 
   @override
   void dispose() {
     plPlayerController.dispose();
-    if (floating != null) {
-      floating!.dispose();
-    }
     _scrollController.dispose();
     fabAnimationCtr.dispose();
     super.dispose();
@@ -153,11 +150,18 @@ class _LiveRoomPageState extends State<LiveRoomPage>
               left: 0,
               right: 0,
               bottom: 0,
-              child: _liveRoomController
-                              .roomInfoH5.value.roomInfo?.appBackground !=
+              child:
+                  _liveRoomController
+                              .roomInfoH5
+                              .value
+                              .roomInfo
+                              ?.appBackground !=
                           '' &&
                       _liveRoomController
-                              .roomInfoH5.value.roomInfo?.appBackground !=
+                              .roomInfoH5
+                              .value
+                              .roomInfo
+                              ?.appBackground !=
                           null
                   ? Opacity(
                       opacity: 0.6,
@@ -165,8 +169,12 @@ class _LiveRoomPageState extends State<LiveRoomPage>
                         width: Get.width,
                         height: Get.height,
                         type: 'bg',
-                        src: _liveRoomController
-                                .roomInfoH5.value.roomInfo?.appBackground ??
+                        src:
+                            _liveRoomController
+                                .roomInfoH5
+                                .value
+                                .roomInfo
+                                ?.appBackground ??
                             '',
                       ),
                     )
@@ -187,7 +195,8 @@ class _LiveRoomPageState extends State<LiveRoomPage>
             children: [
               Obx(
                 () => SizedBox(
-                  height: MediaQuery.of(context).padding.top +
+                  height:
+                      MediaQuery.of(context).padding.top +
                       (_liveRoomController.isPortrait.value ||
                               MediaQuery.of(context).orientation ==
                                   Orientation.landscape
@@ -197,7 +206,7 @@ class _LiveRoomPageState extends State<LiveRoomPage>
               ),
               PopScope(
                 canPop: plPlayerController.isFullScreen.value != true,
-                onPopInvoked: (bool didPop) {
+                onPopInvokedWithResult: (bool didPop, Object? result) {
                   if (plPlayerController.isFullScreen.value == true) {
                     plPlayerController.triggerFullScreen(status: false);
                   }
@@ -209,13 +218,13 @@ class _LiveRoomPageState extends State<LiveRoomPage>
                 child: Obx(
                   () => Container(
                     width: Get.size.width,
-                    height: MediaQuery.of(context).orientation ==
+                    height:
+                        MediaQuery.of(context).orientation ==
                             Orientation.landscape
                         ? Get.size.height
                         : !_liveRoomController.isPortrait.value
-                            ? Get.size.width * 9 / 16
-                            : Get.size.height -
-                                MediaQuery.of(context).padding.top,
+                        ? Get.size.width * 9 / 16
+                        : Get.size.height - MediaQuery.of(context).padding.top,
                     clipBehavior: Clip.hardEdge,
                     decoration: const BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(6)),
@@ -231,13 +240,16 @@ class _LiveRoomPageState extends State<LiveRoomPage>
             right: 20,
             bottom: MediaQuery.of(context).padding.bottom + 80,
             child: SlideTransition(
-              position: Tween<Offset>(
-                begin: const Offset(0, 4),
-                end: const Offset(0, 0),
-              ).animate(CurvedAnimation(
-                parent: fabAnimationCtr,
-                curve: Curves.easeInOut,
-              )),
+              position:
+                  Tween<Offset>(
+                    begin: const Offset(0, 4),
+                    end: const Offset(0, 0),
+                  ).animate(
+                    CurvedAnimation(
+                      parent: fabAnimationCtr,
+                      curve: Curves.easeInOut,
+                    ),
+                  ),
               child: ElevatedButton.icon(
                 onPressed: () {
                   _scrollToBottom();
@@ -264,8 +276,8 @@ class _LiveRoomPageState extends State<LiveRoomPage>
               foregroundColor: Colors.white,
               toolbarHeight:
                   MediaQuery.of(context).orientation == Orientation.portrait
-                      ? 56
-                      : 0,
+                  ? 56
+                  : 0,
               title: FutureBuilder(
                 future: _futureBuilder,
                 builder: (context, snapshot) {
@@ -282,23 +294,35 @@ class _LiveRoomPageState extends State<LiveRoomPage>
                             height: 34,
                             type: 'avatar',
                             src: _liveRoomController
-                                .roomInfoH5.value.anchorInfo!.baseInfo!.face,
+                                .roomInfoH5
+                                .value
+                                .anchorInfo!
+                                .baseInfo!
+                                .face,
                           ),
                           const SizedBox(width: 10),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                _liveRoomController.roomInfoH5.value.anchorInfo!
-                                    .baseInfo!.uname!,
+                                _liveRoomController
+                                    .roomInfoH5
+                                    .value
+                                    .anchorInfo!
+                                    .baseInfo!
+                                    .uname!,
                                 style: const TextStyle(fontSize: 14),
                               ),
                               const SizedBox(height: 1),
                               if (_liveRoomController
-                                      .roomInfoH5.value.watchedShow !=
+                                      .roomInfoH5
+                                      .value
+                                      .watchedShow !=
                                   null)
                                 Text(
-                                  _liveRoomController.roomInfoH5.value
+                                  _liveRoomController
+                                          .roomInfoH5
+                                          .value
                                           .watchedShow!['text_large'] ??
                                       '',
                                   style: const TextStyle(fontSize: 12),
@@ -318,7 +342,8 @@ class _LiveRoomPageState extends State<LiveRoomPage>
           // 消息列表
           Obx(
             () => Positioned(
-              top: MediaQuery.of(context).padding.top +
+              top:
+                  MediaQuery.of(context).padding.top +
                   kToolbarHeight +
                   (_liveRoomController.isPortrait.value
                       ? Get.size.width
@@ -342,17 +367,16 @@ class _LiveRoomPageState extends State<LiveRoomPage>
               right: 0,
               child: Container(
                 padding: EdgeInsets.only(
-                    left: 14,
-                    right: 14,
-                    top: 4,
-                    bottom: MediaQuery.of(context).padding.bottom + 20),
+                  left: 14,
+                  right: 14,
+                  top: 4,
+                  bottom: MediaQuery.of(context).padding.bottom + 20,
+                ),
                 decoration: BoxDecoration(
-                  color: Colors.grey.withOpacity(0.1),
+                  color: Colors.grey.withValues(alpha: 0.1),
                   borderRadius: const BorderRadius.all(Radius.circular(20)),
                   border: Border(
-                    top: BorderSide(
-                      color: Colors.white.withOpacity(0.1),
-                    ),
+                    top: BorderSide(color: Colors.white.withValues(alpha: 0.1)),
                   ),
                 ),
                 child: Row(
@@ -363,10 +387,11 @@ class _LiveRoomPageState extends State<LiveRoomPage>
                       child: Obx(
                         () => IconButton(
                           style: ButtonStyle(
-                            padding: MaterialStateProperty.all(EdgeInsets.zero),
-                            backgroundColor: MaterialStateProperty.resolveWith(
-                                (Set<MaterialState> states) {
-                              return Colors.grey.withOpacity(0.1);
+                            padding: WidgetStateProperty.all(EdgeInsets.zero),
+                            backgroundColor: WidgetStateProperty.resolveWith((
+                              Set<WidgetState> states,
+                            ) {
+                              return Colors.grey.withValues(alpha: 0.1);
                             }),
                           ),
                           onPressed: () {
@@ -387,12 +412,14 @@ class _LiveRoomPageState extends State<LiveRoomPage>
                     Expanded(
                       child: TextField(
                         controller: _liveRoomController.inputController,
-                        style:
-                            const TextStyle(color: Colors.white, fontSize: 13),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 13,
+                        ),
                         decoration: InputDecoration(
                           hintText: '发送弹幕',
                           hintStyle: TextStyle(
-                            color: Colors.white.withOpacity(0.6),
+                            color: Colors.white.withValues(alpha: 0.6),
                           ),
                           border: InputBorder.none,
                         ),
@@ -403,7 +430,7 @@ class _LiveRoomPageState extends State<LiveRoomPage>
                       height: 34,
                       child: IconButton(
                         style: ButtonStyle(
-                          padding: MaterialStateProperty.all(EdgeInsets.zero),
+                          padding: WidgetStateProperty.all(EdgeInsets.zero),
                         ),
                         onPressed: () => _liveRoomController.sendMsg(),
                         icon: const Icon(
@@ -451,7 +478,7 @@ Widget buildMessageListUI(
               end: Alignment.bottomCenter,
               colors: [
                 Colors.transparent,
-                Colors.black.withOpacity(0.5),
+                Colors.black.withValues(alpha: 0.5),
                 Colors.black,
               ],
               stops: const [0.01, 0.05, 0.2],
@@ -474,8 +501,8 @@ Widget buildMessageListUI(
                   child: Container(
                     decoration: BoxDecoration(
                       color: liveRoomController.isPortrait.value
-                          ? Colors.black.withOpacity(0.3)
-                          : Colors.grey.withOpacity(0.1),
+                          ? Colors.black.withValues(alpha: 0.3)
+                          : Colors.grey.withValues(alpha: 0.1),
                       borderRadius: const BorderRadius.all(Radius.circular(20)),
                     ),
                     margin: EdgeInsets.only(
@@ -495,17 +522,19 @@ Widget buildMessageListUI(
                           TextSpan(
                             text: '${liveMsgItem.userName}: ',
                             style: TextStyle(
-                              color: Colors.white.withOpacity(0.6),
+                              color: Colors.white.withValues(alpha: 0.6),
                             ),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
                                 // 处理点击事件
-                                print('Text clicked');
+                                debugPrint(
+                                  'Text clicked: ${liveMsgItem.userName}',
+                                );
                               },
                           ),
                           TextSpan(
                             children: [
-                              ...buildMessageTextSpan(context, liveMsgItem)
+                              ...buildMessageTextSpan(context, liveMsgItem),
                             ],
                             // text: liveMsgItem.message,
                           ),
@@ -532,9 +561,7 @@ List<InlineSpan> buildMessageTextSpan(
   // 是否包含表情包
   if (liveMsgItem.emots == null) {
     // 没有表情包的消息
-    inlineSpanList.add(
-      TextSpan(text: liveMsgItem.message ?? ''),
-    );
+    inlineSpanList.add(TextSpan(text: liveMsgItem.message ?? ''));
   } else {
     // 有表情包的消息 使用正则匹配 表情包用图片渲染
     final List<String> emotsKeys = liveMsgItem.emots!.keys.toList();
@@ -559,9 +586,7 @@ List<InlineSpan> buildMessageTextSpan(
         return '';
       },
       onNonMatch: (String nonMatch) {
-        inlineSpanList.add(
-          TextSpan(text: nonMatch),
-        );
+        inlineSpanList.add(TextSpan(text: nonMatch));
         return nonMatch;
       },
     );

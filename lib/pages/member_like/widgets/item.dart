@@ -11,10 +11,7 @@ import 'package:pilipala/utils/utils.dart';
 class MemberLikeItem extends StatelessWidget {
   final MemberLikeDataModel likeItem;
 
-  const MemberLikeItem({
-    Key? key,
-    required this.likeItem,
-  }) : super(key: key);
+  const MemberLikeItem({super.key, required this.likeItem});
 
   @override
   Widget build(BuildContext context) {
@@ -25,35 +22,41 @@ class MemberLikeItem extends StatelessWidget {
       margin: EdgeInsets.zero,
       child: InkWell(
         onTap: () async {
-          int cid =
-              await SearchHttp.ab2c(aid: likeItem.aid, bvid: likeItem.bvid);
-          Get.toNamed('/video?bvid=${likeItem.bvid}&cid=$cid',
-              arguments: {'videoItem': likeItem, 'heroTag': heroTag});
+          int cid = await SearchHttp.ab2c(
+            aid: likeItem.aid,
+            bvid: likeItem.bvid,
+          );
+          Get.toNamed(
+            '/video?bvid=${likeItem.bvid}&cid=$cid',
+            arguments: {'videoItem': likeItem, 'heroTag': heroTag},
+          );
         },
         child: Column(
           children: [
             AspectRatio(
               aspectRatio: StyleString.aspectRatio,
-              child: LayoutBuilder(builder: (context, boxConstraints) {
-                double maxWidth = boxConstraints.maxWidth;
-                double maxHeight = boxConstraints.maxHeight;
-                return Stack(
-                  children: [
-                    NetworkImgLayer(
-                      src: likeItem.pic,
-                      width: maxWidth,
-                      height: maxHeight,
-                    ),
-                    if (likeItem.duration != null)
-                      PBadge(
-                        bottom: 6,
-                        right: 6,
-                        type: 'gray',
-                        text: Utils.timeFormat(likeItem.duration),
-                      )
-                  ],
-                );
-              }),
+              child: LayoutBuilder(
+                builder: (context, boxConstraints) {
+                  double maxWidth = boxConstraints.maxWidth;
+                  double maxHeight = boxConstraints.maxHeight;
+                  return Stack(
+                    children: [
+                      NetworkImgLayer(
+                        src: likeItem.pic,
+                        width: maxWidth,
+                        height: maxHeight,
+                      ),
+                      if (likeItem.duration != null)
+                        PBadge(
+                          bottom: 6,
+                          right: 6,
+                          type: 'gray',
+                          text: Utils.timeFormat(likeItem.duration),
+                        ),
+                    ],
+                  );
+                },
+              ),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(5, 6, 0, 0),
@@ -73,13 +76,15 @@ class MemberLikeItem extends StatelessWidget {
                       const Spacer(),
                       Text(
                         Utils.CustomStamp_str(
-                            timestamp: likeItem.pubdate, date: 'MM-DD'),
+                          timestamp: likeItem.pubdate,
+                          date: 'MM-DD',
+                        ),
                         style: TextStyle(
                           fontSize: 11,
                           color: Theme.of(context).colorScheme.outline,
                         ),
                       ),
-                      const SizedBox(width: 6)
+                      const SizedBox(width: 6),
                     ],
                   ),
                 ],

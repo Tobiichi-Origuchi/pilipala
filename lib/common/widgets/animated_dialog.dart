@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AnimatedDialog extends StatefulWidget {
-  const AnimatedDialog({Key? key, required this.child, this.closeFn})
-      : super(key: key);
+  const AnimatedDialog({super.key, required this.child, this.closeFn});
 
   final Widget child;
   final Function? closeFn;
@@ -22,11 +21,17 @@ class AnimatedDialogState extends State<AnimatedDialog>
     super.initState();
 
     controller = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 800));
-    opacityAnimation = Tween<double>(begin: 0.0, end: 0.6).animate(
-        CurvedAnimation(parent: controller!, curve: Curves.easeOutExpo));
-    scaleAnimation =
-        CurvedAnimation(parent: controller!, curve: Curves.easeOutExpo);
+      vsync: this,
+      duration: const Duration(milliseconds: 800),
+    );
+    opacityAnimation = Tween<double>(
+      begin: 0.0,
+      end: 0.6,
+    ).animate(CurvedAnimation(parent: controller!, curve: Curves.easeOutExpo));
+    scaleAnimation = CurvedAnimation(
+      parent: controller!,
+      curve: Curves.easeOutExpo,
+    );
     controller!.addListener(() => setState(() {}));
     controller!.forward();
   }
@@ -40,17 +45,14 @@ class AnimatedDialogState extends State<AnimatedDialog>
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Colors.black.withOpacity(opacityAnimation!.value),
+      color: Colors.black.withValues(alpha: opacityAnimation!.value),
       child: InkWell(
         splashColor: Colors.transparent,
         onTap: () => widget.closeFn!(),
         child: Center(
           child: FadeTransition(
             opacity: scaleAnimation!,
-            child: ScaleTransition(
-              scale: scaleAnimation!,
-              child: widget.child,
-            ),
+            child: ScaleTransition(scale: scaleAnimation!, child: widget.child),
           ),
         ),
       ),

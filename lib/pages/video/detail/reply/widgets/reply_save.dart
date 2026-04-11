@@ -23,8 +23,9 @@ class _ReplySaveState extends State<ReplySave> {
   void _generatePicWidget() async {
     SmartDialog.showLoading(msg: '保存中');
     try {
-      RenderRepaintBoundary boundary = _boundaryKey.currentContext!
-          .findRenderObject() as RenderRepaintBoundary;
+      RenderRepaintBoundary boundary =
+          _boundaryKey.currentContext!.findRenderObject()
+              as RenderRepaintBoundary;
       var image = await boundary.toImage(pixelRatio: 3);
       ByteData? byteData = await image.toByteData(format: ImageByteFormat.png);
       Uint8List pngBytes = byteData!.buffer.asUint8List();
@@ -32,15 +33,15 @@ class _ReplySaveState extends State<ReplySave> {
           "plpl_reply_${DateTime.now().toString().replaceAll(RegExp(r'[- :]'), '').split('.').first}";
       final result = await SaverGallery.saveImage(
         Uint8List.fromList(pngBytes),
-        name: '$picName.png',
+        fileName: '$picName.png',
         androidRelativePath: "Pictures/PiliPala",
-        androidExistNotSave: false,
+        skipIfExists: false,
       );
       if (result.isSuccess) {
         SmartDialog.showToast('保存成功');
       }
     } catch (err) {
-      print(err);
+      debugPrint('$err');
     } finally {
       SmartDialog.dismiss();
     }
@@ -112,9 +113,7 @@ class _ReplySaveState extends State<ReplySave> {
                                 replySave: true,
                               ),
                               Positioned.fill(
-                                child: Column(
-                                  children: _createColumnWidgets(),
-                                ),
+                                child: Column(children: _createColumnWidgets()),
                               ),
                             ],
                           ),

@@ -23,14 +23,8 @@ class _FavEditPageState extends State<FavEditPage> {
         scrolledUnderElevation: 0,
         title: Obx(
           () => _favEditController.type.value == 'add'
-              ? Text(
-                  '新建收藏夹',
-                  style: Theme.of(context).textTheme.titleMedium,
-                )
-              : Text(
-                  '编辑收藏夹',
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
+              ? Text('新建收藏夹', style: Theme.of(context).textTheme.titleMedium)
+              : Text('编辑收藏夹', style: Theme.of(context).textTheme.titleMedium),
         ),
         centerTitle: false,
         actions: [
@@ -40,7 +34,8 @@ class _FavEditPageState extends State<FavEditPage> {
                     onPressed: () {
                       _favEditController.privacy.value = 1;
                     },
-                    icon: const Icon(Icons.lock_open_outlined))
+                    icon: const Icon(Icons.lock_open_outlined),
+                  )
                 : IconButton(
                     onPressed: () {
                       _favEditController.privacy.value = 0;
@@ -48,10 +43,13 @@ class _FavEditPageState extends State<FavEditPage> {
                     icon: Icon(
                       Icons.lock_outlined,
                       color: Theme.of(context).colorScheme.error,
-                    )),
+                    ),
+                  ),
           ),
           TextButton(
-              onPressed: _favEditController.onSubmit, child: const Text('保存')),
+            onPressed: _favEditController.onSubmit,
+            child: const Text('保存'),
+          ),
           const SizedBox(width: 14),
         ],
       ),
@@ -65,7 +63,9 @@ class _FavEditPageState extends State<FavEditPage> {
               decoration: BoxDecoration(
                 border: Border(
                   bottom: BorderSide(
-                    color: Theme.of(context).dividerColor.withOpacity(0.2),
+                    color: Theme.of(
+                      context,
+                    ).dividerColor.withValues(alpha: 0.2),
                   ),
                 ),
               ),
@@ -89,19 +89,24 @@ class _FavEditPageState extends State<FavEditPage> {
             ),
             Expanded(
               child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
-                  child: TextFormField(
-                    controller: _favEditController.contentController,
-                    minLines: 1,
-                    maxLines: 5,
-                    decoration: const InputDecoration(
-                        hintText: '输入收藏夹简介', border: InputBorder.none),
-                    style: Theme.of(context).textTheme.bodyLarge,
-                    onChanged: (val) {
-                      _favEditController.intro = val;
-                    },
-                  )),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 5,
+                ),
+                child: TextFormField(
+                  controller: _favEditController.contentController,
+                  minLines: 1,
+                  maxLines: 5,
+                  decoration: const InputDecoration(
+                    hintText: '输入收藏夹简介',
+                    border: InputBorder.none,
+                  ),
+                  style: Theme.of(context).textTheme.bodyLarge,
+                  onChanged: (val) {
+                    _favEditController.intro = val;
+                  },
+                ),
+              ),
             ),
           ],
         ),

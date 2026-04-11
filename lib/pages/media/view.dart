@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:pilipala/common/widgets/network_img_layer.dart';
 import 'package:pilipala/models/user/fav_folder.dart';
@@ -70,27 +69,27 @@ class _MediaPageState extends State<MediaPage>
                 dense: true,
                 leading: Padding(
                   padding: const EdgeInsets.only(left: 15),
-                  child: Icon(
-                    i['icon'],
-                    color: primary,
-                  ),
+                  child: Icon(i['icon'], color: primary),
                 ),
-                contentPadding:
-                    const EdgeInsets.only(left: 15, top: 2, bottom: 2),
+                contentPadding: const EdgeInsets.only(
+                  left: 15,
+                  top: 2,
+                  bottom: 2,
+                ),
                 minLeadingWidth: 0,
-                title: Text(
-                  i['title'],
-                  style: const TextStyle(fontSize: 15),
-                ),
+                title: Text(i['title'], style: const TextStyle(fontSize: 15)),
               ),
             ],
-            Obx(() => mediaController.userLogin.value
-                ? favFolder(mediaController, context)
-                : const SizedBox()),
+            Obx(
+              () => mediaController.userLogin.value
+                  ? favFolder(mediaController, context)
+                  : const SizedBox(),
+            ),
             SizedBox(
-              height: MediaQuery.of(context).padding.bottom +
+              height:
+                  MediaQuery.of(context).padding.bottom +
                   kBottomNavigationBarHeight,
-            )
+            ),
           ],
         ),
       ),
@@ -102,7 +101,7 @@ class _MediaPageState extends State<MediaPage>
       children: [
         Divider(
           height: 35,
-          color: Theme.of(context).dividerColor.withOpacity(0.1),
+          color: Theme.of(context).dividerColor.withValues(alpha: 0.1),
         ),
         ListTile(
           onTap: () => Get.toNamed('/fav'),
@@ -117,17 +116,20 @@ class _MediaPageState extends State<MediaPage>
                     TextSpan(
                       text: '收藏夹 ',
                       style: TextStyle(
-                          fontSize:
-                              Theme.of(context).textTheme.titleMedium!.fontSize,
-                          fontWeight: FontWeight.bold),
+                        fontSize: Theme.of(
+                          context,
+                        ).textTheme.titleMedium!.fontSize,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     if (mediaController.favFolderData.value.count != null)
                       TextSpan(
                         text: mediaController.favFolderData.value.count
                             .toString(),
                         style: TextStyle(
-                          fontSize:
-                              Theme.of(context).textTheme.titleSmall!.fontSize,
+                          fontSize: Theme.of(
+                            context,
+                          ).textTheme.titleSmall!.fontSize,
                           color: Theme.of(context).colorScheme.primary,
                         ),
                       ),
@@ -142,10 +144,7 @@ class _MediaPageState extends State<MediaPage>
                 _futureBuilderFuture = mediaController.queryFavFolder();
               });
             },
-            icon: const Icon(
-              Icons.refresh,
-              size: 20,
-            ),
+            icon: const Icon(Icons.refresh, size: 20),
           ),
         ),
         // const SizedBox(height: 10),
@@ -153,72 +152,79 @@ class _MediaPageState extends State<MediaPage>
           width: double.infinity,
           height: MediaQuery.textScalerOf(context).scale(200),
           child: FutureBuilder(
-              future: _futureBuilderFuture,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  if (snapshot.data == null) {
-                    return const SizedBox();
-                  }
-                  Map data = snapshot.data as Map;
-                  if (data['status']) {
-                    List favFolderList =
-                        mediaController.favFolderData.value.list!;
-                    int favFolderCount =
-                        mediaController.favFolderData.value.count!;
-                    bool flag = favFolderCount > favFolderList.length;
-                    return Obx(() => ListView.builder(
-                          itemCount:
-                              mediaController.favFolderData.value.list!.length +
-                                  (flag ? 1 : 0),
-                          itemBuilder: (context, index) {
-                            if (flag && index == favFolderList.length) {
-                              return Padding(
-                                  padding: const EdgeInsets.only(
-                                      right: 14, bottom: 35),
-                                  child: Center(
-                                    child: IconButton(
-                                      style: ButtonStyle(
-                                        padding: MaterialStateProperty.all(
-                                            EdgeInsets.zero),
-                                        backgroundColor:
-                                            MaterialStateProperty.resolveWith(
-                                                (states) {
-                                          return Theme.of(context)
-                                              .colorScheme
-                                              .primaryContainer
-                                              .withOpacity(0.5);
-                                        }),
-                                      ),
-                                      onPressed: () => Get.toNamed('/fav'),
-                                      icon: Icon(
-                                        Icons.arrow_forward_ios,
-                                        size: 18,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
-                                      ),
-                                    ),
-                                  ));
-                            } else {
-                              return FavFolderItem(
-                                  item: mediaController
-                                      .favFolderData.value.list![index],
-                                  index: index);
-                            }
-                          },
-                          scrollDirection: Axis.horizontal,
-                        ));
-                  } else {
-                    return SizedBox(
-                      height: 160,
-                      child: Center(child: Text(data['msg'])),
-                    );
-                  }
-                } else {
-                  // 骨架屏
+            future: _futureBuilderFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                if (snapshot.data == null) {
                   return const SizedBox();
                 }
-              }),
+                Map data = snapshot.data as Map;
+                if (data['status']) {
+                  List favFolderList =
+                      mediaController.favFolderData.value.list!;
+                  int favFolderCount =
+                      mediaController.favFolderData.value.count!;
+                  bool flag = favFolderCount > favFolderList.length;
+                  return Obx(
+                    () => ListView.builder(
+                      itemCount:
+                          mediaController.favFolderData.value.list!.length +
+                          (flag ? 1 : 0),
+                      itemBuilder: (context, index) {
+                        if (flag && index == favFolderList.length) {
+                          return Padding(
+                            padding: const EdgeInsets.only(
+                              right: 14,
+                              bottom: 35,
+                            ),
+                            child: Center(
+                              child: IconButton(
+                                style: ButtonStyle(
+                                  padding: WidgetStateProperty.all(
+                                    EdgeInsets.zero,
+                                  ),
+                                  backgroundColor:
+                                      WidgetStateProperty.resolveWith((states) {
+                                        return Theme.of(context)
+                                            .colorScheme
+                                            .primaryContainer
+                                            .withValues(alpha: 0.5);
+                                      }),
+                                ),
+                                onPressed: () => Get.toNamed('/fav'),
+                                icon: Icon(
+                                  Icons.arrow_forward_ios,
+                                  size: 18,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                              ),
+                            ),
+                          );
+                        } else {
+                          return FavFolderItem(
+                            item: mediaController
+                                .favFolderData
+                                .value
+                                .list![index],
+                            index: index,
+                          );
+                        }
+                      },
+                      scrollDirection: Axis.horizontal,
+                    ),
+                  );
+                } else {
+                  return SizedBox(
+                    height: 160,
+                    child: Center(child: Text(data['msg'])),
+                  );
+                }
+              } else {
+                // 骨架屏
+                return const SizedBox();
+              }
+            },
+          ),
         ),
       ],
     );
@@ -236,11 +242,15 @@ class FavFolderItem extends StatelessWidget {
     return Container(
       margin: EdgeInsets.only(left: index == 0 ? 20 : 0, right: 14),
       child: GestureDetector(
-        onTap: () => Get.toNamed('/favDetail', arguments: item, parameters: {
-          'mediaId': item!.id.toString(),
-          'heroTag': heroTag,
-          'isOwner': '1',
-        }),
+        onTap: () => Get.toNamed(
+          '/favDetail',
+          arguments: item,
+          parameters: {
+            'mediaId': item!.id.toString(),
+            'heroTag': heroTag,
+            'isOwner': '1',
+          },
+        ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -276,18 +286,13 @@ class FavFolderItem extends StatelessWidget {
                 },
               ),
             ),
-            Text(
-              ' ${item!.title}',
-              overflow: TextOverflow.fade,
-              maxLines: 1,
-            ),
+            Text(' ${item!.title}', overflow: TextOverflow.fade, maxLines: 1),
             Text(
               ' 共${item!.mediaCount}条视频',
-              style: Theme.of(context)
-                  .textTheme
-                  .labelSmall!
-                  .copyWith(color: Theme.of(context).colorScheme.outline),
-            )
+              style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                color: Theme.of(context).colorScheme.outline,
+              ),
+            ),
           ],
         ),
       ),

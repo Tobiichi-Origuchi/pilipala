@@ -11,11 +11,7 @@ class UpPanel extends StatefulWidget {
   final FollowUpModel upData;
   final Function? onClickUpCb;
 
-  const UpPanel({
-    super.key,
-    required this.upData,
-    this.onClickUpCb,
-  });
+  const UpPanel({super.key, required this.upData, this.onClickUpCb});
 
   @override
   State<UpPanel> createState() => _UpPanelState();
@@ -66,80 +62,80 @@ class _UpPanelState extends State<UpPanel> {
       floating: true,
       pinned: false,
       delegate: _SliverHeaderDelegate(
-          height: liveList.isNotEmpty || upList.isNotEmpty ? 126 : 0,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                color: Theme.of(context).colorScheme.surface,
-                padding: const EdgeInsets.only(left: 16, right: 16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const Text('最新关注'),
-                    GestureDetector(
-                      onTap: () {
-                        feedBack();
-                        Get.toNamed('/follow?mid=${userInfo.mid}');
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.only(top: 5, bottom: 5),
-                        child: Text(
-                          '查看全部',
-                          style: TextStyle(
-                              color: Theme.of(context).colorScheme.outline),
+        height: liveList.isNotEmpty || upList.isNotEmpty ? 126 : 0,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              color: Theme.of(context).colorScheme.surface,
+              padding: const EdgeInsets.only(left: 16, right: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const Text('最新关注'),
+                  GestureDetector(
+                    onTap: () {
+                      feedBack();
+                      Get.toNamed('/follow?mid=${userInfo.mid}');
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.only(top: 5, bottom: 5),
+                      child: Text(
+                        '查看全部',
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.outline,
                         ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              Container(
-                height: 90,
-                color: Theme.of(context).colorScheme.surface,
-                child: Row(
-                  children: [
-                    Flexible(
-                      child: ListView(
-                        scrollDirection: Axis.horizontal,
-                        controller: scrollController,
-                        children: [
-                          const SizedBox(width: 10),
-                          if (liveList.isNotEmpty) ...[
-                            for (int i = 0; i < liveList.length; i++) ...[
-                              upItemBuild(liveList[i], i)
-                            ],
-                            VerticalDivider(
-                              indent: 20,
-                              endIndent: 40,
-                              width: 26,
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .primary
-                                  .withOpacity(0.5),
-                            ),
+            ),
+            Container(
+              height: 90,
+              color: Theme.of(context).colorScheme.surface,
+              child: Row(
+                children: [
+                  Flexible(
+                    child: ListView(
+                      scrollDirection: Axis.horizontal,
+                      controller: scrollController,
+                      children: [
+                        const SizedBox(width: 10),
+                        if (liveList.isNotEmpty) ...[
+                          for (int i = 0; i < liveList.length; i++) ...[
+                            upItemBuild(liveList[i], i),
                           ],
-                          for (int i = 0; i < upList.length; i++) ...[
-                            upItemBuild(upList[i], i)
-                          ],
-                          const SizedBox(width: 10),
+                          VerticalDivider(
+                            indent: 20,
+                            endIndent: 40,
+                            width: 26,
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.primary.withValues(alpha: 0.5),
+                          ),
                         ],
-                      ),
+                        for (int i = 0; i < upList.length; i++) ...[
+                          upItemBuild(upList[i], i),
+                        ],
+                        const SizedBox(width: 10),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              Container(
-                height: 6,
-                color: Theme.of(context)
-                    .colorScheme
-                    .onInverseSurface
-                    .withOpacity(0.5),
-              ),
-            ],
-          )),
+            ),
+            Container(
+              height: 6,
+              color: Theme.of(
+                context,
+              ).colorScheme.onInverseSurface.withValues(alpha: 0.5),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -149,10 +145,13 @@ class _UpPanelState extends State<UpPanel> {
       onTap: () {
         feedBack();
         if (data.type == 'up') {
-          EasyThrottle.throttle('follow', const Duration(milliseconds: 300),
-              () {
-            onClickUp(data, i);
-          });
+          EasyThrottle.throttle(
+            'follow',
+            const Duration(milliseconds: 300),
+            () {
+              onClickUp(data, i);
+            },
+          );
         } else if (data.type == 'live') {
           LiveItemModel liveItem = LiveItemModel.fromJson({
             'title': data.title,
@@ -172,8 +171,10 @@ class _UpPanelState extends State<UpPanel> {
           return;
         }
         String heroTag = Utils.makeHeroTag(data.mid);
-        Get.toNamed('/member?mid=${data.mid}',
-            arguments: {'face': data.face, 'heroTag': heroTag});
+        Get.toNamed(
+          '/member?mid=${data.mid}',
+          arguments: {'face': data.face, 'heroTag': heroTag},
+        );
       },
       child: Padding(
         padding: itemPadding,
@@ -193,7 +194,8 @@ class _UpPanelState extends State<UpPanel> {
                     ? AlignmentDirectional.topCenter
                     : AlignmentDirectional.topEnd,
                 padding: const EdgeInsets.only(left: 6, right: 6),
-                isLabelVisible: data.type == 'live' ||
+                isLabelVisible:
+                    data.type == 'live' ||
                     (data.type == 'up' && (data.hasUpdate ?? false)),
                 backgroundColor: data.type == 'live'
                     ? Theme.of(context).colorScheme.secondaryContainer
@@ -222,11 +224,13 @@ class _UpPanelState extends State<UpPanel> {
                     softWrap: false,
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                        color: currentMid == data.mid
-                            ? Theme.of(context).colorScheme.primary
-                            : Theme.of(context).colorScheme.outline,
-                        fontSize:
-                            Theme.of(context).textTheme.labelMedium!.fontSize),
+                      color: currentMid == data.mid
+                          ? Theme.of(context).colorScheme.primary
+                          : Theme.of(context).colorScheme.outline,
+                      fontSize: Theme.of(
+                        context,
+                      ).textTheme.labelMedium!.fontSize,
+                    ),
                   ),
                 ),
               ),
@@ -246,7 +250,10 @@ class _SliverHeaderDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
     return child;
   }
 

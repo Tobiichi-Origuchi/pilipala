@@ -48,24 +48,29 @@ class _VideoReplyReplyPanelState extends State<VideoReplyReplyPanel> {
   @override
   void initState() {
     _videoReplyReplyController = Get.put(
-        VideoReplyReplyController(
-            widget.oid, widget.rpid.toString(), widget.replyType!),
-        tag: widget.rpid.toString());
+      VideoReplyReplyController(
+        widget.oid,
+        widget.rpid.toString(),
+        widget.replyType!,
+      ),
+      tag: widget.rpid.toString(),
+    );
     super.initState();
 
     // 上拉加载更多
     scrollController = _videoReplyReplyController.scrollController;
-    scrollController.addListener(
-      () {
-        if (scrollController.position.pixels >=
-            scrollController.position.maxScrollExtent - 300) {
-          EasyThrottle.throttle('replylist', const Duration(milliseconds: 200),
-              () {
+    scrollController.addListener(() {
+      if (scrollController.position.pixels >=
+          scrollController.position.maxScrollExtent - 300) {
+        EasyThrottle.throttle(
+          'replylist',
+          const Duration(milliseconds: 200),
+          () {
             _videoReplyReplyController.queryReplyList(type: 'onLoad');
-          });
-        }
-      },
-    );
+          },
+        );
+      }
+    });
 
     _futureBuilderFuture = _videoReplyReplyController.queryReplyList(
       currentReply: widget.currentReply,
@@ -137,7 +142,9 @@ class _VideoReplyReplyPanelState extends State<VideoReplyReplyPanel> {
                     SliverToBoxAdapter(
                       child: Divider(
                         height: 20,
-                        color: Theme.of(context).dividerColor.withOpacity(0.1),
+                        color: Theme.of(
+                          context,
+                        ).dividerColor.withValues(alpha: 0.1),
                         thickness: 6,
                       ),
                     ),
@@ -157,26 +164,30 @@ class _VideoReplyReplyPanelState extends State<VideoReplyReplyPanel> {
                                       (BuildContext context, int index) {
                                         if (index ==
                                             _videoReplyReplyController
-                                                .replyList.length) {
+                                                .replyList
+                                                .length) {
                                           return Container(
                                             padding: EdgeInsets.only(
-                                                bottom: MediaQuery.of(context)
-                                                    .padding
-                                                    .bottom),
-                                            height: MediaQuery.of(context)
-                                                    .padding
-                                                    .bottom +
+                                              bottom: MediaQuery.of(
+                                                context,
+                                              ).padding.bottom,
+                                            ),
+                                            height:
+                                                MediaQuery.of(
+                                                  context,
+                                                ).padding.bottom +
                                                 100,
                                             child: Center(
                                               child: Obx(
                                                 () => Text(
                                                   _videoReplyReplyController
-                                                      .noMore.value,
+                                                      .noMore
+                                                      .value,
                                                   style: TextStyle(
                                                     fontSize: 12,
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .outline,
+                                                    color: Theme.of(
+                                                      context,
+                                                    ).colorScheme.outline,
                                                   ),
                                                 ),
                                               ),
@@ -200,8 +211,10 @@ class _VideoReplyReplyPanelState extends State<VideoReplyReplyPanel> {
                                           );
                                         }
                                       },
-                                      childCount: _videoReplyReplyController
-                                              .replyList.length +
+                                      childCount:
+                                          _videoReplyReplyController
+                                              .replyList
+                                              .length +
                                           1,
                                     ),
                                   ),
@@ -216,8 +229,10 @@ class _VideoReplyReplyPanelState extends State<VideoReplyReplyPanel> {
                             } else {
                               // 骨架屏
                               return SliverList(
-                                delegate: SliverChildBuilderDelegate(
-                                    (BuildContext context, int index) {
+                                delegate: SliverChildBuilderDelegate((
+                                  BuildContext context,
+                                  int index,
+                                ) {
                                   return const VideoReplySkeleton();
                                 }, childCount: 8),
                               );
@@ -237,7 +252,7 @@ class _VideoReplyReplyPanelState extends State<VideoReplyReplyPanel> {
                               ),
                             ),
                           ),
-                        )
+                        ),
                 ],
               ),
             ),

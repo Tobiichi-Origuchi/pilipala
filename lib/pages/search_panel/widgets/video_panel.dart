@@ -8,11 +8,7 @@ import 'package:pilipala/pages/search/widgets/search_text.dart';
 import 'package:pilipala/pages/search_panel/index.dart';
 
 class SearchVideoPanel extends StatelessWidget {
-  SearchVideoPanel({
-    this.ctr,
-    this.list,
-    Key? key,
-  }) : super(key: key);
+  SearchVideoPanel({this.ctr, this.list, super.key});
 
   final SearchPanelController? ctr;
   final List? list;
@@ -48,11 +44,7 @@ class SearchVideoPanel extends StatelessWidget {
                 )
               : CustomScrollView(
                   slivers: [
-                    HttpError(
-                      errMsg: '没有数据',
-                      isShowBtn: false,
-                      fn: () => {},
-                    )
+                    HttpError(errMsg: '没有数据', isShowBtn: false, fn: () => {}),
                   ],
                 ),
         ),
@@ -64,7 +56,7 @@ class SearchVideoPanel extends StatelessWidget {
           // decoration: BoxDecoration(
           //   border: Border(
           //     bottom: BorderSide(
-          //       color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+          //       color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
           //     ),
           //   ),
           // ),
@@ -84,14 +76,16 @@ class SearchVideoPanel extends StatelessWidget {
                             selectedType: controller.selectedType.value,
                             callFn: (bool selected) async {
                               controller.selectedType.value = i['type'];
-                              ctr!.order.value =
-                                  i['type'].toString().split('.').last;
+                              ctr!.order.value = i['type']
+                                  .toString()
+                                  .split('.')
+                                  .last;
                               SmartDialog.showLoading(msg: 'loading');
                               await ctr!.onRefresh();
                               SmartDialog.dismiss();
                             },
                           ),
-                        ]
+                        ],
                       ],
                     ),
                   ),
@@ -104,7 +98,7 @@ class SearchVideoPanel extends StatelessWidget {
                 height: 32,
                 child: IconButton(
                   style: ButtonStyle(
-                    padding: MaterialStateProperty.all(EdgeInsets.zero),
+                    padding: WidgetStateProperty.all(EdgeInsets.zero),
                   ),
                   onPressed: () => controller.onShowFilterSheet(ctr),
                   icon: Icon(
@@ -128,8 +122,8 @@ class CustomFilterChip extends StatelessWidget {
     this.type,
     this.selectedType,
     this.callFn,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final String? label;
   final ArchiveFilterType? type;
@@ -143,14 +137,12 @@ class CustomFilterChip extends StatelessWidget {
       child: FilterChip(
         padding: const EdgeInsets.only(left: 11, right: 11),
         labelPadding: EdgeInsets.zero,
-        label: Text(
-          label!,
-          style: const TextStyle(fontSize: 13),
-        ),
+        label: Text(label!, style: const TextStyle(fontSize: 13)),
         labelStyle: TextStyle(
-            color: type == selectedType
-                ? Theme.of(context).colorScheme.primary
-                : Theme.of(context).colorScheme.outline),
+          color: type == selectedType
+              ? Theme.of(context).colorScheme.primary
+              : Theme.of(context).colorScheme.outline,
+        ),
         selected: type == selectedType,
         showCheckmark: false,
         shape: ContinuousRectangleBorder(
@@ -158,7 +150,7 @@ class CustomFilterChip extends StatelessWidget {
         ),
         selectedColor: Colors.transparent,
         // backgroundColor:
-        //     Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.5),
+        //     Theme.of(context).colorScheme.surfaceVariant.withValues(alpha: 0.5),
         backgroundColor: Colors.transparent,
         side: BorderSide.none,
         onSelected: (bool selected) => callFn!(selected),
@@ -208,10 +200,7 @@ class VideoPanelController extends GetxController {
   @override
   void onInit() {
     List<Map<String, dynamic>> list = ArchiveFilterType.values
-        .map((type) => {
-              'label': type.description,
-              'type': type,
-            })
+        .map((type) => {'label': type.description, 'type': type})
         .toList();
     filterList.value = list;
     super.onInit();
@@ -225,34 +214,37 @@ class VideoPanelController extends GetxController {
         return AlertDialog(
           title: const Text('时长筛选'),
           contentPadding: const EdgeInsets.fromLTRB(0, 15, 0, 20),
-          content: StatefulBuilder(builder: (context, StateSetter setState) {
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                for (var i in timeFiltersList) ...[
-                  RadioListTile(
-                    value: i['value'],
-                    autofocus: true,
-                    title: Text(i['label'], style: textStyle),
-                    groupValue: currentTimeFilterval.value,
-                    onChanged: (value) async {
-                      currentTimeFilterval.value = value!;
-                      setState(() {});
-                      SmartDialog.dismiss();
-                      SmartDialog.showToast("「${i['label']}」的筛选结果");
-                      SearchPanelController ctr =
-                          Get.find<SearchPanelController>(
-                              tag: 'video${searchPanelCtr.keyword!}');
-                      ctr.duration.value = i['value'];
-                      SmartDialog.showLoading(msg: 'loading');
-                      await ctr.onRefresh();
-                      SmartDialog.dismiss();
-                    },
-                  ),
+          content: StatefulBuilder(
+            builder: (context, StateSetter setState) {
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  for (var i in timeFiltersList) ...[
+                    RadioListTile(
+                      value: i['value'],
+                      autofocus: true,
+                      title: Text(i['label'], style: textStyle),
+                      groupValue: currentTimeFilterval.value,
+                      onChanged: (value) async {
+                        currentTimeFilterval.value = value!;
+                        setState(() {});
+                        SmartDialog.dismiss();
+                        SmartDialog.showToast("「${i['label']}」的筛选结果");
+                        SearchPanelController ctr =
+                            Get.find<SearchPanelController>(
+                              tag: 'video${searchPanelCtr.keyword!}',
+                            );
+                        ctr.duration.value = i['value'];
+                        SmartDialog.showLoading(msg: 'loading');
+                        await ctr.onRefresh();
+                        SmartDialog.dismiss();
+                      },
+                    ),
+                  ],
                 ],
-              ],
-            );
-          }),
+              );
+            },
+          ),
         );
       },
     );
@@ -267,15 +259,15 @@ class VideoPanelController extends GetxController {
           builder: (context, StateSetter setState) {
             return Padding(
               padding: EdgeInsets.only(
-                  top: 12, bottom: MediaQuery.of(context).padding.bottom + 20),
+                top: 12,
+                bottom: MediaQuery.of(context).padding.bottom + 20,
+              ),
               child: Wrap(
                 children: [
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const ListTile(
-                        title: Text('内容时长'),
-                      ),
+                      const ListTile(title: Text('内容时长')),
                       Padding(
                         padding: const EdgeInsets.only(
                           left: 14,
@@ -299,10 +291,13 @@ class VideoPanelController extends GetxController {
                                     currentTimeFilterval.value = i['value'];
                                     setState(() {});
                                     SmartDialog.showToast(
-                                        "「${i['label']}」的筛选结果");
-                                    SearchPanelController ctr = Get.find<
-                                            SearchPanelController>(
-                                        tag: 'video${searchPanelCtr.keyword!}');
+                                      "「${i['label']}」的筛选结果",
+                                    );
+                                    SearchPanelController ctr =
+                                        Get.find<SearchPanelController>(
+                                          tag:
+                                              'video${searchPanelCtr.keyword!}',
+                                        );
                                     ctr.duration.value = i['value'];
                                     Get.back();
                                     SmartDialog.showLoading(msg: '获取中');
@@ -311,13 +306,11 @@ class VideoPanelController extends GetxController {
                                   },
                                   onLongSelect: (value) => {},
                                 ),
-                              )
+                              ),
                           ],
                         ),
                       ),
-                      const ListTile(
-                        title: Text('内容分区'),
-                      ),
+                      const ListTile(title: Text('内容分区')),
                       Padding(
                         padding: const EdgeInsets.only(left: 14, right: 14),
                         child: Wrap(
@@ -336,9 +329,10 @@ class VideoPanelController extends GetxController {
                                   currentPartFilterval.value = i['value'];
                                   setState(() {});
                                   SmartDialog.showToast("「${i['label']}」的筛选结果");
-                                  SearchPanelController ctr = Get.find<
-                                          SearchPanelController>(
-                                      tag: 'video${searchPanelCtr.keyword!}');
+                                  SearchPanelController ctr =
+                                      Get.find<SearchPanelController>(
+                                        tag: 'video${searchPanelCtr.keyword!}',
+                                      );
                                   ctr.tids.value = i['value'];
                                   Get.back();
                                   SmartDialog.showLoading(msg: '获取中');
@@ -346,10 +340,10 @@ class VideoPanelController extends GetxController {
                                   SmartDialog.dismiss();
                                 },
                                 onLongSelect: (value) => {},
-                              )
+                              ),
                           ],
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ],

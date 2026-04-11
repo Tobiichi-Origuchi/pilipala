@@ -42,7 +42,8 @@ class HistoryItem extends StatelessWidget {
           return;
         }
         if (videoItem.history.business.contains('article')) {
-          int cid = videoItem.history.cid ??
+          int cid =
+              videoItem.history.cid ??
               videoItem.history.oid ??
               await SearchHttp.ab2c(aid: aid, bvid: bvid);
           if (cid == -1) {
@@ -95,11 +96,14 @@ class HistoryItem extends StatelessWidget {
                   },
                 );
               } else {
-                int cid = videoItem.history.cid ??
+                int cid =
+                    videoItem.history.cid ??
                     // videoItem.history.oid ??
                     await SearchHttp.ab2c(aid: aid, bvid: bvid);
-                Get.toNamed('/video?bvid=$bvid&cid=$cid',
-                    arguments: {'heroTag': heroTag, 'pic': videoItem.cover});
+                Get.toNamed(
+                  '/video?bvid=$bvid&cid=$cid',
+                  arguments: {'heroTag': heroTag, 'pic': videoItem.cover},
+                );
               }
             }
           } else {
@@ -112,11 +116,14 @@ class HistoryItem extends StatelessWidget {
             }
           }
         } else {
-          int cid = videoItem.history.cid ??
+          int cid =
+              videoItem.history.cid ??
               // videoItem.history.oid ??
               await SearchHttp.ab2c(aid: aid, bvid: bvid);
-          Get.toNamed('/video?bvid=$bvid&cid=$cid',
-              arguments: {'heroTag': heroTag, 'pic': videoItem.cover});
+          Get.toNamed(
+            '/video?bvid=$bvid&cid=$cid',
+            arguments: {'heroTag': heroTag, 'pic': videoItem.cover},
+          );
         }
       },
       onLongPress: () {
@@ -134,7 +141,11 @@ class HistoryItem extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(
-                StyleString.safeSpace, 5, StyleString.safeSpace, 5),
+              StyleString.safeSpace,
+              5,
+              StyleString.safeSpace,
+              5,
+            ),
             child: LayoutBuilder(
               builder: (context, boxConstraints) {
                 double width =
@@ -166,7 +177,8 @@ class HistoryItem extends StatelessWidget {
                                       ),
                                     ),
                                     if (!BusinessType
-                                        .hiddenDurationType.hiddenDurationType
+                                        .hiddenDurationType
+                                        .hiddenDurationType
                                         .contains(videoItem.history.business))
                                       PBadge(
                                         text: videoItem.progress == -1
@@ -179,7 +191,8 @@ class HistoryItem extends StatelessWidget {
                                     // 右上角
                                     if (BusinessType.showBadge.showBadge
                                             .contains(
-                                                videoItem.history.business) ||
+                                              videoItem.history.business,
+                                            ) ||
                                         videoItem.history.business ==
                                             BusinessType.live.type)
                                       PBadge(
@@ -202,12 +215,15 @@ class HistoryItem extends StatelessWidget {
                                 child: Container(
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(
-                                        StyleString.imgRadius.x),
-                                    color: Colors.black.withOpacity(
-                                        ctr!.enableMultiple.value &&
-                                                videoItem.checked
-                                            ? 0.6
-                                            : 0),
+                                      StyleString.imgRadius.x,
+                                    ),
+                                    color: Colors.black.withValues(
+                                      alpha:
+                                          ctr!.enableMultiple.value &&
+                                              videoItem.checked
+                                          ? 0.6
+                                          : 0,
+                                    ),
                                   ),
                                   child: Center(
                                     child: SizedBox(
@@ -215,30 +231,33 @@ class HistoryItem extends StatelessWidget {
                                       height: 34,
                                       child: AnimatedScale(
                                         scale: videoItem.checked ? 1 : 0,
-                                        duration:
-                                            const Duration(milliseconds: 250),
+                                        duration: const Duration(
+                                          milliseconds: 250,
+                                        ),
                                         curve: Curves.easeInOut,
                                         child: IconButton(
                                           style: ButtonStyle(
-                                            padding: MaterialStateProperty.all(
-                                                EdgeInsets.zero),
-                                            backgroundColor:
-                                                MaterialStateProperty
-                                                    .resolveWith(
-                                              (states) {
-                                                return Colors.white
-                                                    .withOpacity(0.8);
-                                              },
+                                            padding: WidgetStateProperty.all(
+                                              EdgeInsets.zero,
                                             ),
+                                            backgroundColor:
+                                                WidgetStateProperty.resolveWith(
+                                                  (states) {
+                                                    return Colors.white
+                                                        .withValues(alpha: 0.8);
+                                                  },
+                                                ),
                                           ),
                                           onPressed: () {
                                             feedBack();
                                             onChoose!();
                                           },
-                                          icon: Icon(Icons.done_all_outlined,
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .primary),
+                                          icon: Icon(
+                                            Icons.done_all_outlined,
+                                            color: Theme.of(
+                                              context,
+                                            ).colorScheme.primary,
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -255,22 +274,24 @@ class HistoryItem extends StatelessWidget {
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.only(
                                       bottomLeft: Radius.circular(
-                                          StyleString.imgRadius.x),
+                                        StyleString.imgRadius.x,
+                                      ),
                                       bottomRight: Radius.circular(
-                                          StyleString.imgRadius.x),
+                                        StyleString.imgRadius.x,
+                                      ),
                                     ),
                                     child: LinearProgressIndicator(
                                       value: videoItem.progress == -1
                                           ? 100
                                           : videoItem.progress /
-                                              videoItem.duration,
+                                                videoItem.duration,
                                     ),
                                   ),
                                 )
-                              : const SizedBox()
+                              : const SizedBox(),
                         ],
                       ),
-                      VideoContent(videoItem: videoItem, ctr: ctr)
+                      VideoContent(videoItem: videoItem, ctr: ctr),
                     ],
                   ),
                 );
@@ -312,9 +333,10 @@ class VideoContent extends StatelessWidget {
                 videoItem.showTitle,
                 textAlign: TextAlign.start,
                 style: TextStyle(
-                    fontSize: Theme.of(context).textTheme.labelMedium!.fontSize,
-                    fontWeight: FontWeight.w400,
-                    color: Theme.of(context).colorScheme.outline),
+                  fontSize: Theme.of(context).textTheme.labelMedium!.fontSize,
+                  fontWeight: FontWeight.w400,
+                  color: Theme.of(context).colorScheme.outline,
+                ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -326,8 +348,9 @@ class VideoContent extends StatelessWidget {
                   Text(
                     videoItem.authorName,
                     style: TextStyle(
-                      fontSize:
-                          Theme.of(context).textTheme.labelMedium!.fontSize,
+                      fontSize: Theme.of(
+                        context,
+                      ).textTheme.labelMedium!.fontSize,
                       color: Theme.of(context).colorScheme.outline,
                     ),
                   ),
@@ -339,9 +362,9 @@ class VideoContent extends StatelessWidget {
                 Text(
                   Utils.dateFormat(videoItem.viewAt!),
                   style: TextStyle(
-                      fontSize:
-                          Theme.of(context).textTheme.labelMedium!.fontSize,
-                      color: Theme.of(context).colorScheme.outline),
+                    fontSize: Theme.of(context).textTheme.labelMedium!.fontSize,
+                    color: Theme.of(context).colorScheme.outline,
+                  ),
                 ),
                 SizedBox(
                   width: 24,
@@ -359,40 +382,43 @@ class VideoContent extends StatelessWidget {
                     onSelected: (String type) {},
                     itemBuilder: (BuildContext context) =>
                         <PopupMenuEntry<String>>[
-                      if (videoItem.badge != '番剧' &&
-                          !videoItem.tagName.contains('动画') &&
-                          videoItem.history.business != 'live' &&
-                          !videoItem.history.business.contains('article'))
-                        PopupMenuItem<String>(
-                          onTap: () async {
-                            var res = await UserHttp.toViewLater(
-                                bvid: videoItem.history.bvid);
-                            SmartDialog.showToast(res['msg']);
-                          },
-                          value: 'pause',
-                          height: 35,
-                          child: const Row(
-                            children: [
-                              Icon(Icons.watch_later_outlined, size: 16),
-                              SizedBox(width: 6),
-                              Text('稍后再看', style: TextStyle(fontSize: 13))
-                            ],
+                          if (videoItem.badge != '番剧' &&
+                              !videoItem.tagName.contains('动画') &&
+                              videoItem.history.business != 'live' &&
+                              !videoItem.history.business.contains('article'))
+                            PopupMenuItem<String>(
+                              onTap: () async {
+                                var res = await UserHttp.toViewLater(
+                                  bvid: videoItem.history.bvid,
+                                );
+                                SmartDialog.showToast(res['msg']);
+                              },
+                              value: 'pause',
+                              height: 35,
+                              child: const Row(
+                                children: [
+                                  Icon(Icons.watch_later_outlined, size: 16),
+                                  SizedBox(width: 6),
+                                  Text('稍后再看', style: TextStyle(fontSize: 13)),
+                                ],
+                              ),
+                            ),
+                          PopupMenuItem<String>(
+                            onTap: () => ctr!.delHistory(
+                              videoItem.kid,
+                              videoItem.history.business,
+                            ),
+                            value: 'pause',
+                            height: 35,
+                            child: const Row(
+                              children: [
+                                Icon(Icons.close_outlined, size: 16),
+                                SizedBox(width: 6),
+                                Text('删除记录', style: TextStyle(fontSize: 13)),
+                              ],
+                            ),
                           ),
-                        ),
-                      PopupMenuItem<String>(
-                        onTap: () => ctr!.delHistory(
-                            videoItem.kid, videoItem.history.business),
-                        value: 'pause',
-                        height: 35,
-                        child: const Row(
-                          children: [
-                            Icon(Icons.close_outlined, size: 16),
-                            SizedBox(width: 6),
-                            Text('删除记录', style: TextStyle(fontSize: 13))
-                          ],
-                        ),
-                      ),
-                    ],
+                        ],
                   ),
                 ),
               ],

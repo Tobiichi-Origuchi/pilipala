@@ -46,18 +46,19 @@ class _DynamicsPageState extends State<DynamicsPage>
     _futureBuilderFuture = _dynamicsController.queryFollowDynamic();
     _futureBuilderFutureUp = _dynamicsController.queryFollowUp();
     scrollController = _dynamicsController.scrollController;
-    scrollController.addListener(
-      () async {
-        if (scrollController.position.pixels >=
-            scrollController.position.maxScrollExtent - 200) {
-          EasyThrottle.throttle(
-              'queryFollowDynamic', const Duration(seconds: 1), () {
+    scrollController.addListener(() async {
+      if (scrollController.position.pixels >=
+          scrollController.position.maxScrollExtent - 200) {
+        EasyThrottle.throttle(
+          'queryFollowDynamic',
+          const Duration(seconds: 1),
+          () {
             _dynamicsController.queryFollowDynamic(type: 'onLoad');
-          });
-        }
-        handleScrollEvent(scrollController);
-      },
-    );
+          },
+        );
+      }
+      handleScrollEvent(scrollController);
+    });
 
     _dynamicsController.userLogin.listen((status) {
       if (mounted) {
@@ -98,19 +99,22 @@ class _DynamicsPageState extends State<DynamicsPage>
                           duration: const Duration(milliseconds: 300),
                           transitionBuilder:
                               (Widget child, Animation<double> animation) {
-                            return ScaleTransition(
-                                scale: animation, child: child);
-                          },
+                                return ScaleTransition(
+                                  scale: animation,
+                                  child: child,
+                                );
+                              },
                           child: Text(
-                              '${_dynamicsController.upInfo.value.uname!}的动态',
-                              key: ValueKey<String>(
-                                  _dynamicsController.upInfo.value.uname!),
-                              style: TextStyle(
-                                fontSize: Theme.of(context)
-                                    .textTheme
-                                    .labelLarge!
-                                    .fontSize,
-                              )),
+                            '${_dynamicsController.upInfo.value.uname!}的动态',
+                            key: ValueKey<String>(
+                              _dynamicsController.upInfo.value.uname!,
+                            ),
+                            style: TextStyle(
+                              fontSize: Theme.of(
+                                context,
+                              ).textTheme.labelLarge!.fontSize,
+                            ),
+                          ),
                         ),
                       );
                     } else {
@@ -135,36 +139,42 @@ class _DynamicsPageState extends State<DynamicsPage>
                                   0: Text(
                                     '全部',
                                     style: TextStyle(
-                                        fontSize: Theme.of(context)
-                                            .textTheme
-                                            .labelMedium!
-                                            .fontSize),
+                                      fontSize: Theme.of(
+                                        context,
+                                      ).textTheme.labelMedium!.fontSize,
+                                    ),
                                   ),
-                                  1: Text('投稿',
-                                      style: TextStyle(
-                                          fontSize: Theme.of(context)
-                                              .textTheme
-                                              .labelMedium!
-                                              .fontSize)),
-                                  2: Text('番剧',
-                                      style: TextStyle(
-                                          fontSize: Theme.of(context)
-                                              .textTheme
-                                              .labelMedium!
-                                              .fontSize)),
-                                  3: Text('专栏',
-                                      style: TextStyle(
-                                          fontSize: Theme.of(context)
-                                              .textTheme
-                                              .labelMedium!
-                                              .fontSize)),
+                                  1: Text(
+                                    '投稿',
+                                    style: TextStyle(
+                                      fontSize: Theme.of(
+                                        context,
+                                      ).textTheme.labelMedium!.fontSize,
+                                    ),
+                                  ),
+                                  2: Text(
+                                    '番剧',
+                                    style: TextStyle(
+                                      fontSize: Theme.of(
+                                        context,
+                                      ).textTheme.labelMedium!.fontSize,
+                                    ),
+                                  ),
+                                  3: Text(
+                                    '专栏',
+                                    style: TextStyle(
+                                      fontSize: Theme.of(
+                                        context,
+                                      ).textTheme.labelMedium!.fontSize,
+                                    ),
+                                  ),
                                 },
                                 padding: 13.0,
                                 decoration: BoxDecoration(
                                   color: Theme.of(context)
                                       .colorScheme
-                                      .surfaceVariant
-                                      .withOpacity(0.7),
+                                      .surfaceContainerHighest
+                                      .withValues(alpha: 0.7),
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 thumbDecoration: BoxDecoration(
@@ -180,9 +190,11 @@ class _DynamicsPageState extends State<DynamicsPage>
                               ),
                             ),
                           )
-                        : Text('动态',
-                            style: Theme.of(context).textTheme.titleMedium),
-                  )
+                        : Text(
+                            '动态',
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                  ),
                 ],
               ),
             ],
@@ -212,7 +224,9 @@ class _DynamicsPageState extends State<DynamicsPage>
                             context,
                             PlPopupRoute(
                               child: OverlayPanel(
-                                  ctr: _dynamicsController, upInfo: data),
+                                ctr: _dynamicsController,
+                                upInfo: data,
+                              ),
                             ),
                           );
                         },
@@ -225,10 +239,8 @@ class _DynamicsPageState extends State<DynamicsPage>
                   }
                 } else {
                   return const SliverToBoxAdapter(
-                      child: SizedBox(
-                    height: 90,
-                    child: UpPanelSkeleton(),
-                  ));
+                    child: SizedBox(height: 90, child: UpPanelSkeleton()),
+                  );
                 }
               },
             ),
@@ -243,26 +255,24 @@ class _DynamicsPageState extends State<DynamicsPage>
                   if (data != null && data['status']) {
                     List<DynamicItemModel> list =
                         _dynamicsController.dynamicsList;
-                    return Obx(
-                      () {
-                        if (list.isEmpty) {
-                          if (_dynamicsController.isLoadingDynamic.value) {
-                            return skeleton();
-                          } else {
-                            return const NoData();
-                          }
+                    return Obx(() {
+                      if (list.isEmpty) {
+                        if (_dynamicsController.isLoadingDynamic.value) {
+                          return skeleton();
                         } else {
-                          return SliverList(
-                            delegate: SliverChildBuilderDelegate(
-                              (context, index) {
-                                return DynamicPanel(item: list[index]);
-                              },
-                              childCount: list.length,
-                            ),
-                          );
+                          return const NoData();
                         }
-                      },
-                    );
+                      } else {
+                        return SliverList(
+                          delegate: SliverChildBuilderDelegate((
+                            context,
+                            index,
+                          ) {
+                            return DynamicPanel(item: list[index]);
+                          }, childCount: list.length),
+                        );
+                      }
+                    });
                   } else {
                     return HttpError(
                       errMsg: data?['msg'] ?? '请求异常',
@@ -272,10 +282,10 @@ class _DynamicsPageState extends State<DynamicsPage>
                           RoutePush.loginRedirectPush();
                         } else {
                           setState(() {
-                            _futureBuilderFuture =
-                                _dynamicsController.queryFollowDynamic();
-                            _futureBuilderFutureUp =
-                                _dynamicsController.queryFollowUp();
+                            _futureBuilderFuture = _dynamicsController
+                                .queryFollowDynamic();
+                            _futureBuilderFutureUp = _dynamicsController
+                                .queryFollowUp();
                           });
                         }
                       },
@@ -287,7 +297,7 @@ class _DynamicsPageState extends State<DynamicsPage>
                 }
               },
             ),
-            const SliverToBoxAdapter(child: SizedBox(height: 40))
+            const SliverToBoxAdapter(child: SizedBox(height: 40)),
           ],
         ),
       ),

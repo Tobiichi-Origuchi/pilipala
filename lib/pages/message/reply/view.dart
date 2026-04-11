@@ -18,8 +18,9 @@ class MessageReplyPage extends StatefulWidget {
 }
 
 class _MessageReplyPageState extends State<MessageReplyPage> {
-  final MessageReplyController _messageReplyCtr =
-      Get.put(MessageReplyController());
+  final MessageReplyController _messageReplyCtr = Get.put(
+    MessageReplyController(),
+  );
   late Future _futureBuilderFuture;
   final ScrollController scrollController = ScrollController();
 
@@ -27,16 +28,14 @@ class _MessageReplyPageState extends State<MessageReplyPage> {
   void initState() {
     super.initState();
     _futureBuilderFuture = _messageReplyCtr.queryMessageReply();
-    scrollController.addListener(
-      () async {
-        if (scrollController.position.pixels >=
-            scrollController.position.maxScrollExtent - 200) {
-          EasyThrottle.throttle('follow', const Duration(seconds: 1), () {
-            _messageReplyCtr.queryMessageReply(type: 'onLoad');
-          });
-        }
-      },
-    );
+    scrollController.addListener(() async {
+      if (scrollController.position.pixels >=
+          scrollController.position.maxScrollExtent - 200) {
+        EasyThrottle.throttle('follow', const Duration(seconds: 1), () {
+          _messageReplyCtr.queryMessageReply(type: 'onLoad');
+        });
+      }
+    });
   }
 
   @override
@@ -48,9 +47,7 @@ class _MessageReplyPageState extends State<MessageReplyPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('回复我的'),
-      ),
+      appBar: AppBar(title: const Text('回复我的')),
       body: RefreshIndicator(
         onRefresh: () async {
           await _messageReplyCtr.queryMessageReply(type: 'init');
@@ -75,7 +72,7 @@ class _MessageReplyPageState extends State<MessageReplyPage> {
                         indent: 66,
                         endIndent: 14,
                         height: 1,
-                        color: Colors.grey.withOpacity(0.1),
+                        color: Colors.grey.withValues(alpha: 0.1),
                       );
                     },
                   ),
@@ -88,11 +85,11 @@ class _MessageReplyPageState extends State<MessageReplyPage> {
                       errMsg: snapshot.data['msg'],
                       fn: () {
                         setState(() {
-                          _futureBuilderFuture =
-                              _messageReplyCtr.queryMessageReply();
+                          _futureBuilderFuture = _messageReplyCtr
+                              .queryMessageReply();
                         });
                       },
-                    )
+                    ),
                   ],
                 );
               }
@@ -116,15 +113,22 @@ class ReplyItem extends StatelessWidget {
     Color outline = Theme.of(context).colorScheme.outline;
     final String heroTag = Utils.makeHeroTag(item.user!.mid);
     final String bvid = item.item!.uri!.split('/').last;
-    // 页码
-    final String page =
-        item.item!.nativeUri!.split('page=').last.split('&').first;
-    // 根评论id
-    final String commentRootId =
-        item.item!.nativeUri!.split('comment_root_id=').last.split('&').first;
-    // 二级评论id
-    final String commentSecondaryId =
-        item.item!.nativeUri!.split('comment_secondary_id=').last;
+    // // 页码
+    // final String page = item.item!.nativeUri!
+    //     .split('page=')
+    //     .last
+    //     .split('&')
+    //     .first;
+    // // 根评论id
+    // final String commentRootId = item.item!.nativeUri!
+    //     .split('comment_root_id=')
+    //     .last
+    //     .split('&')
+    //     .first;
+    // // 二级评论id
+    // final String commentSecondaryId = item.item!.nativeUri!
+    //     .split('comment_secondary_id=')
+    //     .last;
 
     return InkWell(
       onTap: () async {
@@ -132,10 +136,7 @@ class ReplyItem extends StatelessWidget {
         final String heroTag = Utils.makeHeroTag(bvid);
         Get.toNamed<dynamic>(
           '/video?bvid=$bvid&cid=$cid',
-          arguments: <String, String?>{
-            'pic': '',
-            'heroTag': heroTag,
-          },
+          arguments: <String, String?>{'pic': '', 'heroTag': heroTag},
         );
       },
       child: Padding(
@@ -145,8 +146,10 @@ class ReplyItem extends StatelessWidget {
           children: [
             GestureDetector(
               onTap: () {
-                Get.toNamed('/member?mid=${item.user!.mid}',
-                    arguments: {'face': item.user!.avatar, 'heroTag': heroTag});
+                Get.toNamed(
+                  '/member?mid=${item.user!.mid}',
+                  arguments: {'face': item.user!.avatar, 'heroTag': heroTag},
+                );
               },
               child: Hero(
                 tag: heroTag,
@@ -163,24 +166,31 @@ class ReplyItem extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text.rich(TextSpan(children: [
-                    TextSpan(text: item.user!.nickname!),
-                    const TextSpan(text: ' '),
-                    if (item.item!.type! == 'video')
-                      TextSpan(
-                          text: '对我的视频发表了评论', style: TextStyle(color: outline)),
-                    if (item.item!.type! == 'reply')
-                      TextSpan(
-                        text: '回复了我的评论',
-                        style: TextStyle(color: outline),
-                      ),
-                  ])),
+                  Text.rich(
+                    TextSpan(
+                      children: [
+                        TextSpan(text: item.user!.nickname!),
+                        const TextSpan(text: ' '),
+                        if (item.item!.type! == 'video')
+                          TextSpan(
+                            text: '对我的视频发表了评论',
+                            style: TextStyle(color: outline),
+                          ),
+                        if (item.item!.type! == 'reply')
+                          TextSpan(
+                            text: '回复了我的评论',
+                            style: TextStyle(color: outline),
+                          ),
+                      ],
+                    ),
+                  ),
                   const SizedBox(height: 6),
                   Text.rich(
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(letterSpacing: 0.3),
-                      buildContent(context, item.item)),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(letterSpacing: 0.3),
+                    buildContent(context, item.item),
+                  ),
                   if (item.item!.targetReplyContent != '') ...[
                     const SizedBox(height: 2),
                     Text(
@@ -198,7 +208,7 @@ class ReplyItem extends StatelessWidget {
                       const SizedBox(width: 16),
                       // Text('回复', style: TextStyle(color: outline)),
                     ],
-                  )
+                  ),
                 ],
               ),
             ),
@@ -216,11 +226,7 @@ class ReplyItem extends StatelessWidget {
                 ),
               ),
             if (item.item!.type! == 'video')
-              NetworkImgLayer(
-                width: 60,
-                height: 60,
-                src: item.item!.image,
-              ),
+              NetworkImgLayer(width: 60, height: 60, src: item.item!.image),
           ],
         ),
       ),
@@ -232,8 +238,10 @@ InlineSpan buildContent(BuildContext context, item) {
   List? atDetails = item!.atDetails;
   final List<InlineSpan> spanChilds = <InlineSpan>[];
   if (atDetails!.isNotEmpty) {
-    final String patternStr =
-        atDetails.map<String>((e) => '@${e['nickname']}').toList().join('|');
+    final String patternStr = atDetails
+        .map<String>((e) => '@${e['nickname']}')
+        .toList()
+        .join('|');
     final RegExp regExp = RegExp(patternStr);
     item.sourceContent!.splitMapJoin(
       regExp,
@@ -246,9 +254,10 @@ InlineSpan buildContent(BuildContext context, item) {
                 var currentUser = atDetails
                     .where((e) => e['nickname'] == match.group(0)!.substring(1))
                     .first;
-                Get.toNamed('/member?mid=${currentUser['mid']}', arguments: {
-                  'face': currentUser['avatar'],
-                });
+                Get.toNamed(
+                  '/member?mid=${currentUser['mid']}',
+                  arguments: {'face': currentUser['avatar']},
+                );
               },
             style: TextStyle(color: Theme.of(context).colorScheme.primary),
           ),
@@ -256,16 +265,12 @@ InlineSpan buildContent(BuildContext context, item) {
         return '';
       },
       onNonMatch: (String nonMatch) {
-        spanChilds.add(
-          TextSpan(text: nonMatch),
-        );
+        spanChilds.add(TextSpan(text: nonMatch));
         return '';
       },
     );
   } else {
-    spanChilds.add(
-      TextSpan(text: item.sourceContent),
-    );
+    spanChilds.add(TextSpan(text: item.sourceContent));
   }
 
   return TextSpan(children: spanChilds);

@@ -22,8 +22,9 @@ class SubDetailPage extends StatefulWidget {
 
 class _SubDetailPageState extends State<SubDetailPage> {
   late final ScrollController _controller = ScrollController();
-  final SubDetailController _subDetailController =
-      Get.put(SubDetailController());
+  final SubDetailController _subDetailController = Get.put(
+    SubDetailController(),
+  );
   late StreamController<bool> titleStreamC =
       StreamController<bool>.broadcast(); // a
   late Future _futureBuilderFuture;
@@ -32,22 +33,20 @@ class _SubDetailPageState extends State<SubDetailPage> {
   void initState() {
     super.initState();
     _futureBuilderFuture = _subDetailController.queryUserSeasonList();
-    _controller.addListener(
-      () {
-        if (_controller.offset > 160) {
-          titleStreamC.add(true);
-        } else if (_controller.offset <= 160) {
-          titleStreamC.add(false);
-        }
+    _controller.addListener(() {
+      if (_controller.offset > 160) {
+        titleStreamC.add(true);
+      } else if (_controller.offset <= 160) {
+        titleStreamC.add(false);
+      }
 
-        if (_controller.position.pixels >=
-            _controller.position.maxScrollExtent - 200) {
-          EasyThrottle.throttle('subDetail', const Duration(seconds: 1), () {
-            _subDetailController.onLoad();
-          });
-        }
-      },
-    );
+      if (_controller.position.pixels >=
+          _controller.position.maxScrollExtent - 200) {
+        EasyThrottle.throttle('subDetail', const Duration(seconds: 1), () {
+          _subDetailController.onLoad();
+        });
+      }
+    });
   }
 
   @override
@@ -87,9 +86,9 @@ class _SubDetailPageState extends State<SubDetailPage> {
                           Text(
                             '共${_subDetailController.item.mediaCount!}条视频',
                             style: Theme.of(context).textTheme.labelMedium,
-                          )
+                          ),
                         ],
-                      )
+                      ),
                     ],
                   ),
                 );
@@ -100,16 +99,20 @@ class _SubDetailPageState extends State<SubDetailPage> {
                 decoration: BoxDecoration(
                   border: Border(
                     bottom: BorderSide(
-                      color: Theme.of(context).dividerColor.withOpacity(0.2),
+                      color: Theme.of(
+                        context,
+                      ).dividerColor.withValues(alpha: 0.2),
                     ),
                   ),
                 ),
                 padding: EdgeInsets.only(
-                    top: kTextTabBarHeight +
-                        MediaQuery.of(context).padding.top +
-                        30,
-                    left: 20,
-                    right: 20),
+                  top:
+                      kTextTabBarHeight +
+                      MediaQuery.of(context).padding.top +
+                      30,
+                  left: 20,
+                  right: 20,
+                ),
                 child: SizedBox(
                   height: 200,
                   child: Row(
@@ -134,11 +137,11 @@ class _SubDetailPageState extends State<SubDetailPage> {
                             Text(
                               _subDetailController.item.title!,
                               style: TextStyle(
-                                  fontSize: Theme.of(context)
-                                      .textTheme
-                                      .titleMedium!
-                                      .fontSize,
-                                  fontWeight: FontWeight.bold),
+                                fontSize: Theme.of(
+                                  context,
+                                ).textTheme.titleMedium!.fontSize,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                             const SizedBox(height: 4),
                             GestureDetector(
@@ -147,16 +150,14 @@ class _SubDetailPageState extends State<SubDetailPage> {
                                     _subDetailController.item;
                                 Get.toNamed(
                                   '/member?mid=${item.upper!.mid}',
-                                  arguments: {
-                                    'face': item.upper!.face,
-                                  },
+                                  arguments: {'face': item.upper!.face},
                                 );
                               },
                               child: Text(
                                 _subDetailController.item.upper!.name!,
                                 style: TextStyle(
-                                    color:
-                                        Theme.of(context).colorScheme.primary),
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
                               ),
                             ),
                             const SizedBox(height: 4),
@@ -164,14 +165,13 @@ class _SubDetailPageState extends State<SubDetailPage> {
                               () => Text(
                                 '${Utils.numFormat(_subDetailController.subInfo.value.cntInfo?['play'])}次播放',
                                 style: TextStyle(
-                                    fontSize: Theme.of(context)
-                                        .textTheme
-                                        .labelSmall!
-                                        .fontSize,
-                                    color:
-                                        Theme.of(context).colorScheme.outline),
+                                  fontSize: Theme.of(
+                                    context,
+                                  ).textTheme.labelSmall!.fontSize,
+                                  color: Theme.of(context).colorScheme.outline,
+                                ),
                               ),
-                            )
+                            ),
                           ],
                         ),
                       ),
@@ -208,11 +208,11 @@ class _SubDetailPageState extends State<SubDetailPage> {
                       () => subList.isEmpty
                           ? const SliverToBoxAdapter(child: SizedBox())
                           : SliverList(
-                              delegate:
-                                  SliverChildBuilderDelegate((context, index) {
-                                return SubVideoCardH(
-                                  videoItem: subList[index],
-                                );
+                              delegate: SliverChildBuilderDelegate((
+                                context,
+                                index,
+                              ) {
+                                return SubVideoCardH(videoItem: subList[index]);
                               }, childCount: subList.length),
                             ),
                     );
@@ -237,19 +237,21 @@ class _SubDetailPageState extends State<SubDetailPage> {
             child: Container(
               height: MediaQuery.of(context).padding.bottom + 60,
               padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).padding.bottom),
+                bottom: MediaQuery.of(context).padding.bottom,
+              ),
               child: Center(
                 child: Obx(
                   () => Text(
                     _subDetailController.loadingText.value,
                     style: TextStyle(
-                        color: Theme.of(context).colorScheme.outline,
-                        fontSize: 13),
+                      color: Theme.of(context).colorScheme.outline,
+                      fontSize: 13,
+                    ),
                   ),
                 ),
               ),
             ),
-          )
+          ),
         ],
       ),
     );

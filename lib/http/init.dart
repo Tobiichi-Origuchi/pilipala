@@ -27,8 +27,9 @@ class Request {
   late bool enableSystemProxy;
   late String systemProxyHost;
   late String systemProxyPort;
-  static final RegExp spmPrefixExp =
-      RegExp(r'<meta name="spm_prefix" content="([^"]+?)">');
+  static final RegExp spmPrefixExp = RegExp(
+    r'<meta name="spm_prefix" content="([^"]+?)">',
+  );
   static String? buvid;
 
   /// 设置cookie
@@ -42,12 +43,14 @@ class Request {
     );
     cookieManager = CookieManager(cookieJar);
     dio.interceptors.add(cookieManager);
-    final List<Cookie> cookie = await cookieManager.cookieJar
-        .loadForRequest(Uri.parse(HttpString.baseUrl));
+    final List<Cookie> cookie = await cookieManager.cookieJar.loadForRequest(
+      Uri.parse(HttpString.baseUrl),
+    );
     final userInfo = userInfoCache.get('userInfoCache');
     if (userInfo != null && userInfo.mid != null) {
-      final List<Cookie> cookie2 = await cookieManager.cookieJar
-          .loadForRequest(Uri.parse(HttpString.tUrl));
+      final List<Cookie> cookie2 = await cookieManager.cookieJar.loadForRequest(
+        Uri.parse(HttpString.tUrl),
+      );
       if (cookie2.isEmpty) {
         try {
           await Request().get(HttpString.tUrl);
@@ -77,8 +80,9 @@ class Request {
 
   // 从cookie中获取 csrf token
   static Future<String> getCsrf() async {
-    List<Cookie> cookies = await cookieManager.cookieJar
-        .loadForRequest(Uri.parse(HttpString.apiBaseUrl));
+    List<Cookie> cookies = await cookieManager.cookieJar.loadForRequest(
+      Uri.parse(HttpString.apiBaseUrl),
+    );
     String token = '';
     if (cookies.where((e) => e.name == 'bili_jct').isNotEmpty) {
       token = cookies.firstWhere((e) => e.name == 'bili_jct').value;
@@ -91,8 +95,9 @@ class Request {
       return buvid!;
     }
 
-    final List<Cookie> cookies = await cookieManager.cookieJar
-        .loadForRequest(Uri.parse(HttpString.baseUrl));
+    final List<Cookie> cookies = await cookieManager.cookieJar.loadForRequest(
+      Uri.parse(HttpString.baseUrl),
+    );
     buvid = cookies.firstWhere((cookie) => cookie.name == 'buvid3').value;
     if (buvid == null) {
       try {
@@ -113,8 +118,9 @@ class Request {
   static setOptionsHeaders(userInfo, bool status) {
     if (status) {
       dio.options.headers['x-bili-mid'] = userInfo.mid.toString();
-      dio.options.headers['x-bili-aurora-eid'] =
-          IdUtils.genAuroraEid(userInfo.mid);
+      dio.options.headers['x-bili-aurora-eid'] = IdUtils.genAuroraEid(
+        userInfo.mid,
+      );
     }
     dio.options.headers['env'] = 'prod';
     dio.options.headers['app-key'] = 'android64';
@@ -126,24 +132,27 @@ class Request {
     var html = await Request().get(Api.dynamicSpmPrefix);
     String spmPrefix = spmPrefixExp.firstMatch(html.data)!.group(1)!;
     Random rand = Random();
-    String rand_png_end = base64.encode(
-        List<int>.generate(32, (_) => rand.nextInt(256)) +
-            List<int>.filled(4, 0) +
-            [73, 69, 78, 68] +
-            List<int>.generate(4, (_) => rand.nextInt(256)));
+    String randPngEnd = base64.encode(
+      List<int>.generate(32, (_) => rand.nextInt(256)) +
+          List<int>.filled(4, 0) +
+          [73, 69, 78, 68] +
+          List<int>.generate(4, (_) => rand.nextInt(256)),
+    );
 
     String jsonData = json.encode({
       '3064': 1,
-      '39c8': '${spmPrefix}.fp.risk',
+      '39c8': '$spmPrefix.fp.risk',
       '3c43': {
         'adca': 'Linux',
-        'bfe9': rand_png_end.substring(rand_png_end.length - 50),
+        'bfe9': randPngEnd.substring(randPngEnd.length - 50),
       },
     });
 
-    await Request().post(Api.activateBuvidApi,
-        data: {'payload': jsonData},
-        options: Options(contentType: 'application/json'));
+    await Request().post(
+      Api.activateBuvidApi,
+      data: {'payload': jsonData},
+      options: Options(contentType: 'application/json'),
+    );
   }
 
   /*
@@ -162,12 +171,17 @@ class Request {
       headers: {},
     );
 
-    enableSystemProxy = setting.get(SettingBoxKey.enableSystemProxy,
-        defaultValue: false) as bool;
-    systemProxyHost =
-        localCache.get(LocalCacheKey.systemProxyHost, defaultValue: '');
-    systemProxyPort =
-        localCache.get(LocalCacheKey.systemProxyPort, defaultValue: '');
+    enableSystemProxy =
+        setting.get(SettingBoxKey.enableSystemProxy, defaultValue: false)
+            as bool;
+    systemProxyHost = localCache.get(
+      LocalCacheKey.systemProxyHost,
+      defaultValue: '',
+    );
+    systemProxyPort = localCache.get(
+      LocalCacheKey.systemProxyPort,
+      defaultValue: '',
+    );
 
     dio = Dio(options);
 
@@ -201,11 +215,13 @@ class Request {
     dio.interceptors.add(ApiInterceptor());
 
     // 日志拦截器 输出请求、响应内容
-    dio.interceptors.add(LogInterceptor(
-      request: false,
-      requestHeader: false,
-      responseHeader: false,
-    ));
+    dio.interceptors.add(
+      LogInterceptor(
+        request: false,
+        requestHeader: false,
+        responseHeader: false,
+      ),
+    );
 
     dio.transformer = BackgroundTransformer();
     dio.options.validateStatus = (int? status) {
@@ -240,7 +256,7 @@ class Request {
     } on DioException catch (e) {
       Response errResponse = Response(
         data: {
-          'message': await ApiInterceptor.dioError(e)
+          'message': await ApiInterceptor.dioError(e),
         }, // 将自定义 Map 数据赋值给 Response 的 data 属性
         statusCode: 200,
         requestOptions: RequestOptions(),
@@ -269,7 +285,7 @@ class Request {
     } on DioException catch (e) {
       Response errResponse = Response(
         data: {
-          'message': await ApiInterceptor.dioError(e)
+          'message': await ApiInterceptor.dioError(e),
         }, // 将自定义 Map 数据赋值给 Response 的 data 属性
         statusCode: 200,
         requestOptions: RequestOptions(),
@@ -284,11 +300,14 @@ class Request {
   downloadFile(urlPath, savePath) async {
     Response response;
     try {
-      response = await dio.download(urlPath, savePath,
-          onReceiveProgress: (int count, int total) {
-        //进度
-        // print("$count $total");
-      });
+      response = await dio.download(
+        urlPath,
+        savePath,
+        onReceiveProgress: (int count, int total) {
+          //进度
+          // print("$count $total");
+        },
+      );
       print('downloadFile success: ${response.data}');
 
       return response.data;

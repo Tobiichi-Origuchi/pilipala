@@ -7,12 +7,7 @@ class SetSelectItem extends StatefulWidget {
   final String? title;
   final String? subTitle;
   final String? setKey;
-  const SetSelectItem({
-    this.title,
-    this.subTitle,
-    this.setKey,
-    Key? key,
-  }) : super(key: key);
+  const SetSelectItem({this.title, this.subTitle, this.setKey, super.key});
 
   @override
   State<SetSelectItem> createState() => _SetSelectItemState();
@@ -34,16 +29,14 @@ class _SetSelectItemState extends State<SetSelectItem> {
         defaultVal = VideoQuality.values.last.description;
         List<VideoQuality> list = menus = VideoQuality.values.reversed.toList();
         currentVal = setting.get(widget.setKey, defaultValue: defaultVal);
-        currentIndex =
-            list.firstWhere((i) => i.description == currentVal).index;
+        currentIndex = list
+            .firstWhere((i) => i.description == currentVal)
+            .index;
 
         popMenuItems = [
           for (var i in list) ...[
-            PopupMenuItem(
-              value: i.code,
-              child: Text(i.description),
-            )
-          ]
+            PopupMenuItem(value: i.code, child: Text(i.description)),
+          ],
         ];
 
         break;
@@ -51,16 +44,14 @@ class _SetSelectItemState extends State<SetSelectItem> {
         defaultVal = AudioQuality.values.last.description;
         List<AudioQuality> list = menus = AudioQuality.values.reversed.toList();
         currentVal = setting.get(widget.setKey, defaultValue: defaultVal);
-        currentIndex =
-            list.firstWhere((i) => i.description == currentVal).index;
+        currentIndex = list
+            .firstWhere((i) => i.description == currentVal)
+            .index;
 
         popMenuItems = [
           for (var i in list) ...[
-            PopupMenuItem(
-              value: i.index,
-              child: Text(i.description),
-            ),
-          ]
+            PopupMenuItem(value: i.index, child: Text(i.description)),
+          ],
         ];
         break;
       case 'defaultDecode':
@@ -68,16 +59,14 @@ class _SetSelectItemState extends State<SetSelectItem> {
         currentVal = setting.get(widget.setKey, defaultValue: defaultVal);
         List<VideoDecodeFormats> list = menus = VideoDecodeFormats.values;
 
-        currentIndex =
-            list.firstWhere((i) => i.description == currentVal).index;
+        currentIndex = list
+            .firstWhere((i) => i.description == currentVal)
+            .index;
 
         popMenuItems = [
           for (var i in list) ...[
-            PopupMenuItem(
-              value: i.index,
-              child: Text(i.description),
-            ),
-          ]
+            PopupMenuItem(value: i.index, child: Text(i.description)),
+          ],
         ];
         break;
       case 'defaultVideoSpeed':
@@ -90,30 +79,24 @@ class _SetSelectItemState extends State<SetSelectItem> {
 
   @override
   Widget build(BuildContext context) {
-    TextStyle subTitleStyle = Theme.of(context)
-        .textTheme
-        .labelMedium!
-        .copyWith(color: Theme.of(context).colorScheme.outline);
+    TextStyle subTitleStyle = Theme.of(context).textTheme.labelMedium!.copyWith(
+      color: Theme.of(context).colorScheme.outline,
+    );
     return ListTile(
       onTap: () {},
       dense: false,
       title: Text(widget.title!),
-      subtitle: Text(
-        '当前${widget.title!} $currentVal',
-        style: subTitleStyle,
-      ),
+      subtitle: Text('当前${widget.title!} $currentVal', style: subTitleStyle),
       trailing: PopupMenuButton(
         initialValue: currentIndex,
-        icon: const Icon(
-          Icons.arrow_forward_rounded,
-          size: 22,
-        ),
+        icon: const Icon(Icons.arrow_forward_rounded, size: 22),
         onSelected: (item) {
           currentVal = menus.firstWhere((e) => e.code == item).first;
           setState(() {});
         },
-        itemBuilder: (BuildContext context) =>
-            <PopupMenuEntry>[...popMenuItems],
+        itemBuilder: (BuildContext context) => <PopupMenuEntry>[
+          ...popMenuItems,
+        ],
       ),
     );
   }

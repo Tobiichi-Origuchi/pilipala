@@ -8,6 +8,7 @@ import '../models/msg/session.dart';
 import '../utils/wbi_sign.dart';
 import 'api.dart';
 import 'init.dart';
+import 'package:flutter/foundation.dart';
 
 class MsgHttp {
   // 会话列表
@@ -33,27 +34,18 @@ class MsgHttp {
           'data': SessionDataModel.fromJson(res.data['data']),
         };
       } catch (err) {
-        return {
-          'status': false,
-          'data': [],
-          'msg': err.toString(),
-        };
+        return {'status': false, 'data': [], 'msg': err.toString()};
       }
     } else {
-      return {
-        'status': false,
-        'data': [],
-        'msg': res.data['message'],
-      };
+      return {'status': false, 'data': [], 'msg': res.data['message']};
     }
   }
 
   static Future accountList(uids) async {
-    var res = await Request().get(Api.sessionAccountList, data: {
-      'uids': uids,
-      'build': 0,
-      'mobi_app': 'web',
-    });
+    var res = await Request().get(
+      Api.sessionAccountList,
+      data: {'uids': uids, 'build': 0, 'mobi_app': 'web'},
+    );
     if (res.data['code'] == 0) {
       try {
         return {
@@ -63,20 +55,14 @@ class MsgHttp {
               .toList(),
         };
       } catch (err) {
-        print('err🔟: $err');
+        debugPrint('err🔟: $err');
       }
     } else {
-      return {
-        'status': false,
-        'date': [],
-        'msg': res.data['message'],
-      };
+      return {'status': false, 'date': [], 'msg': res.data['message']};
     }
   }
 
-  static Future sessionMsg({
-    int? talkerId,
-  }) async {
+  static Future sessionMsg({int? talkerId}) async {
     Map params = await WbiSign().makSign({
       'talker_id': talkerId,
       'session_type': 1,
@@ -93,22 +79,15 @@ class MsgHttp {
           'data': SessionMsgDataModel.fromJson(res.data['data']),
         };
       } catch (err) {
-        print(err);
+        debugPrint('$err');
       }
     } else {
-      return {
-        'status': false,
-        'date': [],
-        'msg': res.data['message'],
-      };
+      return {'status': false, 'date': [], 'msg': res.data['message']};
     }
   }
 
   // 消息标记已读
-  static Future ackSessionMsg({
-    int? talkerId,
-    int? ackSeqno,
-  }) async {
+  static Future ackSessionMsg({int? talkerId, int? ackSeqno}) async {
     String csrf = await Request.getCsrf();
     Map params = await WbiSign().makSign({
       'talker_id': talkerId,
@@ -117,14 +96,11 @@ class MsgHttp {
       'build': 0,
       'mobi_app': 'web',
       'csrf_token': csrf,
-      'csrf': csrf
+      'csrf': csrf,
     });
     var res = await Request().get(Api.ackSessionMsg, data: params);
     if (res.data['code'] == 0) {
-      return {
-        'status': true,
-        'data': res.data['data'],
-      };
+      return {'status': true, 'data': res.data['data']};
     } else {
       return {'status': false, 'date': [], 'msg': res.data['message']};
     }
@@ -159,10 +135,7 @@ class MsgHttp {
       },
     );
     if (res.data['code'] == 0) {
-      return {
-        'status': true,
-        'data': res.data['data'],
-      };
+      return {'status': true, 'data': res.data['data']};
     } else {
       return {'status': false, 'date': [], 'msg': res.data['message']};
     }
@@ -185,7 +158,7 @@ class MsgHttp {
       'C',
       'D',
       'E',
-      'F'
+      'F',
     ];
     final List<String> s = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".split('');
     for (int i = 0; i < s.length; i++) {
@@ -202,9 +175,7 @@ class MsgHttp {
     return s.join();
   }
 
-  static Future removeSession({
-    int? talkerId,
-  }) async {
+  static Future removeSession({int? talkerId}) async {
     String csrf = await Request.getCsrf();
     Map params = await WbiSign().makSign({
       'talker_id': talkerId,
@@ -212,14 +183,11 @@ class MsgHttp {
       'build': 0,
       'mobi_app': 'web',
       'csrf_token': csrf,
-      'csrf': csrf
+      'csrf': csrf,
     });
     var res = await Request().get(Api.removeSession, data: params);
     if (res.data['code'] == 0) {
-      return {
-        'status': true,
-        'data': res.data['data'],
-      };
+      return {'status': true, 'data': res.data['data']};
     } else {
       return {'status': false, 'date': [], 'msg': res.data['message']};
     }
@@ -228,24 +196,15 @@ class MsgHttp {
   static Future unread() async {
     var res = await Request().get(Api.unread);
     if (res.data['code'] == 0) {
-      return {
-        'status': true,
-        'data': res.data['data'],
-      };
+      return {'status': true, 'data': res.data['data']};
     } else {
       return {'status': false, 'date': [], 'msg': res.data['message']};
     }
   }
 
   // 回复我的
-  static Future messageReply({
-    int? id,
-    int? replyTime,
-  }) async {
-    var params = {
-      if (id != null) 'id': id,
-      if (replyTime != null) 'reply_time': replyTime,
-    };
+  static Future messageReply({int? id, int? replyTime}) async {
+    var params = {'id': ?id, 'reply_time': ?replyTime};
     var res = await Request().get(Api.messageReplyAPi, data: params);
     if (res.data['code'] == 0) {
       try {
@@ -262,14 +221,8 @@ class MsgHttp {
   }
 
   // 收到的赞
-  static Future messageLike({
-    int? id,
-    int? likeTime,
-  }) async {
-    var params = {
-      if (id != null) 'id': id,
-      if (likeTime != null) 'like_time': likeTime,
-    };
+  static Future messageLike({int? id, int? likeTime}) async {
+    var params = {'id': ?id, 'like_time': ?likeTime};
     var res = await Request().get(Api.messageLikeAPi, data: params);
     if (res.data['code'] == 0) {
       try {
@@ -286,12 +239,15 @@ class MsgHttp {
   }
 
   static Future messageSystem() async {
-    var res = await Request().get(Api.messageSystemAPi, data: {
-      'csrf': await Request.getCsrf(),
-      'page_size': 20,
-      'build': 0,
-      'mobi_app': 'web',
-    });
+    var res = await Request().get(
+      Api.messageSystemAPi,
+      data: {
+        'csrf': await Request.getCsrf(),
+        'page_size': 20,
+        'build': 0,
+        'mobi_app': 'web',
+      },
+    );
     if (res.data['code'] == 0) {
       try {
         return {
@@ -311,29 +267,27 @@ class MsgHttp {
   // 系统消息标记已读
   static Future systemMarkRead(int cursor) async {
     String csrf = await Request.getCsrf();
-    var res = await Request().get(Api.systemMarkRead, data: {
-      'csrf': csrf,
-      'cursor': cursor,
-    });
+    var res = await Request().get(
+      Api.systemMarkRead,
+      data: {'csrf': csrf, 'cursor': cursor},
+    );
     if (res.data['code'] == 0) {
-      return {
-        'status': true,
-      };
+      return {'status': true};
     } else {
-      return {
-        'status': false,
-        'msg': res.data['message'],
-      };
+      return {'status': false, 'msg': res.data['message']};
     }
   }
 
   static Future messageSystemAccount() async {
-    var res = await Request().get(Api.userMessageSystemAPi, data: {
-      'csrf': await Request.getCsrf(),
-      'page_size': 20,
-      'build': 0,
-      'mobi_app': 'web',
-    });
+    var res = await Request().get(
+      Api.userMessageSystemAPi,
+      data: {
+        'csrf': await Request.getCsrf(),
+        'page_size': 20,
+        'build': 0,
+        'mobi_app': 'web',
+      },
+    );
     if (res.data['code'] == 0) {
       try {
         return {

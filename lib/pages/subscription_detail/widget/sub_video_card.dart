@@ -17,11 +17,7 @@ class SubVideoCardH extends StatelessWidget {
   final SubDetailMediaItem videoItem;
   final int? searchType;
 
-  const SubVideoCardH({
-    Key? key,
-    required this.videoItem,
-    this.searchType,
-  }) : super(key: key);
+  const SubVideoCardH({super.key, required this.videoItem, this.searchType});
 
   @override
   Widget build(BuildContext context) {
@@ -31,27 +27,29 @@ class SubVideoCardH extends StatelessWidget {
     return InkWell(
       onTap: () async {
         int cid = await SearchHttp.ab2c(bvid: bvid);
-        Map<String, String> parameters = {
-          'bvid': bvid,
-          'cid': cid.toString(),
-        };
+        Map<String, String> parameters = {'bvid': bvid, 'cid': cid.toString()};
 
-        Get.toNamed('/video', parameters: parameters, arguments: {
-          'videoItem': videoItem,
-          'heroTag': heroTag,
-          'videoType': SearchType.video,
-        });
+        Get.toNamed(
+          '/video',
+          parameters: parameters,
+          arguments: {
+            'videoItem': videoItem,
+            'heroTag': heroTag,
+            'videoType': SearchType.video,
+          },
+        );
       },
-      onLongPress: () => imageSaveDialog(
-        context,
-        videoItem,
-        SmartDialog.dismiss,
-      ),
+      onLongPress: () =>
+          imageSaveDialog(context, videoItem, SmartDialog.dismiss),
       child: Column(
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(
-                StyleString.safeSpace, 5, StyleString.safeSpace, 5),
+              StyleString.safeSpace,
+              5,
+              StyleString.safeSpace,
+              5,
+            ),
             child: LayoutBuilder(
               builder: (context, boxConstraints) {
                 double width =
@@ -101,7 +99,7 @@ class SubVideoCardH extends StatelessWidget {
                       VideoContent(
                         videoItem: videoItem,
                         searchType: searchType,
-                      )
+                      ),
                     ],
                   ),
                 );
@@ -117,11 +115,7 @@ class SubVideoCardH extends StatelessWidget {
 class VideoContent extends StatelessWidget {
   final dynamic videoItem;
   final int? searchType;
-  const VideoContent({
-    super.key,
-    required this.videoItem,
-    this.searchType,
-  });
+  const VideoContent({super.key, required this.videoItem, this.searchType});
 
   @override
   Widget build(BuildContext context) {
@@ -147,8 +141,9 @@ class VideoContent extends StatelessWidget {
                 Text(
                   Utils.dateFormat(videoItem.pubtime),
                   style: TextStyle(
-                      fontSize: 11,
-                      color: Theme.of(context).colorScheme.outline),
+                    fontSize: 11,
+                    color: Theme.of(context).colorScheme.outline,
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 2),

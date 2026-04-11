@@ -52,13 +52,15 @@ class _BangumiPanelState extends State<BangumiPanel> {
     super.initState();
     cid = widget.cid;
     videoDetailCtr = Get.find<VideoDetailController>(tag: heroTag);
-    currentIndex.value =
-        widget.pages.indexWhere((EpisodeItem e) => e.cid == cid);
+    currentIndex.value = widget.pages.indexWhere(
+      (EpisodeItem e) => e.cid == cid,
+    );
     scrollToIndex();
     videoDetailCtr.cid.listen((int p0) {
       cid = p0;
-      currentIndex.value =
-          widget.pages.indexWhere((EpisodeItem e) => e.cid == cid);
+      currentIndex.value = widget.pages.indexWhere(
+        (EpisodeItem e) => e.cid == cid,
+      );
       scrollToIndex();
     });
 
@@ -80,12 +82,7 @@ class _BangumiPanelState extends State<BangumiPanel> {
       SmartDialog.showToast('需要大会员');
       return;
     }
-    widget.changeFuc?.call(
-      item.bvid,
-      item.cid,
-      item.aid,
-      item.cover,
-    );
+    widget.changeFuc?.call(item.bvid, item.cid, item.aid, item.cover);
     try {
       if (_bottomSheetController != null) {
         _bottomSheetController?.close();
@@ -98,8 +95,10 @@ class _BangumiPanelState extends State<BangumiPanel> {
   void scrollToIndex() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // 在回调函数中获取更新后的状态
-      final double offset = min((currentIndex * 150) - 75,
-          listViewScrollCtr.position.maxScrollExtent);
+      final double offset = min(
+        (currentIndex * 150) - 75,
+        listViewScrollCtr.position.maxScrollExtent,
+      );
       if (currentIndex.value == 0) {
         listViewScrollCtr.jumpTo(0);
       } else {
@@ -141,18 +140,18 @@ class _BangumiPanelState extends State<BangumiPanel> {
                 height: 34,
                 child: TextButton(
                   style: ButtonStyle(
-                    padding: MaterialStateProperty.all(EdgeInsets.zero),
+                    padding: WidgetStateProperty.all(EdgeInsets.zero),
                   ),
                   onPressed: () {
                     widget.bangumiIntroController?.bottomSheetController =
                         _bottomSheetController = EpisodeBottomSheet(
-                      currentCid: cid,
-                      episodes: widget.pages,
-                      changeFucCall: changeFucCall,
-                      sheetHeight: widget.sheetHeight,
-                      dataType: VideoEpidoesType.bangumiEpisode,
-                      context: context,
-                    ).show(context);
+                          currentCid: cid,
+                          episodes: widget.pages,
+                          changeFucCall: changeFucCall,
+                          sheetHeight: widget.sheetHeight,
+                          dataType: VideoEpidoesType.bangumiEpisode,
+                          context: context,
+                        ).show(context);
                   },
                   child: Text(
                     '${widget.bangumiDetail!.newEp!['desc']}',
@@ -193,9 +192,12 @@ class _BangumiPanelState extends State<BangumiPanel> {
                           Row(
                             children: [
                               if (isSelected) ...<Widget>[
-                                Image.asset('assets/images/live.png',
-                                    color: primary, height: 12),
-                                const SizedBox(width: 6)
+                                Image.asset(
+                                  'assets/images/live.png',
+                                  color: primary,
+                                  height: 12,
+                                ),
+                                const SizedBox(width: 6),
                               ],
                               Text(
                                 '第${i + 1}话',
@@ -214,7 +216,7 @@ class _BangumiPanelState extends State<BangumiPanel> {
                                     color: primary,
                                   ),
                                 ),
-                              ]
+                              ],
                             ],
                           ),
                           const SizedBox(height: 3),
@@ -226,7 +228,7 @@ class _BangumiPanelState extends State<BangumiPanel> {
                               color: isSelected ? primary : onSurface,
                             ),
                             overflow: TextOverflow.ellipsis,
-                          )
+                          ),
                         ],
                       ),
                     ),
@@ -235,7 +237,7 @@ class _BangumiPanelState extends State<BangumiPanel> {
               );
             },
           ),
-        )
+        ),
       ],
     );
   }

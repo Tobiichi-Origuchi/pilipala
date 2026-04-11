@@ -13,24 +13,23 @@ class LiveCardV extends StatelessWidget {
   final int crossAxisCount;
 
   const LiveCardV({
-    Key? key,
+    super.key,
     required this.liveItem,
     required this.crossAxisCount,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     String heroTag = Utils.makeHeroTag(liveItem.roomId);
     return InkWell(
-      onLongPress: () => imageSaveDialog(
-        context,
-        liveItem,
-        SmartDialog.dismiss,
-      ),
+      onLongPress: () =>
+          imageSaveDialog(context, liveItem, SmartDialog.dismiss),
       borderRadius: BorderRadius.circular(16),
       onTap: () async {
-        Get.toNamed('/liveRoom?roomid=${liveItem.roomId}',
-            arguments: {'liveItem': liveItem, 'heroTag': heroTag});
+        Get.toNamed(
+          '/liveRoom?roomid=${liveItem.roomId}',
+          arguments: {'liveItem': liveItem, 'heroTag': heroTag},
+        );
       },
       child: Column(
         children: [
@@ -38,38 +37,38 @@ class LiveCardV extends StatelessWidget {
             borderRadius: const BorderRadius.all(StyleString.imgRadius),
             child: AspectRatio(
               aspectRatio: StyleString.aspectRatio,
-              child: LayoutBuilder(builder: (context, boxConstraints) {
-                double maxWidth = boxConstraints.maxWidth;
-                double maxHeight = boxConstraints.maxHeight;
-                return Stack(
-                  children: [
-                    Hero(
-                      tag: heroTag,
-                      child: NetworkImgLayer(
-                        src: liveItem.cover!,
-                        width: maxWidth,
-                        height: maxHeight,
-                      ),
-                    ),
-                    if (crossAxisCount != 1)
-                      Positioned(
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        child: AnimatedOpacity(
-                          opacity: 1,
-                          duration: const Duration(milliseconds: 200),
-                          child: VideoStat(
-                            liveItem: liveItem,
-                          ),
+              child: LayoutBuilder(
+                builder: (context, boxConstraints) {
+                  double maxWidth = boxConstraints.maxWidth;
+                  double maxHeight = boxConstraints.maxHeight;
+                  return Stack(
+                    children: [
+                      Hero(
+                        tag: heroTag,
+                        child: NetworkImgLayer(
+                          src: liveItem.cover!,
+                          width: maxWidth,
+                          height: maxHeight,
                         ),
                       ),
-                  ],
-                );
-              }),
+                      if (crossAxisCount != 1)
+                        Positioned(
+                          left: 0,
+                          right: 0,
+                          bottom: 0,
+                          child: AnimatedOpacity(
+                            opacity: 1,
+                            duration: const Duration(milliseconds: 200),
+                            child: VideoStat(liveItem: liveItem),
+                          ),
+                        ),
+                    ],
+                  );
+                },
+              ),
             ),
           ),
-          LiveContent(liveItem: liveItem, crossAxisCount: crossAxisCount)
+          LiveContent(liveItem: liveItem, crossAxisCount: crossAxisCount),
         ],
       ),
     );
@@ -79,9 +78,11 @@ class LiveCardV extends StatelessWidget {
 class LiveContent extends StatelessWidget {
   final dynamic liveItem;
   final int crossAxisCount;
-  const LiveContent(
-      {Key? key, required this.liveItem, required this.crossAxisCount})
-      : super(key: key);
+  const LiveContent({
+    super.key,
+    required this.liveItem,
+    required this.crossAxisCount,
+  });
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -112,8 +113,9 @@ class LiveContent extends StatelessWidget {
                     liveItem.uname,
                     textAlign: TextAlign.start,
                     style: TextStyle(
-                      fontSize:
-                          Theme.of(context).textTheme.labelMedium!.fontSize,
+                      fontSize: Theme.of(
+                        context,
+                      ).textTheme.labelMedium!.fontSize,
                       color: Theme.of(context).colorScheme.outline,
                     ),
                     maxLines: 1,
@@ -124,20 +126,22 @@ class LiveContent extends StatelessWidget {
                   Text(
                     ' • ${liveItem!.areaName!}',
                     style: TextStyle(
-                      fontSize:
-                          Theme.of(context).textTheme.labelMedium!.fontSize,
+                      fontSize: Theme.of(
+                        context,
+                      ).textTheme.labelMedium!.fontSize,
                       color: Theme.of(context).colorScheme.outline,
                     ),
                   ),
                   Text(
                     ' • ${liveItem!.watchedShow!['text_small']}人观看',
                     style: TextStyle(
-                      fontSize:
-                          Theme.of(context).textTheme.labelMedium!.fontSize,
+                      fontSize: Theme.of(
+                        context,
+                      ).textTheme.labelMedium!.fontSize,
                       color: Theme.of(context).colorScheme.outline,
                     ),
                   ),
-                ]
+                ],
               ],
             ),
           ],
@@ -150,10 +154,7 @@ class LiveContent extends StatelessWidget {
 class VideoStat extends StatelessWidget {
   final LiveItemModel? liveItem;
 
-  const VideoStat({
-    Key? key,
-    required this.liveItem,
-  }) : super(key: key);
+  const VideoStat({super.key, required this.liveItem});
 
   @override
   Widget build(BuildContext context) {
@@ -164,10 +165,7 @@ class VideoStat extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: <Color>[
-            Colors.transparent,
-            Colors.black54,
-          ],
+          colors: <Color>[Colors.transparent, Colors.black54],
           tileMode: TileMode.mirror,
         ),
       ),

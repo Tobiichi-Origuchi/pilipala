@@ -21,8 +21,9 @@ class WhisperDetailPage extends StatefulWidget {
 
 class _WhisperDetailPageState extends State<WhisperDetailPage>
     with WidgetsBindingObserver {
-  final WhisperDetailController _whisperDetailController =
-      Get.put(WhisperDetailController());
+  final WhisperDetailController _whisperDetailController = Get.put(
+    WhisperDetailController(),
+  );
   late Future _futureBuilderFuture;
   late TextEditingController _replyContentController;
   final FocusNode replyContentFocusNode = FocusNode();
@@ -57,13 +58,16 @@ class _WhisperDetailPageState extends State<WhisperDetailPage>
       WidgetsBinding.instance.addPostFrameCallback((_) {
         // 键盘高度
         final viewInsets = EdgeInsets.fromViewPadding(
-            View.of(context).viewInsets, View.of(context).devicePixelRatio);
+          View.of(context).viewInsets,
+          View.of(context).devicePixelRatio,
+        );
         _debouncer.run(() {
           if (mounted) {
             if (keyboardHeight == 0) {
               setState(() {
-                keyboardHeight =
-                    keyboardHeight == 0.0 ? viewInsets.bottom : keyboardHeight;
+                keyboardHeight = keyboardHeight == 0.0
+                    ? viewInsets.bottom
+                    : keyboardHeight;
                 if (keyboardHeight != 0) {
                   emoteHeight = keyboardHeight;
                 }
@@ -84,19 +88,24 @@ class _WhisperDetailPageState extends State<WhisperDetailPage>
   }
 
   void onChooseEmote(PackageItem package, Emote emote) {
-    _whisperDetailController.emoteList.add(
-      {'text': emote.text, 'url': emote.url},
+    _whisperDetailController.emoteList.add({
+      'text': emote.text,
+      'url': emote.url,
+    });
+    final int cursorPosition = max(
+      _replyContentController.selection.baseOffset,
+      0,
     );
-    final int cursorPosition =
-        max(_replyContentController.selection.baseOffset, 0);
     final String currentText = _replyContentController.text;
-    final String newText = currentText.substring(0, cursorPosition) +
+    final String newText =
+        currentText.substring(0, cursorPosition) +
         emote.text! +
         currentText.substring(cursorPosition);
     _replyContentController.value = TextEditingValue(
       text: newText,
-      selection:
-          TextSelection.collapsed(offset: cursorPosition + emote.text!.length),
+      selection: TextSelection.collapsed(
+        offset: cursorPosition + emote.text!.length,
+      ),
     );
   }
 
@@ -130,7 +139,7 @@ class _WhisperDetailPageState extends State<WhisperDetailPage>
                     '/member?mid=${_whisperDetailController.mid}',
                     arguments: {
                       'face': _whisperDetailController.face,
-                      'heroTag': null
+                      'heroTag': null,
                     },
                   );
                 },
@@ -164,10 +173,10 @@ class _WhisperDetailPageState extends State<WhisperDetailPage>
               PopupMenuItem(
                 onTap: () => _whisperDetailController.removeSession(context),
                 child: const Text('关闭会话'),
-              )
+              ),
             ],
           ),
-          const SizedBox(width: 14)
+          const SizedBox(width: 14),
         ],
       ),
       body: Column(
@@ -200,7 +209,7 @@ class _WhisperDetailPageState extends State<WhisperDetailPage>
                                   itemBuilder: (_, int i) {
                                     return ChatItem(
                                       item: messageList[i],
-                                      e_infos: _whisperDetailController.eInfos,
+                                      eInfos: _whisperDetailController.eInfos,
                                       ctr: _whisperDetailController,
                                     );
                                   },
@@ -238,7 +247,7 @@ class _WhisperDetailPageState extends State<WhisperDetailPage>
                 border: Border(
                   top: BorderSide(
                     width: 1,
-                    color: Colors.grey.withOpacity(0.15),
+                    color: Colors.grey.withValues(alpha: 0.15),
                   ),
                 ),
               ),
@@ -265,10 +274,9 @@ class _WhisperDetailPageState extends State<WhisperDetailPage>
                     child: Container(
                       height: 45,
                       decoration: BoxDecoration(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .outline
-                            .withOpacity(0.05),
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.outline.withValues(alpha: 0.05),
                         borderRadius: BorderRadius.circular(40.0),
                       ),
                       child: TextField(
@@ -280,7 +288,9 @@ class _WhisperDetailPageState extends State<WhisperDetailPage>
                           border: InputBorder.none, // 移除默认边框
                           hintText: '文明发言 ～', // 提示文本
                           contentPadding: EdgeInsets.symmetric(
-                              horizontal: 16.0, vertical: 12.0), // 内边距
+                            horizontal: 16.0,
+                            vertical: 12.0,
+                          ), // 内边距
                         ),
                       ),
                     ),
@@ -305,8 +315,8 @@ class _WhisperDetailPageState extends State<WhisperDetailPage>
                 height: toolbarType.value == 'input'
                     ? keyboardHeight
                     : toolbarType.value == 'emote'
-                        ? emoteHeight
-                        : 0,
+                    ? emoteHeight
+                    : 0,
                 child: EmotePanel(
                   onChoose: (package, emote) => onChooseEmote(package, emote),
                 ),

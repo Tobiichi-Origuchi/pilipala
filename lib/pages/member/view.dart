@@ -43,16 +43,14 @@ class _MemberPageState extends State<MemberPage>
     _memberSeasonsFuture = _memberController.getMemberSeasons();
     _memberCoinsFuture = _memberController.getRecentCoinVideo();
     _memberLikeFuture = _memberController.getRecentLikeVideo();
-    _extendNestCtr.addListener(
-      () {
-        final double offset = _extendNestCtr.position.pixels;
-        if (offset > 100) {
-          appbarStream.add(true);
-        } else {
-          appbarStream.add(false);
-        }
-      },
-    );
+    _extendNestCtr.addListener(() {
+      final double offset = _extendNestCtr.position.pixels;
+      if (offset > 100) {
+        appbarStream.add(true);
+      } else {
+        appbarStream.add(false);
+      }
+    });
   }
 
   @override
@@ -94,13 +92,13 @@ class _MemberPageState extends State<MemberPage>
                             () => Text(
                               _memberController.memberInfo.value.name ?? '',
                               style: TextStyle(
-                                  color:
-                                      Theme.of(context).colorScheme.onSurface,
-                                  fontSize: 14),
+                                color: Theme.of(context).colorScheme.onSurface,
+                                fontSize: 14,
+                              ),
                             ),
                           ),
                         ],
-                      )
+                      ),
                     ],
                   ),
                 );
@@ -109,7 +107,8 @@ class _MemberPageState extends State<MemberPage>
             actions: [
               IconButton(
                 onPressed: () => Get.toNamed(
-                    '/memberSearch?mid=$mid&uname=${_memberController.memberInfo.value.name!}'),
+                  '/memberSearch?mid=$mid&uname=${_memberController.memberInfo.value.name!}',
+                ),
                 icon: const Icon(Icons.search_outlined),
               ),
               PopupMenuButton(
@@ -123,12 +122,14 @@ class _MemberPageState extends State<MemberPage>
                         children: [
                           const Icon(Icons.block, size: 19),
                           const SizedBox(width: 10),
-                          Text(_memberController.attribute.value != 128
-                              ? '加入黑名单'
-                              : '移除黑名单'),
+                          Text(
+                            _memberController.attribute.value != 128
+                                ? '加入黑名单'
+                                : '移除黑名单',
+                          ),
                         ],
                       ),
-                    )
+                    ),
                   ],
                   PopupMenuItem(
                     onTap: () => _memberController.shareUser(),
@@ -137,9 +138,11 @@ class _MemberPageState extends State<MemberPage>
                       children: [
                         const Icon(Icons.share_outlined, size: 19),
                         const SizedBox(width: 10),
-                        Text(_memberController.ownerMid != _memberController.mid
-                            ? '分享UP主'
-                            : '分享我的主页'),
+                        Text(
+                          _memberController.ownerMid != _memberController.mid
+                              ? '分享UP主'
+                              : '分享我的主页',
+                        ),
                       ],
                     ),
                   ),
@@ -164,9 +167,12 @@ class _MemberPageState extends State<MemberPage>
                       () => ListTile(
                         onTap: _memberController.pushDynamicsPage,
                         title: Text(
-                            '${_memberController.isOwner.value ? '我' : 'Ta'}的动态'),
-                        trailing:
-                            const Icon(Icons.arrow_forward_outlined, size: 19),
+                          '${_memberController.isOwner.value ? '我' : 'Ta'}的动态',
+                        ),
+                        trailing: const Icon(
+                          Icons.arrow_forward_outlined,
+                          size: 19,
+                        ),
                       ),
                     ),
 
@@ -175,9 +181,12 @@ class _MemberPageState extends State<MemberPage>
                       () => ListTile(
                         onTap: _memberController.pushArchivesPage,
                         title: Text(
-                            '${_memberController.isOwner.value ? '我' : 'Ta'}的投稿'),
-                        trailing:
-                            const Icon(Icons.arrow_forward_outlined, size: 19),
+                          '${_memberController.isOwner.value ? '我' : 'Ta'}的投稿',
+                        ),
+                        trailing: const Icon(
+                          Icons.arrow_forward_outlined,
+                          size: 19,
+                        ),
                       ),
                     ),
 
@@ -186,9 +195,12 @@ class _MemberPageState extends State<MemberPage>
                       () => ListTile(
                         onTap: _memberController.pushfavPage,
                         title: Text(
-                            '${_memberController.isOwner.value ? '我' : 'Ta'}的收藏'),
-                        trailing:
-                            const Icon(Icons.arrow_forward_outlined, size: 19),
+                          '${_memberController.isOwner.value ? '我' : 'Ta'}的收藏',
+                        ),
+                        trailing: const Icon(
+                          Icons.arrow_forward_outlined,
+                          size: 19,
+                        ),
                       ),
                     ),
 
@@ -197,17 +209,22 @@ class _MemberPageState extends State<MemberPage>
                       () => ListTile(
                         onTap: _memberController.pushArticlePage,
                         title: Text(
-                            '${_memberController.isOwner.value ? '我' : 'Ta'}的专栏'),
-                        trailing:
-                            const Icon(Icons.arrow_forward_outlined, size: 19),
+                          '${_memberController.isOwner.value ? '我' : 'Ta'}的专栏',
+                        ),
+                        trailing: const Icon(
+                          Icons.arrow_forward_outlined,
+                          size: 19,
+                        ),
                       ),
                     ),
 
                     /// 合集
                     Obx(
                       () => ListTile(
-                          title: Text(
-                              '${_memberController.isOwner.value ? '我' : 'Ta'}的合集')),
+                        title: Text(
+                          '${_memberController.isOwner.value ? '我' : 'Ta'}的合集',
+                        ),
+                      ),
                     ),
                     MediaQuery.removePadding(
                       removeTop: true,
@@ -346,31 +363,40 @@ class _MemberPageState extends State<MemberPage>
                         Row(
                           children: [
                             Flexible(
-                                child: Text(
-                              _memberController.memberInfo.value.name!,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleMedium!
-                                  .copyWith(
+                              child: Text(
+                                _memberController.memberInfo.value.name!,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: Theme.of(context).textTheme.titleMedium!
+                                    .copyWith(
                                       fontWeight: FontWeight.bold,
-                                      color: _memberController.memberInfo.value
-                                                  .vip!.nicknameColor !=
+                                      color:
+                                          _memberController
+                                                  .memberInfo
+                                                  .value
+                                                  .vip!
+                                                  .nicknameColor !=
                                               null
-                                          ? Color(_memberController.memberInfo
-                                              .value.vip!.nicknameColor!)
-                                          : null),
-                            )),
+                                          ? Color(
+                                              _memberController
+                                                  .memberInfo
+                                                  .value
+                                                  .vip!
+                                                  .nicknameColor!,
+                                            )
+                                          : null,
+                                    ),
+                              ),
+                            ),
                             const SizedBox(width: 2),
                             if (_memberController.memberInfo.value.sex == '女')
-                              const Icon(
+                              const FaIcon(
                                 FontAwesomeIcons.venus,
                                 size: 14,
                                 color: Colors.pink,
                               ),
                             if (_memberController.memberInfo.value.sex == '男')
-                              const Icon(
+                              const FaIcon(
                                 FontAwesomeIcons.mars,
                                 size: 14,
                                 color: Colors.blue,
@@ -382,39 +408,62 @@ class _MemberPageState extends State<MemberPage>
                             ),
                             const SizedBox(width: 6),
                             if (_memberController
-                                        .memberInfo.value.vip!.status ==
+                                        .memberInfo
+                                        .value
+                                        .vip!
+                                        .status ==
                                     1 &&
-                                _memberController.memberInfo.value.vip!
+                                _memberController
+                                        .memberInfo
+                                        .value
+                                        .vip!
                                         .label!['img_label_uri_hans'] !=
                                     '') ...[
                               Image.network(
-                                _memberController.memberInfo.value.vip!
+                                _memberController
+                                    .memberInfo
+                                    .value
+                                    .vip!
                                     .label!['img_label_uri_hans'],
                                 height: 20,
                               ),
                             ] else if (_memberController
-                                        .memberInfo.value.vip!.status ==
+                                        .memberInfo
+                                        .value
+                                        .vip!
+                                        .status ==
                                     1 &&
-                                _memberController.memberInfo.value.vip!
+                                _memberController
+                                        .memberInfo
+                                        .value
+                                        .vip!
                                         .label!['img_label_uri_hans_static'] !=
                                     '') ...[
                               Image.network(
-                                _memberController.memberInfo.value.vip!
+                                _memberController
+                                    .memberInfo
+                                    .value
+                                    .vip!
                                     .label!['img_label_uri_hans_static'],
                                 height: 20,
                               ),
-                            ]
+                            ],
                           ],
                         ),
                         if (_memberController
-                                .memberInfo.value.official!['title'] !=
+                                .memberInfo
+                                .value
+                                .official!['title'] !=
                             '') ...[
                           const SizedBox(height: 6),
                           Text.rich(
                             maxLines: 2,
                             TextSpan(
-                              text: _memberController
-                                          .memberInfo.value.official!['role'] ==
+                              text:
+                                  _memberController
+                                          .memberInfo
+                                          .value
+                                          .official!['role'] ==
                                       1
                                   ? '个人认证：'
                                   : '企业认证：',
@@ -424,7 +473,9 @@ class _MemberPageState extends State<MemberPage>
                               children: [
                                 TextSpan(
                                   text: _memberController
-                                      .memberInfo.value.official!['title'],
+                                      .memberInfo
+                                      .value
+                                      .official!['title'],
                                 ),
                               ],
                             ),
@@ -455,17 +506,13 @@ class _MemberPageState extends State<MemberPage>
 
   Widget commenWidget(msg) {
     return Padding(
-      padding: const EdgeInsets.only(
-        top: 20,
-        bottom: 30,
-      ),
+      padding: const EdgeInsets.only(top: 20, bottom: 30),
       child: Center(
         child: Text(
           msg,
-          style: Theme.of(context)
-              .textTheme
-              .labelMedium!
-              .copyWith(color: Theme.of(context).colorScheme.outline),
+          style: Theme.of(context).textTheme.labelMedium!.copyWith(
+            color: Theme.of(context).colorScheme.outline,
+          ),
         ),
       ),
     );

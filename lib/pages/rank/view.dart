@@ -8,7 +8,7 @@ import 'package:pilipala/utils/feed_back.dart';
 import './controller.dart';
 
 class RankPage extends StatefulWidget {
-  const RankPage({Key? key}) : super(key: key);
+  const RankPage({super.key});
 
   @override
   State<RankPage> createState() => _RankPageState();
@@ -44,12 +44,12 @@ class _RankPageState extends State<RankPage>
             ? SystemUiOverlayStyle(
                 statusBarIconBrightness:
                     Theme.of(context).brightness == Brightness.dark
-                        ? Brightness.light
-                        : Brightness.dark,
+                    ? Brightness.light
+                    : Brightness.dark,
               )
             : Theme.of(context).brightness == Brightness.dark
-                ? SystemUiOverlayStyle.light
-                : SystemUiOverlayStyle.dark,
+            ? SystemUiOverlayStyle.light
+            : SystemUiOverlayStyle.dark,
       ),
       body: Column(
         children: [
@@ -64,7 +64,7 @@ class _RankPageState extends State<RankPage>
                 child: TabBar(
                   controller: _rankController.tabController,
                   tabs: [
-                    for (var i in _rankController.tabs) Tab(text: i['label'])
+                    for (var i in _rankController.tabs) Tab(text: i['label']),
                   ],
                   isScrollable: true,
                   dividerColor: Colors.transparent,
@@ -99,10 +99,7 @@ class _RankPageState extends State<RankPage>
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final double height;
 
-  const CustomAppBar({
-    super.key,
-    this.height = kToolbarHeight,
-  });
+  const CustomAppBar({super.key, this.height = kToolbarHeight});
 
   @override
   Size get preferredSize => Size.fromHeight(height);

@@ -48,7 +48,7 @@ class VideoIntroController extends GetxController {
   List delMediaIdsNew = [];
   // 关注状态 默认未关注
   RxMap followStatus = {}.obs;
-  int _tempThemeValue = -1;
+  // int _tempThemeValue = -1;
 
   RxInt lastPlayCid = 0.obs;
   var userInfo;
@@ -72,14 +72,18 @@ class VideoIntroController extends GetxController {
     } catch (_) {}
     userLogin = userInfo != null;
     lastPlayCid.value = int.parse(Get.parameters['cid']!);
-    isShowOnlineTotal =
-        setting.get(SettingBoxKey.enableOnlineTotal, defaultValue: false);
+    isShowOnlineTotal = setting.get(
+      SettingBoxKey.enableOnlineTotal,
+      defaultValue: false,
+    );
     if (isShowOnlineTotal) {
       queryOnlineTotal();
       startTimer(); // 在页面加载时启动定时器
     }
-    enableRelatedVideo =
-        setting.get(SettingBoxKey.enableRelatedVideo, defaultValue: true);
+    enableRelatedVideo = setting.get(
+      SettingBoxKey.enableRelatedVideo,
+      defaultValue: true,
+    );
   }
 
   // 获取视频简介&分p
@@ -197,39 +201,42 @@ class VideoIntroController extends GetxController {
       return;
     }
     showDialog(
-        context: Get.context!,
-        builder: (context) {
-          return AlertDialog(
-            title: const Text('选择投币个数'),
-            contentPadding: const EdgeInsets.fromLTRB(0, 12, 0, 24),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [1, 2]
-                  .map(
-                    (e) => ListTile(
-                      title: Padding(
-                        padding: const EdgeInsets.only(left: 20),
-                        child: Text('$e 枚'),
-                      ),
-                      onTap: () async {
-                        var res =
-                            await VideoHttp.coinVideo(bvid: bvid, multiply: e);
-                        if (res['status']) {
-                          SmartDialog.showToast('投币成功');
-                          hasCoin.value = true;
-                          videoDetail.value.stat!.coin =
-                              videoDetail.value.stat!.coin! + e;
-                        } else {
-                          SmartDialog.showToast(res['msg']);
-                        }
-                        Get.back();
-                      },
+      context: Get.context!,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('选择投币个数'),
+          contentPadding: const EdgeInsets.fromLTRB(0, 12, 0, 24),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [1, 2]
+                .map(
+                  (e) => ListTile(
+                    title: Padding(
+                      padding: const EdgeInsets.only(left: 20),
+                      child: Text('$e 枚'),
                     ),
-                  )
-                  .toList(),
-            ),
-          );
-        });
+                    onTap: () async {
+                      var res = await VideoHttp.coinVideo(
+                        bvid: bvid,
+                        multiply: e,
+                      );
+                      if (res['status']) {
+                        SmartDialog.showToast('投币成功');
+                        hasCoin.value = true;
+                        videoDetail.value.stat!.coin =
+                            videoDetail.value.stat!.coin! + e;
+                      } else {
+                        SmartDialog.showToast(res['msg']);
+                      }
+                      Get.back();
+                    },
+                  ),
+                )
+                .toList(),
+          ),
+        );
+      },
+    );
   }
 
   // （取消）收藏
@@ -267,9 +274,10 @@ class VideoIntroController extends GetxController {
     }
     SmartDialog.showLoading(msg: '请求中');
     var result = await VideoHttp.favVideo(
-        aid: IdUtils.bv2av(bvid),
-        addIds: addMediaIdsNew.join(','),
-        delIds: delMediaIdsNew.join(','));
+      aid: IdUtils.bv2av(bvid),
+      addIds: addMediaIdsNew.join(','),
+      delIds: delMediaIdsNew.join(','),
+    );
     SmartDialog.dismiss();
     if (result['status']) {
       addMediaIdsNew = [];
@@ -285,15 +293,22 @@ class VideoIntroController extends GetxController {
 
   // 分享视频
   Future actionShareVideo() async {
-    var result = await Share.share(
-            '${videoDetail.value.title} UP主: ${videoDetail.value.owner!.name!} - ${HttpString.baseUrl}/video/$bvid')
+    var result = await SharePlus.instance
+        .share(
+          ShareParams(
+            text:
+                '${videoDetail.value.title} UP主: ${videoDetail.value.owner!.name!} - ${HttpString.baseUrl}/video/$bvid',
+          ),
+        )
         .whenComplete(() {});
     return result;
   }
 
   Future queryVideoInFolder() async {
     var result = await VideoHttp.videoInFolder(
-        mid: userInfo.mid, rid: IdUtils.bv2av(bvid));
+      mid: userInfo.mid,
+      rid: IdUtils.bv2av(bvid),
+    );
     if (result['status']) {
       favFolderData.value = result['data'];
     }
@@ -403,7 +418,7 @@ class VideoIntroController extends GetxController {
                 SmartDialog.dismiss();
               },
               child: const Text('确认'),
-            )
+            ),
           ],
         );
       },
@@ -421,8 +436,9 @@ class VideoIntroController extends GetxController {
     final VideoDetailController videoDetailCtr =
         Get.find<VideoDetailController>(tag: heroTag);
     if (enableRelatedVideo) {
-      final ReleatedController releatedCtr =
-          Get.find<ReleatedController>(tag: heroTag);
+      final ReleatedController releatedCtr = Get.find<ReleatedController>(
+        tag: heroTag,
+      );
       releatedCtr.bvid = bvid;
       releatedCtr.queryRelatedVideo();
     }
@@ -440,8 +456,9 @@ class VideoIntroController extends GetxController {
     // 重新请求评论
     try {
       /// 未渲染回复组件时可能异常
-      final VideoReplyController videoReplyCtr =
-          Get.find<VideoReplyController>(tag: heroTag);
+      final VideoReplyController videoReplyCtr = Get.find<VideoReplyController>(
+        tag: heroTag,
+      );
       videoReplyCtr.aid = aid;
       videoReplyCtr.queryReplyList(type: 'init');
     } catch (_) {}
@@ -503,8 +520,9 @@ class VideoIntroController extends GetxController {
       episodes.addAll(pages);
     }
 
-    final int currentIndex =
-        episodes.indexWhere((e) => e.cid == lastPlayCid.value);
+    final int currentIndex = episodes.indexWhere(
+      (e) => e.cid == lastPlayCid.value,
+    );
     int nextIndex = currentIndex + 1;
     cover = episodes[nextIndex].cover;
     final PlayRepeat platRepeat = videoDetailCtr.plPlayerController.playRepeat;
@@ -541,13 +559,17 @@ class VideoIntroController extends GetxController {
       initHeight: 0.6,
       maxHeight: 1,
       context: Get.context!,
-      builder: (BuildContext context, ScrollController scrollController,
-          double offset) {
-        return GroupPanel(
-          mid: videoDetail.value.owner!.mid!,
-          scrollController: scrollController,
-        );
-      },
+      builder:
+          (
+            BuildContext context,
+            ScrollController scrollController,
+            double offset,
+          ) {
+            return GroupPanel(
+              mid: videoDetail.value.owner!.mid!,
+              scrollController: scrollController,
+            );
+          },
       anchors: [0.6, 1],
       isSafeArea: true,
     );
@@ -608,7 +630,11 @@ class VideoIntroController extends GetxController {
         changeFucCall: (item, index) {
           if (dataType == VideoEpidoesType.videoEpisode) {
             changeSeasonOrbangu(
-                IdUtils.av2bv(item.aid), item.cid, item.aid, item.cover);
+              IdUtils.av2bv(item.aid),
+              item.cid,
+              item.aid,
+              item.cover,
+            );
           }
           if (dataType == VideoEpidoesType.videoPart) {
             changeSeasonOrbangu(bvid, item.cid, null, item.cover);
@@ -633,7 +659,8 @@ class VideoIntroController extends GetxController {
               child: Text(
                 '取消',
                 style: TextStyle(
-                    color: Theme.of(Get.context!).colorScheme.outline),
+                  color: Theme.of(Get.context!).colorScheme.outline,
+                ),
               ),
             ),
             TextButton(
@@ -642,7 +669,7 @@ class VideoIntroController extends GetxController {
                 navigator!.pop();
               },
               child: const Text('确认'),
-            )
+            ),
           ],
         );
       },

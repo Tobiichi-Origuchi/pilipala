@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:pilipala/common/widgets/http_error.dart';
@@ -36,10 +35,9 @@ class _FavPanelState extends State<FavPanel> {
           leadingWidth: 0,
           title: Text(
             '选择收藏夹',
-            style: Theme.of(context)
-                .textTheme
-                .titleMedium!
-                .copyWith(fontWeight: FontWeight.bold),
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold),
           ),
         ),
         Expanded(
@@ -61,16 +59,15 @@ class _FavPanelState extends State<FavPanel> {
                             onTap: () =>
                                 widget.ctr!.onChoose(item.favState != 1, index),
                             dense: true,
-                            leading: Icon([23, 1].contains(item.attr)
-                                ? Icons.lock_outline
-                                : Icons.folder_outlined),
+                            leading: Icon(
+                              [23, 1].contains(item.attr)
+                                  ? Icons.lock_outline
+                                  : Icons.folder_outlined,
+                            ),
                             minLeadingWidth: 0,
                             title: Text(item.title!),
                             subtitle: Text(
-                              '${item.mediaCount}个内容 - ${[
-                                23,
-                                1
-                              ].contains(item.attr) ? '私密' : '公开'}',
+                              '${item.mediaCount}个内容 - ${[23, 1].contains(item.attr) ? '私密' : '公开'}',
                             ),
                             trailing: Transform.scale(
                               scale: 0.9,
@@ -100,7 +97,7 @@ class _FavPanelState extends State<FavPanel> {
         ),
         Divider(
           height: 1,
-          color: Theme.of(context).disabledColor.withOpacity(0.08),
+          color: Theme.of(context).disabledColor.withValues(alpha: 0.08),
         ),
         Padding(
           padding: EdgeInsets.only(
@@ -116,8 +113,9 @@ class _FavPanelState extends State<FavPanel> {
                 onPressed: () => Get.back(),
                 style: TextButton.styleFrom(
                   padding: const EdgeInsets.only(left: 30, right: 30),
-                  backgroundColor:
-                      Theme.of(context).colorScheme.onInverseSurface, // 设置按钮背景色
+                  backgroundColor: Theme.of(
+                    context,
+                  ).colorScheme.onInverseSurface, // 设置按钮背景色
                 ),
                 child: const Text('取消'),
               ),
@@ -130,8 +128,9 @@ class _FavPanelState extends State<FavPanel> {
                 style: TextButton.styleFrom(
                   padding: const EdgeInsets.only(left: 30, right: 30),
                   foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                  backgroundColor:
-                      Theme.of(context).colorScheme.primary, // 设置按钮背景色
+                  backgroundColor: Theme.of(
+                    context,
+                  ).colorScheme.primary, // 设置按钮背景色
                 ),
                 child: const Text('确认'),
               ),

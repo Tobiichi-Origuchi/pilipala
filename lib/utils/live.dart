@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:brotli/brotli.dart';
 import 'package:pilipala/models/live/message.dart';
 import 'package:pilipala/utils/binary_writer.dart';
+import 'package:flutter/foundation.dart';
 
 class LiveUtils {
   static List<int> encodeData(String msg, int action) {
@@ -61,11 +61,13 @@ class LiveUtils {
 
         var text = utf8.decode(body, allowMalformed: true);
 
-        var group =
-            text.split(RegExp(r"[\x00-\x1f]+", unicode: true, multiLine: true));
+        var group = text.split(
+          RegExp(r"[\x00-\x1f]+", unicode: true, multiLine: true),
+        );
         List<LiveMessageModel> messages = [];
-        for (var item
-            in group.where((x) => x.length > 2 && x.startsWith('{'))) {
+        for (var item in group.where(
+          (x) => x.length > 2 && x.startsWith('{'),
+        )) {
           if (parseMessage(item) is LiveMessageModel) {
             messages.add(parseMessage(item)!);
           }
@@ -73,7 +75,7 @@ class LiveUtils {
         return messages;
       }
     } catch (e) {
-      print(e);
+      debugPrint('$e');
     }
     return null;
   }
@@ -111,16 +113,18 @@ class LiveUtils {
         }
         final data = obj["data"];
         final userInfo = data["user_info"];
-        final String backgroundBottomColor =
-            data["background_bottom_color"].toString();
+        final String backgroundBottomColor = data["background_bottom_color"]
+            .toString();
         final String backgroundColor = data["background_color"].toString();
-        final DateTime endTime =
-            DateTime.fromMillisecondsSinceEpoch(data["end_time"] * 1000);
+        final DateTime endTime = DateTime.fromMillisecondsSinceEpoch(
+          data["end_time"] * 1000,
+        );
         final String face = "${userInfo["face"]}@200w.jpg";
         final String message = data["message"].toString();
         final String price = data["price"];
-        final DateTime startTime =
-            DateTime.fromMillisecondsSinceEpoch(data["start_time"] * 1000);
+        final DateTime startTime = DateTime.fromMillisecondsSinceEpoch(
+          data["start_time"] * 1000,
+        );
         final String userName = userInfo["uname"].toString();
 
         final LiveMessageModel liveMsg = LiveMessageModel(
@@ -156,7 +160,7 @@ class LiveUtils {
         return liveMsg;
       }
     } catch (e) {
-      print(e);
+      debugPrint('$e');
     }
     return null;
   }
@@ -174,8 +178,9 @@ class LiveUtils {
   }
 
   static ByteData _getByteData(List<int> buffer, int start, int len) {
-    var bytes =
-        Uint8List.fromList(buffer.getRange(start, start + len).toList());
+    var bytes = Uint8List.fromList(
+      buffer.getRange(start, start + len).toList(),
+    );
     return ByteData.view(bytes.buffer);
   }
 

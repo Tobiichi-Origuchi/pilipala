@@ -35,8 +35,10 @@ class DownloadUtils {
     }
   }
 
-  static Future<bool> downloadImg(String imgUrl,
-      {String imgType = 'cover'}) async {
+  static Future<bool> downloadImg(
+    String imgUrl, {
+    String imgType = 'cover',
+  }) async {
     try {
       if (Platform.isAndroid) {
         final androidInfo = await DeviceInfoPlugin().androidInfo;
@@ -52,17 +54,19 @@ class DownloadUtils {
       }
 
       SmartDialog.showLoading(msg: '保存中');
-      var response = await Dio()
-          .get(imgUrl, options: Options(responseType: ResponseType.bytes));
+      var response = await Dio().get(
+        imgUrl,
+        options: Options(responseType: ResponseType.bytes),
+      );
       final String imgSuffix = imgUrl.split('.').last;
       String picName =
           "plpl_${imgType}_${DateTime.now().toString().replaceAll(RegExp(r'[- :]'), '').split('.').first}";
       final SaveResult result = await SaverGallery.saveImage(
         Uint8List.fromList(response.data),
-        name: '$picName.$imgSuffix',
+        fileName: '$picName.$imgSuffix',
         // 保存到 PiliPala文件夹
         androidRelativePath: "Pictures/PiliPala",
-        androidExistNotSave: false,
+        skipIfExists: false,
       );
       SmartDialog.dismiss();
       if (result.isSuccess) {
@@ -79,8 +83,11 @@ class DownloadUtils {
     }
   }
 
-  static Future permissionDialog(String title, String content,
-      {Function? onGranted}) async {
+  static Future permissionDialog(
+    String title,
+    String content, {
+    Function? onGranted,
+  }) async {
     await SmartDialog.show(
       useSystem: true,
       animationType: SmartAnimationType.centerFade_otherSlide,
@@ -94,7 +101,7 @@ class DownloadUtils {
                 openAppSettings();
               },
               child: const Text('去授权'),
-            )
+            ),
           ],
         );
       },

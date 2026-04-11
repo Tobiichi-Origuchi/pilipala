@@ -8,6 +8,7 @@ import 'package:uuid/uuid.dart';
 import '../models/login/index.dart';
 import '../utils/login.dart';
 import 'index.dart';
+import 'package:flutter/foundation.dart';
 
 class LoginHttp {
   static Future queryCaptcha() async {
@@ -68,15 +69,9 @@ class LoginHttp {
       'seccode': seccode,
     };
     FormData formData = FormData.fromMap({...data});
-    var res = await Request().post(
-      Api.webSmsCode,
-      data: formData,
-    );
+    var res = await Request().post(Api.webSmsCode, data: formData);
     if (res.data['code'] == 0) {
-      return {
-        'status': true,
-        'data': res.data['data'],
-      };
+      return {'status': true, 'data': res.data['data']};
     } else {
       return {'status': false, 'data': [], 'msg': res.data['message']};
     }
@@ -97,18 +92,12 @@ class LoginHttp {
       "source": "main_mini",
       "keep": 0,
       "captcha_key": captchaKey,
-      "go_url": HttpString.baseUrl
+      "go_url": HttpString.baseUrl,
     };
     FormData formData = FormData.fromMap({...data});
-    var res = await Request().post(
-      Api.webSmsLogin,
-      data: formData,
-    );
+    var res = await Request().post(Api.webSmsLogin, data: formData);
     if (res.data['code'] == 0) {
-      return {
-        'status': true,
-        'data': res.data['data'],
-      };
+      return {'status': true, 'data': res.data['data']};
     } else {
       return {'status': false, 'data': [], 'msg': res.data['message']};
     }
@@ -142,15 +131,12 @@ class LoginHttp {
         "appId": 1,
         "platform": 3,
         "version": "7.52.0",
-        "abtest": ""
+        "abtest": "",
       },
     };
     // FormData formData = FormData.fromMap({...data});
-    var res = await Request().post(
-      Api.appSmsCode,
-      data: data,
-    );
-    print(res);
+    var res = await Request().post(Api.appSmsCode, data: data);
+    debugPrint(res);
   }
 
   static String buvid() {
@@ -171,8 +157,10 @@ class LoginHttp {
 
   // 获取盐hash跟PubKey
   static Future getWebKey() async {
-    var res = await Request().get(Api.getWebKey,
-        data: {'disable_rcmd': 0, 'local_id': LoginUtils.generateBuvid()});
+    var res = await Request().get(
+      Api.getWebKey,
+      data: {'disable_rcmd': 0, 'local_id': LoginUtils.generateBuvid()},
+    );
     if (res.data['code'] == 0) {
       return {'status': true, 'data': res.data['data']};
     } else {
@@ -188,19 +176,17 @@ class LoginHttp {
     required String rhash,
   }) async {
     dynamic publicKey = RSAKeyParser().parse(key);
-    String passwordEncryptyed =
-        Encrypter(RSA(publicKey: publicKey)).encrypt(rhash + password).base64;
+    String passwordEncryptyed = Encrypter(
+      RSA(publicKey: publicKey),
+    ).encrypt(rhash + password).base64;
     Map<String, dynamic> data = {
       'username': tel,
       'password': passwordEncryptyed,
       'local_id': LoginUtils.generateBuvid(),
       'disable_rcmd': "0",
     };
-    var res = await Request().post(
-      Api.loginInByPwdApi,
-      data: data,
-    );
-    print(res);
+    var res = await Request().post(Api.loginInByPwdApi, data: data);
+    debugPrint(res);
   }
 
   // web端密码登录
@@ -221,19 +207,13 @@ class LoginHttp {
       'validate': validate,
       'seccode': seccode,
       'source': 'main-fe-header',
-      "go_url": HttpString.baseUrl
+      "go_url": HttpString.baseUrl,
     };
     FormData formData = FormData.fromMap({...data});
-    var res = await Request().post(
-      Api.loginInByWebPwd,
-      data: formData,
-    );
+    var res = await Request().post(Api.loginInByWebPwd, data: formData);
     if (res.data['code'] == 0) {
       if (res.data['data']['status'] == 0) {
-        return {
-          'status': true,
-          'data': res.data['data'],
-        };
+        return {'status': true, 'data': res.data['data']};
       } else {
         return {
           'status': false,
@@ -243,11 +223,7 @@ class LoginHttp {
         };
       }
     } else {
-      return {
-        'status': false,
-        'data': [],
-        'msg': res.data['message'],
-      };
+      return {'status': false, 'data': [], 'msg': res.data['message']};
     }
   }
 
@@ -255,10 +231,7 @@ class LoginHttp {
   static Future getWebQrcode() async {
     var res = await Request().get(Api.qrCodeApi);
     if (res.data['code'] == 0) {
-      return {
-        'status': true,
-        'data': res.data['data'],
-      };
+      return {'status': true, 'data': res.data['data']};
     } else {
       return {'status': false, 'data': [], 'msg': res.data['message']};
     }
@@ -266,13 +239,12 @@ class LoginHttp {
 
   // web端二维码轮询登录状态
   static Future queryWebQrcodeStatus(String qrcodeKey) async {
-    var res = await Request()
-        .get(Api.loginInByQrcode, data: {'qrcode_key': qrcodeKey});
+    var res = await Request().get(
+      Api.loginInByQrcode,
+      data: {'qrcode_key': qrcodeKey},
+    );
     if (res.data['data']['code'] == 0) {
-      return {
-        'status': true,
-        'data': res.data['data'],
-      };
+      return {'status': true, 'data': res.data['data']};
     } else {
       return {'status': false, 'data': [], 'msg': res.data['message']};
     }

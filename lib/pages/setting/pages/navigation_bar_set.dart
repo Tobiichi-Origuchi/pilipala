@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:hive/hive.dart';
-import 'package:pilipala/models/common/tab_type.dart';
 import 'package:pilipala/utils/storage.dart';
 
 import '../../../models/common/nav_bar_config.dart';
@@ -22,8 +21,10 @@ class _NavigationbarSetPageState extends State<NavigationBarSetPage> {
   void initState() {
     super.initState();
     defaultNavTabs = defaultNavigationBars;
-    navBarSort = settingStorage
-        .get(SettingBoxKey.navBarSort, defaultValue: [0, 1, 2, 3]);
+    navBarSort = settingStorage.get(
+      SettingBoxKey.navBarSort,
+      defaultValue: [0, 1, 2, 3],
+    );
     // 对 tabData 进行排序
     defaultNavTabs.sort((a, b) {
       int indexA = navBarSort.indexOf(a['id']);
@@ -74,8 +75,8 @@ class _NavigationbarSetPageState extends State<NavigationBarSetPage> {
           },
           title: Text(defaultNavTabs[i]['label']),
           secondary: const Icon(Icons.drag_indicator_rounded),
-        )
-      ]
+        ),
+      ],
     ];
 
     return Scaffold(
@@ -83,15 +84,13 @@ class _NavigationbarSetPageState extends State<NavigationBarSetPage> {
         title: const Text('Navbar编辑'),
         actions: [
           TextButton(onPressed: () => saveEdit(), child: const Text('保存')),
-          const SizedBox(width: 12)
+          const SizedBox(width: 12),
         ],
       ),
       body: ReorderableListView(
         onReorder: onReorder,
         physics: const NeverScrollableScrollPhysics(),
-        footer: SizedBox(
-          height: MediaQuery.of(context).padding.bottom + 30,
-        ),
+        footer: SizedBox(height: MediaQuery.of(context).padding.bottom + 30),
         children: listTiles,
       ),
     );

@@ -26,18 +26,16 @@ class _HistoryPageState extends State<HistoryPage> {
     _futureBuilderFuture = _historyController.queryHistoryList();
     super.initState();
     scrollController = _historyController.scrollController;
-    scrollController.addListener(
-      () {
-        if (scrollController.position.pixels >=
-            scrollController.position.maxScrollExtent - 300) {
-          if (!_historyController.isLoadingMore.value) {
-            EasyThrottle.throttle('history', const Duration(seconds: 1), () {
-              _historyController.onLoad();
-            });
-          }
+    scrollController.addListener(() {
+      if (scrollController.position.pixels >=
+          scrollController.position.maxScrollExtent - 300) {
+        if (!_historyController.isLoadingMore.value) {
+          EasyThrottle.throttle('history', const Duration(seconds: 1), () {
+            _historyController.onLoad();
+          });
         }
-      },
-    );
+      }
+    });
     _historyController.enableMultiple.listen((p0) {
       setState(() {});
     });
@@ -47,8 +45,9 @@ class _HistoryPageState extends State<HistoryPage> {
   onChoose(index) {
     _historyController.historyList[index].checked =
         !_historyController.historyList[index].checked!;
-    _historyController.checkedCount.value =
-        _historyController.historyList.where((item) => item.checked!).length;
+    _historyController.checkedCount.value = _historyController.historyList
+        .where((item) => item.checked!)
+        .length;
     _historyController.historyList.refresh();
   }
 
@@ -71,10 +70,7 @@ class _HistoryPageState extends State<HistoryPage> {
         child1: AppBar(
           titleSpacing: 0,
           centerTitle: false,
-          title: Text(
-            '观看记录',
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
+          title: Text('观看记录', style: Theme.of(context).textTheme.titleMedium),
           actions: [
             IconButton(
               onPressed: () => Get.toNamed('/historySearch'),
@@ -104,9 +100,11 @@ class _HistoryPageState extends State<HistoryPage> {
                 PopupMenuItem<String>(
                   value: 'pause',
                   child: Obx(
-                    () => Text(!_historyController.pauseStatus.value
-                        ? '暂停观看记录'
-                        : '恢复观看记录'),
+                    () => Text(
+                      !_historyController.pauseStatus.value
+                          ? '暂停观看记录'
+                          : '恢复观看记录',
+                    ),
                   ),
                 ),
                 const PopupMenuItem<String>(
@@ -190,23 +188,24 @@ class _HistoryPageState extends State<HistoryPage> {
                       () => _historyController.historyList.isNotEmpty
                           ? SliverList(
                               delegate: SliverChildBuilderDelegate(
-                                  (context, index) {
-                                return HistoryItem(
-                                  videoItem:
-                                      _historyController.historyList[index],
-                                  ctr: _historyController,
-                                  onChoose: () => onChoose(index),
-                                  onUpdateMultiple: () => onUpdateMultiple(),
-                                );
-                              },
-                                  childCount:
-                                      _historyController.historyList.length),
+                                (context, index) {
+                                  return HistoryItem(
+                                    videoItem:
+                                        _historyController.historyList[index],
+                                    ctr: _historyController,
+                                    onChoose: () => onChoose(index),
+                                    onUpdateMultiple: () => onUpdateMultiple(),
+                                  );
+                                },
+                                childCount:
+                                    _historyController.historyList.length,
+                              ),
                             )
                           : _historyController.isLoadingMore.value
-                              ? const SliverToBoxAdapter(
-                                  child: Center(child: Text('加载中')),
-                                )
-                              : const NoData(),
+                          ? const SliverToBoxAdapter(
+                              child: Center(child: Text('加载中')),
+                            )
+                          : const NoData(),
                     );
                   } else {
                     return HttpError(
@@ -217,8 +216,8 @@ class _HistoryPageState extends State<HistoryPage> {
                           RoutePush.loginRedirectPush();
                         } else {
                           setState(() {
-                            _futureBuilderFuture =
-                                _historyController.queryHistoryList();
+                            _futureBuilderFuture = _historyController
+                                .queryHistoryList();
                           });
                         }
                       },
@@ -238,7 +237,7 @@ class _HistoryPageState extends State<HistoryPage> {
               child: SizedBox(
                 height: MediaQuery.of(context).padding.bottom + 10,
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -252,8 +251,8 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
     required this.child1,
     required this.child2,
     required this.visible,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final PreferredSizeWidget child1;
   final PreferredSizeWidget child2;
@@ -266,10 +265,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 500),
       transitionBuilder: (Widget child, Animation<double> animation) {
-        return ScaleTransition(
-          scale: animation,
-          child: child,
-        );
+        return ScaleTransition(scale: animation, child: child);
       },
       child: !visible ? child1 : child2,
     );

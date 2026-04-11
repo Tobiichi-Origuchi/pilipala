@@ -51,7 +51,7 @@ class WhisperDetailController extends GetxController {
         }
         picList = picList.reversed.toList();
       } catch (e) {
-        print('e: $e');
+        debugPrint('e: $e');
       }
 
       if (messageList.isNotEmpty) {

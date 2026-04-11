@@ -43,10 +43,7 @@ class _ReadPageState extends State<ReadPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildTitle(),
-            _buildFutureContent(),
-          ],
+          children: [_buildTitle(), _buildFutureContent()],
         ),
       ),
     );
@@ -78,7 +75,7 @@ class _ReadPageState extends State<ReadPage> {
             PopupMenuItem(
               onTap: controller.onJumpWebview,
               child: const Text('查看原网页'),
-            )
+            ),
           ],
         ),
         const SizedBox(width: 16),
@@ -128,7 +125,11 @@ class _ReadPageState extends State<ReadPage> {
     final List<String> imgList = extractDataSrc(cvData.readInfo!.content!);
     return Padding(
       padding: EdgeInsets.fromLTRB(
-          16, 0, 16, MediaQuery.of(context).padding.bottom + 40),
+        16,
+        0,
+        16,
+        MediaQuery.of(context).padding.bottom + 40,
+      ),
       child: cvData.readInfo!.opus == null
           ? _buildNonOpusContent(cvData, imgList)
           : _buildOpusContent(cvData, picList),
@@ -185,20 +186,20 @@ class _ReadPageState extends State<ReadPage> {
           padding: const EdgeInsets.only(bottom: 20),
           child: _buildAuthorWidget(cvData),
         ),
-        ...cvData.readInfo!.opus!.content!.paragraphs!.map(
-          (ModuleParagraph paragraph) {
-            return Column(
-              children: [
-                if (paragraph.paraType == 1)
-                  _buildTextParagraph(paragraph)
-                else if (paragraph.paraType == 2)
-                  ..._buildPics(paragraph, picList)
-                else
-                  const SizedBox(),
-              ],
-            );
-          },
-        ),
+        ...cvData.readInfo!.opus!.content!.paragraphs!.map((
+          ModuleParagraph paragraph,
+        ) {
+          return Column(
+            children: [
+              if (paragraph.paraType == 1)
+                _buildTextParagraph(paragraph)
+              else if (paragraph.paraType == 2)
+                ..._buildPics(paragraph, picList)
+              else
+                const SizedBox(),
+            ],
+          );
+        }),
       ],
     );
   }
@@ -209,7 +210,8 @@ class _ReadPageState extends State<ReadPage> {
       margin: const EdgeInsets.only(bottom: 10),
       child: SelectableText.rich(
         TextSpan(
-          children: paragraph.text?.nodes?.map((node) {
+          children:
+              paragraph.text?.nodes?.map((node) {
                 return TextHelper.buildTextSpan(node, paragraph.align, context);
               }).toList() ??
               [],
@@ -219,31 +221,26 @@ class _ReadPageState extends State<ReadPage> {
   }
 
   Widget _buildError(String message) {
-    return SizedBox(
-      height: 100,
-      child: Center(
-        child: Text(message),
-      ),
-    );
+    return SizedBox(height: 100, child: Center(child: Text(message)));
   }
 
   Widget _buildLoading() {
     return const SizedBox(
       height: 100,
-      child: Center(
-        child: CircularProgressIndicator(),
-      ),
+      child: Center(child: CircularProgressIndicator()),
     );
   }
 
   Widget _buildStatsWidget(ReadDataModel cvData) {
     return Row(
       children: [
-        StyledText(Utils.CustomStamp_str(
-          timestamp: cvData.readInfo!.publishTime!,
-          date: 'YY-MM-DD hh:mm',
-          toInt: false,
-        )),
+        StyledText(
+          Utils.CustomStamp_str(
+            timestamp: cvData.readInfo!.publishTime!,
+            date: 'YY-MM-DD hh:mm',
+            toInt: false,
+          ),
+        ),
         const SizedBox(width: 10),
         StyledText('${Utils.numFormat(cvData.readInfo!.stats!['view'])}浏览'),
         const StyledText(' · '),
@@ -291,7 +288,8 @@ class _ReadPageState extends State<ReadPage> {
                 StyledText('粉丝: ${Utils.numFormat(author.fans)}'),
                 const SizedBox(width: 10),
                 StyledText(
-                    '文章: ${Utils.numFormat(cvData.readInfo!.totalArtNum)}'),
+                  '文章: ${Utils.numFormat(cvData.readInfo!.totalArtNum)}',
+                ),
               ],
             ),
           ],
@@ -333,7 +331,7 @@ class _ReadPageState extends State<ReadPage> {
 class StyledText extends StatelessWidget {
   final String text;
 
-  const StyledText(this.text, {Key? key}) : super(key: key);
+  const StyledText(this.text, {super.key});
 
   @override
   Widget build(BuildContext context) {

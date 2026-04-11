@@ -55,7 +55,7 @@ class _FollowPageState extends State<FollowPage> {
                     Text('黑名单管理'),
                   ],
                 ),
-              )
+              ),
             ],
           ),
           const SizedBox(width: 6),
@@ -73,26 +73,29 @@ class _FollowPageState extends State<FollowPage> {
                       return Column(
                         children: [
                           TabBar(
-                              controller: _followController.tabController,
-                              isScrollable: true,
-                              tabAlignment: TabAlignment.start,
-                              tabs: [
-                                for (var i in data['data']) ...[
-                                  Tab(text: i.name),
-                                ]
-                              ]),
+                            controller: _followController.tabController,
+                            isScrollable: true,
+                            tabAlignment: TabAlignment.start,
+                            tabs: [
+                              for (var i in data['data']) ...[
+                                Tab(text: i.name),
+                              ],
+                            ],
+                          ),
                           Expanded(
                             child: TabBarView(
                               controller: _followController.tabController,
                               children: [
-                                for (var i = 0;
-                                    i < _followController.tabController.length;
-                                    i++) ...[
+                                for (
+                                  var i = 0;
+                                  i < _followController.tabController.length;
+                                  i++
+                                ) ...[
                                   OwnerFollowList(
                                     ctr: _followController,
                                     tagItem: _followController.followTags[i],
-                                  )
-                                ]
+                                  ),
+                                ],
                               ],
                             ),
                           ),
@@ -111,21 +114,21 @@ class _FollowPageState extends State<FollowPage> {
   }
 }
 
-class _FakeAPI {
-  static const List<String> _kOptions = <String>[
-    'aardvark',
-    'bobcat',
-    'chameleon',
-  ];
-  // Searches the options, but injects a fake "network" delay.
-  static Future<Iterable<String>> search(String query) async {
-    await Future<void>.delayed(
-        const Duration(seconds: 1)); // Fake 1 second delay.
-    if (query == '') {
-      return const Iterable<String>.empty();
-    }
-    return _kOptions.where((String option) {
-      return option.contains(query.toLowerCase());
-    });
-  }
-}
+// class _FakeAPI {
+//   static const List<String> _kOptions = <String>[
+//     'aardvark',
+//     'bobcat',
+//     'chameleon',
+//   ];
+//   // Searches the options, but injects a fake "network" delay.
+//   static Future<Iterable<String>> search(String query) async {
+//     await Future<void>.delayed(
+//         const Duration(seconds: 1)); // Fake 1 second delay.
+//     if (query == '') {
+//       return const Iterable<String>.empty();
+//     }
+//     return _kOptions.where((String option) {
+//       return option.contains(query.toLowerCase());
+//     });
+//   }
+// }

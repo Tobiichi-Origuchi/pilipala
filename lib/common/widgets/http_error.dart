@@ -24,10 +24,7 @@ class HttpError extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SvgPicture.asset(
-              "assets/images/error.svg",
-              height: 200,
-            ),
+            SvgPicture.asset("assets/images/error.svg", height: 200),
             const SizedBox(height: 30),
             Text(
               errMsg ?? '请求异常',
@@ -41,14 +38,15 @@ class HttpError extends StatelessWidget {
                   fn!();
                 },
                 style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.resolveWith((states) {
+                  backgroundColor: WidgetStateProperty.resolveWith((states) {
                     return Theme.of(context).colorScheme.primary.withAlpha(20);
                   }),
                 ),
                 child: Text(
                   btnText ?? '点击重试',
-                  style:
-                      TextStyle(color: Theme.of(context).colorScheme.primary),
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
                 ),
               ),
           ],

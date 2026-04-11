@@ -1,5 +1,6 @@
 import 'package:pilipala/http/danmaku.dart';
 import 'package:pilipala/models/danmaku/dm.pb.dart';
+import 'package:flutter/foundation.dart';
 
 class PlDanmakuController {
   PlDanmakuController(this.cid, this.type);
@@ -21,7 +22,7 @@ class PlDanmakuController {
     try {
       queryDanmaku(calcSegment(progress));
     } catch (e) {
-      print(e);
+      debugPrint('$e');
     }
   }
 
@@ -39,7 +40,9 @@ class PlDanmakuController {
     if (requestedSeg.length > segmentIndex) {
       requestedSeg[segmentIndex] = true;
       final DmSegMobileReply result = await DanmakaHttp.queryDanmaku(
-          cid: cid, segmentIndex: segmentIndex + 1);
+        cid: cid,
+        segmentIndex: segmentIndex + 1,
+      );
       if (result.elems.isNotEmpty) {
         for (var element in result.elems) {
           int pos = element.progress ~/ 100; //每0.1秒存储一次

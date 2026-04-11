@@ -62,76 +62,76 @@ class _LoginPageState extends State<LoginPage> {
                 context: context,
                 builder: (context) {
                   return StatefulBuilder(
-                      builder: (context, StateSetter setState) {
-                    return AlertDialog(
-                      title: Row(
-                        children: [
-                          const Text('扫码登录'),
-                          IconButton(
-                            onPressed: () {
-                              setState(() {});
-                            },
-                            icon: const Icon(Icons.refresh),
-                          ),
-                        ],
-                      ),
-                      contentPadding: const EdgeInsets.fromLTRB(0, 0, 0, 4),
-                      content: AspectRatio(
-                        aspectRatio: 1,
-                        child: Container(
-                          width: 200,
-                          padding: const EdgeInsets.all(12),
-                          child: FutureBuilder(
-                            future: _loginPageCtr.getWebQrcode(),
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.done) {
-                                if (snapshot.data == null) {
-                                  return const SizedBox();
+                    builder: (context, StateSetter setState) {
+                      return AlertDialog(
+                        title: Row(
+                          children: [
+                            const Text('扫码登录'),
+                            IconButton(
+                              onPressed: () {
+                                setState(() {});
+                              },
+                              icon: const Icon(Icons.refresh),
+                            ),
+                          ],
+                        ),
+                        contentPadding: const EdgeInsets.fromLTRB(0, 0, 0, 4),
+                        content: AspectRatio(
+                          aspectRatio: 1,
+                          child: Container(
+                            width: 200,
+                            padding: const EdgeInsets.all(12),
+                            child: FutureBuilder(
+                              future: _loginPageCtr.getWebQrcode(),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.done) {
+                                  if (snapshot.data == null) {
+                                    return const SizedBox();
+                                  }
+                                  Map data = snapshot.data as Map;
+                                  return QrImageView(
+                                    data: data['data']['url'],
+                                    backgroundColor: Colors.white,
+                                  );
+                                } else {
+                                  return const Center(
+                                    child: SizedBox(
+                                      width: 40,
+                                      height: 40,
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                  );
                                 }
-                                Map data = snapshot.data as Map;
-                                return QrImageView(
-                                  data: data['data']['url'],
-                                  backgroundColor: Colors.white,
-                                );
-                              } else {
-                                return const Center(
-                                  child: SizedBox(
-                                    width: 40,
-                                    height: 40,
-                                    child: CircularProgressIndicator(),
-                                  ),
-                                );
-                              }
-                            },
-                          ),
-                        ),
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () {},
-                          child: Obx(() {
-                            return Text(
-                              '有效期: ${_loginPageCtr.validSeconds.value}s',
-                              style: Theme.of(context).textTheme.titleMedium,
-                            );
-                          }),
-                        ),
-                        TextButton(
-                          onPressed: () {},
-                          child: Text(
-                            '检查登录状态',
-                            style: TextStyle(
-                              fontSize: Theme.of(context)
-                                  .textTheme
-                                  .titleMedium!
-                                  .fontSize,
+                              },
                             ),
                           ),
-                        )
-                      ],
-                    );
-                  });
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () {},
+                            child: Obx(() {
+                              return Text(
+                                '有效期: ${_loginPageCtr.validSeconds.value}s',
+                                style: Theme.of(context).textTheme.titleMedium,
+                              );
+                            }),
+                          ),
+                          TextButton(
+                            onPressed: () {},
+                            child: Text(
+                              '检查登录状态',
+                              style: TextStyle(
+                                fontSize: Theme.of(
+                                  context,
+                                ).textTheme.titleMedium!.fontSize,
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  );
                 },
               ).then((value) {
                 _loginPageCtr.validTimer!.cancel();
@@ -163,10 +163,11 @@ class _LoginPageState extends State<LoginPage> {
                   Text(
                     '登录',
                     style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                        letterSpacing: 1,
-                        height: 2.1,
-                        fontSize: 34,
-                        fontWeight: FontWeight.w500),
+                      letterSpacing: 1,
+                      height: 2.1,
+                      fontSize: 34,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                   Text(
                     '请使用您的 BiliBili 账号登录。',
@@ -203,14 +204,16 @@ class _LoginPageState extends State<LoginPage> {
                       TextButton(
                         style: TextButton.styleFrom(
                           padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                          foregroundColor:
-                              Theme.of(context).colorScheme.onPrimary,
-                          backgroundColor:
-                              Theme.of(context).colorScheme.primary, // 设置按钮背景色
+                          foregroundColor: Theme.of(
+                            context,
+                          ).colorScheme.onPrimary,
+                          backgroundColor: Theme.of(
+                            context,
+                          ).colorScheme.primary, // 设置按钮背景色
                         ),
                         onPressed: () => _loginPageCtr.nextStep(),
                         child: const Text('下一步'),
-                      )
+                      ),
                     ],
                   ),
                 ],
@@ -236,31 +239,29 @@ class _LoginPageState extends State<LoginPage> {
                             children: [
                               Text(
                                 '密码登录',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleLarge!
+                                style: Theme.of(context).textTheme.titleLarge!
                                     .copyWith(
-                                        letterSpacing: 1,
-                                        height: 2.1,
-                                        fontSize: 34,
-                                        fontWeight: FontWeight.w500),
+                                      letterSpacing: 1,
+                                      height: 2.1,
+                                      fontSize: 34,
+                                      fontWeight: FontWeight.w500,
+                                    ),
                               ),
                               const SizedBox(width: 4),
                               IconButton(
                                 style: ButtonStyle(
                                   backgroundColor:
-                                      MaterialStateProperty.resolveWith(
-                                          (states) {
-                                    return Theme.of(context)
-                                        .colorScheme
-                                        .primary
-                                        .withOpacity(0.1);
-                                  }),
+                                      WidgetStateProperty.resolveWith((states) {
+                                        return Theme.of(context)
+                                            .colorScheme
+                                            .primary
+                                            .withValues(alpha: 0.1);
+                                      }),
                                 ),
                                 onPressed: () =>
                                     _loginPageCtr.changeLoginType(),
                                 icon: const Icon(Icons.swap_vert_outlined),
-                              )
+                              ),
                             ],
                           ),
                           Text(
@@ -269,46 +270,44 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           Container(
                             margin: const EdgeInsets.only(top: 38, bottom: 15),
-                            child: Obx(() => TextFormField(
-                                  controller:
-                                      _loginPageCtr.passwordTextController,
-                                  focusNode:
-                                      _loginPageCtr.passwordTextFieldNode,
-                                  keyboardType: TextInputType.visiblePassword,
-                                  obscureText:
-                                      _loginPageCtr.passwordVisible.value,
-                                  decoration: InputDecoration(
-                                    isDense: true,
-                                    labelText: '输入密码',
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(6.0),
-                                    ),
-                                    suffixIcon: IconButton(
-                                      icon: Icon(
-                                        _loginPageCtr.passwordVisible.value
-                                            ? Icons.visibility
-                                            : Icons.visibility_off,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
-                                      ),
-                                      onPressed: () {
-                                        _loginPageCtr.passwordVisible.value =
-                                            !_loginPageCtr
-                                                .passwordVisible.value;
-                                      },
-                                    ),
+                            child: Obx(
+                              () => TextFormField(
+                                controller:
+                                    _loginPageCtr.passwordTextController,
+                                focusNode: _loginPageCtr.passwordTextFieldNode,
+                                keyboardType: TextInputType.visiblePassword,
+                                obscureText:
+                                    _loginPageCtr.passwordVisible.value,
+                                decoration: InputDecoration(
+                                  isDense: true,
+                                  labelText: '输入密码',
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(6.0),
                                   ),
-                                  // 校验用户名
-                                  validator: (v) {
-                                    return v!.trim().isNotEmpty
-                                        ? null
-                                        : "密码不能为空";
-                                  },
-                                  onSaved: (val) {
-                                    print(val);
-                                  },
-                                )),
+                                  suffixIcon: IconButton(
+                                    icon: Icon(
+                                      _loginPageCtr.passwordVisible.value
+                                          ? Icons.visibility
+                                          : Icons.visibility_off,
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.primary,
+                                    ),
+                                    onPressed: () {
+                                      _loginPageCtr.passwordVisible.value =
+                                          !_loginPageCtr.passwordVisible.value;
+                                    },
+                                  ),
+                                ),
+                                // 校验用户名
+                                validator: (v) {
+                                  return v!.trim().isNotEmpty ? null : "密码不能为空";
+                                },
+                                onSaved: (val) {
+                                  debugPrint(val);
+                                },
+                              ),
+                            ),
                           ),
                           const Spacer(),
                           Row(
@@ -321,18 +320,23 @@ class _LoginPageState extends State<LoginPage> {
                               const SizedBox(width: 15),
                               TextButton(
                                 style: TextButton.styleFrom(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                                  foregroundColor:
-                                      Theme.of(context).colorScheme.onPrimary,
-                                  backgroundColor: Theme.of(context)
-                                      .colorScheme
-                                      .primary, // 设置按钮背景色
+                                  padding: const EdgeInsets.fromLTRB(
+                                    20,
+                                    0,
+                                    20,
+                                    0,
+                                  ),
+                                  foregroundColor: Theme.of(
+                                    context,
+                                  ).colorScheme.onPrimary,
+                                  backgroundColor: Theme.of(
+                                    context,
+                                  ).colorScheme.primary, // 设置按钮背景色
                                 ),
                                 onPressed: () =>
                                     _loginPageCtr.loginInByWebPassword(),
                                 child: const Text('确认登录'),
-                              )
+                              ),
                             ],
                           ),
                         ],
@@ -348,31 +352,29 @@ class _LoginPageState extends State<LoginPage> {
                             children: [
                               Text(
                                 '验证码登录',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleLarge!
+                                style: Theme.of(context).textTheme.titleLarge!
                                     .copyWith(
-                                        letterSpacing: 1,
-                                        height: 2.1,
-                                        fontSize: 34,
-                                        fontWeight: FontWeight.w500),
+                                      letterSpacing: 1,
+                                      height: 2.1,
+                                      fontSize: 34,
+                                      fontWeight: FontWeight.w500,
+                                    ),
                               ),
                               const SizedBox(width: 4),
                               IconButton(
                                 style: ButtonStyle(
                                   backgroundColor:
-                                      MaterialStateProperty.resolveWith(
-                                          (states) {
-                                    return Theme.of(context)
-                                        .colorScheme
-                                        .primary
-                                        .withOpacity(0.1);
-                                  }),
+                                      WidgetStateProperty.resolveWith((states) {
+                                        return Theme.of(context)
+                                            .colorScheme
+                                            .primary
+                                            .withValues(alpha: 0.1);
+                                      }),
                                 ),
                                 onPressed: () =>
                                     _loginPageCtr.changeLoginType(),
                                 icon: const Icon(Icons.swap_vert_outlined),
-                              )
+                              ),
                             ],
                           ),
                           Text(
@@ -411,19 +413,25 @@ class _LoginPageState extends State<LoginPage> {
                                     top: 0,
                                     child: Center(
                                       child: TextButton(
-                                          onPressed: _loginPageCtr
-                                                  .smsCodeSendStatus.value
-                                              ? null
-                                              : () =>
+                                        onPressed:
+                                            _loginPageCtr
+                                                .smsCodeSendStatus
+                                                .value
+                                            ? null
+                                            : () =>
                                                   _loginPageCtr.getWebMsgCode(),
-                                          child: _loginPageCtr
-                                                  .smsCodeSendStatus.value
-                                              ? Text(
-                                                  '重新获取(${_loginPageCtr.seconds.value}s)')
-                                              : const Text('获取验证码')),
+                                        child:
+                                            _loginPageCtr
+                                                .smsCodeSendStatus
+                                                .value
+                                            ? Text(
+                                                '重新获取(${_loginPageCtr.seconds.value}s)',
+                                              )
+                                            : const Text('获取验证码'),
+                                      ),
                                     ),
                                   );
-                                })
+                                }),
                               ],
                             ),
                           ),
@@ -438,17 +446,22 @@ class _LoginPageState extends State<LoginPage> {
                               const SizedBox(width: 15),
                               TextButton(
                                 style: TextButton.styleFrom(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                                  foregroundColor:
-                                      Theme.of(context).colorScheme.onPrimary,
-                                  backgroundColor: Theme.of(context)
-                                      .colorScheme
-                                      .primary, // 设置按钮背景色
+                                  padding: const EdgeInsets.fromLTRB(
+                                    20,
+                                    0,
+                                    20,
+                                    0,
+                                  ),
+                                  foregroundColor: Theme.of(
+                                    context,
+                                  ).colorScheme.onPrimary,
+                                  backgroundColor: Theme.of(
+                                    context,
+                                  ).colorScheme.primary, // 设置按钮背景色
                                 ),
                                 onPressed: () => _loginPageCtr.loginInByCode(),
                                 child: const Text('确认登录'),
-                              )
+                              ),
                             ],
                           ),
                         ],

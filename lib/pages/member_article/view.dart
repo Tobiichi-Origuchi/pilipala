@@ -38,9 +38,12 @@ class _MemberArticlePageState extends State<MemberArticlePage> {
     if (scrollController.position.pixels >=
         scrollController.position.maxScrollExtent - 200) {
       EasyThrottle.throttle(
-          'member_archives', const Duration(milliseconds: 500), () {
-        _memberArticleController.getMemberArticle('onLoad');
-      });
+        'member_archives',
+        const Duration(milliseconds: 500),
+        () {
+          _memberArticleController.getMemberArticle('onLoad');
+        },
+      );
     }
   }
 
@@ -85,7 +88,9 @@ class _MemberArticlePageState extends State<MemberArticlePage> {
                 separatorBuilder: (BuildContext context, int index) {
                   return Divider(
                     height: 10,
-                    color: Theme.of(context).dividerColor.withOpacity(0.15),
+                    color: Theme.of(
+                      context,
+                    ).dividerColor.withValues(alpha: 0.15),
                   );
                 },
                 itemBuilder: (BuildContext context, int index) {
@@ -94,9 +99,7 @@ class _MemberArticlePageState extends State<MemberArticlePage> {
               )
             : const CustomScrollView(
                 physics: NeverScrollableScrollPhysics(),
-                slivers: [
-                  NoData(),
-                ],
+                slivers: [NoData()],
               ),
       );
     } else {
@@ -107,11 +110,14 @@ class _MemberArticlePageState extends State<MemberArticlePage> {
   Widget _buildListItem(dynamic item) {
     return ListTile(
       onTap: () {
-        Get.toNamed('/opus', parameters: {
-          'title': item.content,
-          'id': item.opusId,
-          'articleType': 'opus',
-        });
+        Get.toNamed(
+          '/opus',
+          parameters: {
+            'title': item.content,
+            'id': item.opusId,
+            'articleType': 'opus',
+          },
+        );
       },
       leading: NetworkImgLayer(
         width: 50,
@@ -119,11 +125,7 @@ class _MemberArticlePageState extends State<MemberArticlePage> {
         type: 'emote',
         src: item.cover['url'],
       ),
-      title: Text(
-        item.content,
-        maxLines: 2,
-        overflow: TextOverflow.ellipsis,
-      ),
+      title: Text(item.content, maxLines: 2, overflow: TextOverflow.ellipsis),
       subtitle: Padding(
         padding: const EdgeInsets.only(top: 4),
         child: Text(
@@ -142,10 +144,7 @@ class _MemberArticlePageState extends State<MemberArticlePage> {
       physics: const NeverScrollableScrollPhysics(),
       slivers: [
         SliverToBoxAdapter(
-          child: HttpError(
-            errMsg: errMsg,
-            fn: () {},
-          ),
+          child: HttpError(errMsg: errMsg, fn: () {}),
         ),
       ],
     );

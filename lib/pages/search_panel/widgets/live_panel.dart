@@ -9,17 +9,20 @@ import 'package:pilipala/utils/utils.dart';
 Widget searchLivePanel(BuildContext context, ctr, list) {
   return Padding(
     padding: const EdgeInsets.only(
-        left: StyleString.safeSpace, right: StyleString.safeSpace),
+      left: StyleString.safeSpace,
+      right: StyleString.safeSpace,
+    ),
     child: GridView.builder(
       primary: false,
       controller: ctr!.scrollController,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: StyleString.cardSpace + 2,
-          mainAxisSpacing: StyleString.cardSpace + 3,
-          mainAxisExtent:
-              MediaQuery.sizeOf(context).width / 2 / StyleString.aspectRatio +
-                  MediaQuery.textScalerOf(context).scale(66.0)),
+        crossAxisCount: 2,
+        crossAxisSpacing: StyleString.cardSpace + 2,
+        mainAxisSpacing: StyleString.cardSpace + 3,
+        mainAxisExtent:
+            MediaQuery.sizeOf(context).width / 2 / StyleString.aspectRatio +
+            MediaQuery.textScalerOf(context).scale(66.0),
+      ),
       itemCount: list.length,
       itemBuilder: (context, index) {
         return LiveItem(liveItem: list![index]);
@@ -30,7 +33,7 @@ Widget searchLivePanel(BuildContext context, ctr, list) {
 
 class LiveItem extends StatelessWidget {
   final dynamic liveItem;
-  const LiveItem({Key? key, required this.liveItem}) : super(key: key);
+  const LiveItem({super.key, required this.liveItem});
 
   @override
   Widget build(BuildContext context) {
@@ -41,53 +44,54 @@ class LiveItem extends StatelessWidget {
       margin: EdgeInsets.zero,
       child: InkWell(
         onTap: () async {
-          Get.toNamed('/liveRoom?roomid=${liveItem.roomid}',
-              arguments: {'liveItem': liveItem, 'heroTag': heroTag});
+          Get.toNamed(
+            '/liveRoom?roomid=${liveItem.roomid}',
+            arguments: {'liveItem': liveItem, 'heroTag': heroTag},
+          );
         },
-        onLongPress: () => imageSaveDialog(
-          context,
-          liveItem,
-          SmartDialog.dismiss,
-        ),
+        onLongPress: () =>
+            imageSaveDialog(context, liveItem, SmartDialog.dismiss),
         child: Column(
           children: [
             ClipRRect(
               borderRadius: const BorderRadius.all(StyleString.imgRadius),
               child: AspectRatio(
                 aspectRatio: StyleString.aspectRatio,
-                child: LayoutBuilder(builder: (context, boxConstraints) {
-                  double maxWidth = boxConstraints.maxWidth;
-                  double maxHeight = boxConstraints.maxHeight;
-                  return Stack(
-                    children: [
-                      Hero(
-                        tag: heroTag,
-                        child: NetworkImgLayer(
-                          src: liveItem.cover,
-                          type: 'emote',
-                          width: maxWidth,
-                          height: maxHeight,
-                        ),
-                      ),
-                      Positioned(
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        child: AnimatedOpacity(
-                          opacity: 1,
-                          duration: const Duration(milliseconds: 200),
-                          child: LiveStat(
-                            online: liveItem.online,
-                            cateName: liveItem.cateName,
+                child: LayoutBuilder(
+                  builder: (context, boxConstraints) {
+                    double maxWidth = boxConstraints.maxWidth;
+                    double maxHeight = boxConstraints.maxHeight;
+                    return Stack(
+                      children: [
+                        Hero(
+                          tag: heroTag,
+                          child: NetworkImgLayer(
+                            src: liveItem.cover,
+                            type: 'emote',
+                            width: maxWidth,
+                            height: maxHeight,
                           ),
                         ),
-                      ),
-                    ],
-                  );
-                }),
+                        Positioned(
+                          left: 0,
+                          right: 0,
+                          bottom: 0,
+                          child: AnimatedOpacity(
+                            opacity: 1,
+                            duration: const Duration(milliseconds: 200),
+                            child: LiveStat(
+                              online: liveItem.online,
+                              cateName: liveItem.cateName,
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
               ),
             ),
-            LiveContent(liveItem: liveItem)
+            LiveContent(liveItem: liveItem),
           ],
         ),
       ),
@@ -97,7 +101,7 @@ class LiveItem extends StatelessWidget {
 
 class LiveContent extends StatelessWidget {
   final dynamic liveItem;
-  const LiveContent({Key? key, required this.liveItem}) : super(key: key);
+  const LiveContent({super.key, required this.liveItem});
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -121,7 +125,7 @@ class LiveContent extends StatelessWidget {
                             : Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
-                  ]
+                  ],
                 ],
               ),
             ),
@@ -147,8 +151,7 @@ class LiveStat extends StatelessWidget {
   final int? online;
   final String? cateName;
 
-  const LiveStat({Key? key, required this.online, this.cateName})
-      : super(key: key);
+  const LiveStat({super.key, required this.online, this.cateName});
 
   @override
   Widget build(BuildContext context) {
@@ -159,10 +162,7 @@ class LiveStat extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: <Color>[
-            Colors.transparent,
-            Colors.black54,
-          ],
+          colors: <Color>[Colors.transparent, Colors.black54],
           tileMode: TileMode.mirror,
         ),
       ),
@@ -176,7 +176,7 @@ class LiveStat extends StatelessWidget {
           Text(
             '围观:${online.toString()}',
             style: const TextStyle(fontSize: 11, color: Colors.white),
-          )
+          ),
         ],
       ),
     );

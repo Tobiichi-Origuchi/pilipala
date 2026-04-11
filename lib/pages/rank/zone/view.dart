@@ -10,7 +10,7 @@ import 'package:pilipala/pages/rank/zone/index.dart';
 import 'package:pilipala/utils/main_stream.dart';
 
 class ZonePage extends StatefulWidget {
-  const ZonePage({Key? key, required this.rid}) : super(key: key);
+  const ZonePage({super.key, required this.rid});
 
   final int rid;
 
@@ -34,18 +34,16 @@ class _ZonePageState extends State<ZonePage>
     _zoneController = Get.put(ZoneController(), tag: widget.rid.toString());
     _futureBuilderFuture = _zoneController.queryRankFeed('init', widget.rid);
     scrollController = _zoneController.scrollController;
-    scrollController.addListener(
-      () {
-        if (scrollController.position.pixels >=
-            scrollController.position.maxScrollExtent - 200) {
-          if (!_zoneController.isLoadingMore) {
-            _zoneController.isLoadingMore = true;
-            _zoneController.onLoad();
-          }
+    scrollController.addListener(() {
+      if (scrollController.position.pixels >=
+          scrollController.position.maxScrollExtent - 200) {
+        if (!_zoneController.isLoadingMore) {
+          _zoneController.isLoadingMore = true;
+          _zoneController.onLoad();
         }
-        handleScrollEvent(scrollController);
-      },
-    );
+      }
+      handleScrollEvent(scrollController);
+    });
   }
 
   @override
@@ -66,8 +64,12 @@ class _ZonePageState extends State<ZonePage>
         slivers: [
           SliverPadding(
             // 单列布局 EdgeInsets.zero
-            padding:
-                const EdgeInsets.fromLTRB(0, StyleString.safeSpace - 5, 0, 0),
+            padding: const EdgeInsets.fromLTRB(
+              0,
+              StyleString.safeSpace - 5,
+              0,
+              0,
+            ),
             sliver: FutureBuilder(
               future: _futureBuilderFuture,
               builder: (context, snapshot) {
@@ -89,8 +91,10 @@ class _ZonePageState extends State<ZonePage>
                       errMsg: data['msg'],
                       fn: () {
                         setState(() {
-                          _futureBuilderFuture =
-                              _zoneController.queryRankFeed('init', widget.rid);
+                          _futureBuilderFuture = _zoneController.queryRankFeed(
+                            'init',
+                            widget.rid,
+                          );
                         });
                       },
                     );
@@ -107,10 +111,8 @@ class _ZonePageState extends State<ZonePage>
             ),
           ),
           SliverToBoxAdapter(
-            child: SizedBox(
-              height: MediaQuery.of(context).padding.bottom + 10,
-            ),
-          )
+            child: SizedBox(height: MediaQuery.of(context).padding.bottom + 10),
+          ),
         ],
       ),
     );

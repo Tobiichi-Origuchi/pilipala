@@ -9,11 +9,7 @@ import 'package:pilipala/utils/feed_back.dart';
 import 'package:pilipala/utils/storage.dart';
 
 class VideoReplyController extends GetxController {
-  VideoReplyController(
-    this.aid,
-    this.rpid,
-    this.replyLevel,
-  );
+  VideoReplyController(this.aid, this.rpid, this.replyLevel);
   // 视频aid 请求时使用的oid
   int? aid;
   // 层级 2为楼中楼
@@ -92,8 +88,12 @@ class VideoReplyController extends GetxController {
       if (type == 'init') {
         // 添加置顶回复
         if (res['data'].upper.top != null) {
-          final bool flag = res['data'].topReplies.any((ReplyItemModel reply) =>
-              reply.rpid == res['data'].upper.top.rpid) as bool;
+          final bool flag =
+              res['data'].topReplies.any(
+                    (ReplyItemModel reply) =>
+                        reply.rpid == res['data'].upper.top.rpid,
+                  )
+                  as bool;
           if (!flag) {
             replies.insert(0, res['data'].upper.top);
           }
@@ -126,7 +126,6 @@ class VideoReplyController extends GetxController {
         case ReplySortType.like:
           _sortType = ReplySortType.time;
           break;
-        default:
       }
       sortTypeTitle.value = _sortType.titles;
       sortTypeLabel.value = _sortType.labels;

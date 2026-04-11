@@ -33,11 +33,14 @@ class DynamicDetailController extends GetxController {
     item = Get.arguments['item'];
     floor = Get.arguments['floor'];
     if (floor == 1) {
-      acount.value =
-          int.parse(item!.modules!.moduleStat!.comment!.count ?? '0');
+      acount.value = int.parse(
+        item!.modules!.moduleStat!.comment!.count ?? '0',
+      );
     }
-    int deaultReplySortIndex =
-        setting.get(SettingBoxKey.replySortType, defaultValue: 0);
+    int deaultReplySortIndex = setting.get(
+      SettingBoxKey.replySortType,
+      defaultValue: 0,
+    );
     if (deaultReplySortIndex == 2) {
       setting.put(SettingBoxKey.replySortType, 0);
       deaultReplySortIndex = 0;
@@ -72,9 +75,9 @@ class DynamicDetailController extends GetxController {
       if (reqType == 'init') {
         // 添加置顶回复
         if (res['data'].upper.top != null) {
-          bool flag = res['data']
-              .topReplies
-              .any((reply) => reply.rpid == res['data'].upper.top.rpid);
+          bool flag = res['data'].topReplies.any(
+            (reply) => reply.rpid == res['data'].upper.top.rpid,
+          );
           if (!flag) {
             replies.insert(0, res['data'].upper.top);
           }
@@ -100,7 +103,6 @@ class DynamicDetailController extends GetxController {
       case ReplySortType.like:
         _sortType = ReplySortType.time;
         break;
-      default:
     }
     sortTypeTitle.value = _sortType.titles;
     sortTypeLabel.value = _sortType.labels;

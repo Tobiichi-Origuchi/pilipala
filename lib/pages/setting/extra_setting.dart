@@ -31,21 +31,31 @@ class _ExtraSettingState extends State<ExtraSetting> {
   void initState() {
     super.initState();
     // 默认优先显示最新评论
-    defaultReplySort =
-        setting.get(SettingBoxKey.replySortType, defaultValue: 0);
+    defaultReplySort = setting.get(
+      SettingBoxKey.replySortType,
+      defaultValue: 0,
+    );
     if (defaultReplySort == 2) {
       setting.put(SettingBoxKey.replySortType, 0);
       defaultReplySort = 0;
     }
     // 优先展示全部动态 all
-    defaultDynamicType =
-        setting.get(SettingBoxKey.defaultDynamicType, defaultValue: 0);
-    enableSystemProxy =
-        setting.get(SettingBoxKey.enableSystemProxy, defaultValue: false);
-    defaultSystemProxyHost =
-        localCache.get(LocalCacheKey.systemProxyHost, defaultValue: '');
-    defaultSystemProxyPort =
-        localCache.get(LocalCacheKey.systemProxyPort, defaultValue: '');
+    defaultDynamicType = setting.get(
+      SettingBoxKey.defaultDynamicType,
+      defaultValue: 0,
+    );
+    enableSystemProxy = setting.get(
+      SettingBoxKey.enableSystemProxy,
+      defaultValue: false,
+    );
+    defaultSystemProxyHost = localCache.get(
+      LocalCacheKey.systemProxyHost,
+      defaultValue: '',
+    );
+    defaultSystemProxyPort = localCache.get(
+      LocalCacheKey.systemProxyPort,
+      defaultValue: '',
+    );
   }
 
   // 设置代理
@@ -115,7 +125,7 @@ class _ExtraSettingState extends State<ExtraSetting> {
                 // Request.dio;
               },
               child: const Text('确认'),
-            )
+            ),
           ],
         );
       },
@@ -125,18 +135,14 @@ class _ExtraSettingState extends State<ExtraSetting> {
   @override
   Widget build(BuildContext context) {
     TextStyle titleStyle = Theme.of(context).textTheme.titleMedium!;
-    TextStyle subTitleStyle = Theme.of(context)
-        .textTheme
-        .labelMedium!
-        .copyWith(color: Theme.of(context).colorScheme.outline);
+    TextStyle subTitleStyle = Theme.of(context).textTheme.labelMedium!.copyWith(
+      color: Theme.of(context).colorScheme.outline,
+    );
     return Scaffold(
       appBar: AppBar(
         centerTitle: false,
         titleSpacing: 0,
-        title: Text(
-          '其他设置',
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
+        title: Text('其他设置', style: Theme.of(context).textTheme.titleMedium),
       ),
       body: ListView(
         children: [
@@ -191,11 +197,12 @@ class _ExtraSettingState extends State<ExtraSetting> {
                 context: context,
                 builder: (context) {
                   return SelectDialog<int>(
-                      title: '评论展示',
-                      value: defaultReplySort,
-                      values: ReplySortType.values.map((e) {
-                        return {'title': e.titles, 'value': e.index};
-                      }).toList());
+                    title: '评论展示',
+                    value: defaultReplySort,
+                    values: ReplySortType.values.map((e) {
+                      return {'title': e.titles, 'value': e.index};
+                    }).toList(),
+                  );
                 },
               );
               if (result != null) {
@@ -217,11 +224,12 @@ class _ExtraSettingState extends State<ExtraSetting> {
                 context: context,
                 builder: (context) {
                   return SelectDialog<int>(
-                      title: '动态展示',
-                      value: defaultDynamicType,
-                      values: DynamicsType.values.map((e) {
-                        return {'title': e.labels, 'value': e.index};
-                      }).toList());
+                    title: '动态展示',
+                    value: defaultDynamicType,
+                    values: DynamicsType.values.map((e) {
+                      return {'title': e.labels, 'value': e.index};
+                    }).toList(),
+                  );
                 },
               );
               if (result != null) {
@@ -240,10 +248,11 @@ class _ExtraSettingState extends State<ExtraSetting> {
               alignment: Alignment.centerRight,
               scale: 0.8,
               child: Switch(
-                thumbIcon: MaterialStateProperty.resolveWith<Icon?>(
-                    (Set<MaterialState> states) {
+                thumbIcon: WidgetStateProperty.resolveWith<Icon?>((
+                  Set<WidgetState> states,
+                ) {
                   if (states.isNotEmpty &&
-                      states.first == MaterialState.selected) {
+                      states.first == WidgetState.selected) {
                     return const Icon(Icons.done);
                   }
                   return null; // All other states will use the default thumbIcon.
@@ -251,7 +260,9 @@ class _ExtraSettingState extends State<ExtraSetting> {
                 value: enableSystemProxy,
                 onChanged: (val) {
                   setting.put(
-                      SettingBoxKey.enableSystemProxy, !enableSystemProxy);
+                    SettingBoxKey.enableSystemProxy,
+                    !enableSystemProxy,
+                  );
                   setState(() {
                     enableSystemProxy = !enableSystemProxy;
                   });

@@ -35,8 +35,9 @@ class _MainAppState extends State<MainApp> with SingleTickerProviderStateMixin {
   void initState() {
     super.initState();
     _lastSelectTime = DateTime.now().millisecondsSinceEpoch;
-    _mainController.pageController =
-        PageController(initialPage: _mainController.selectedIndex);
+    _mainController.pageController = PageController(
+      initialPage: _mainController.selectedIndex,
+    );
     enableMYBar = setting.get(SettingBoxKey.enableMYBar, defaultValue: true);
     controllerInit();
   }
@@ -120,14 +121,15 @@ class _MainAppState extends State<MainApp> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     Box localCache = GStrorage.localCache;
     double statusBarHeight = MediaQuery.of(context).padding.top;
-    double sheetHeight = MediaQuery.sizeOf(context).height -
+    double sheetHeight =
+        MediaQuery.sizeOf(context).height -
         MediaQuery.of(context).padding.top -
         MediaQuery.sizeOf(context).width * 9 / 16;
     localCache.put('sheetHeight', sheetHeight);
     localCache.put('statusBarHeight', statusBarHeight);
     return PopScope(
       canPop: false,
-      onPopInvoked: (bool didPop) async {
+      onPopInvokedWithResult: (bool didPop, Object? result) async {
         _mainController.onBackPressed(context);
       },
       child: Scaffold(
@@ -146,20 +148,19 @@ class _MainAppState extends State<MainApp> with SingleTickerProviderStateMixin {
                     height: MediaQuery.of(context).size.height,
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-                          colors: [
-                            Theme.of(context)
-                                .colorScheme
-                                .primary
-                                .withOpacity(0.7),
-                            Theme.of(context).colorScheme.surface,
-                            Theme.of(context)
-                                .colorScheme
-                                .surface
-                                .withOpacity(0.3),
-                          ],
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          stops: const [0.1, 0.3, 5]),
+                        colors: [
+                          Theme.of(
+                            context,
+                          ).colorScheme.primary.withValues(alpha: 0.7),
+                          Theme.of(context).colorScheme.surface,
+                          Theme.of(
+                            context,
+                          ).colorScheme.surface.withValues(alpha: 0.3),
+                        ],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        stops: const [0.1, 0.3, 5],
+                      ),
                     ),
                   ),
                 ),
@@ -195,15 +196,23 @@ class _MainAppState extends State<MainApp> with SingleTickerProviderStateMixin {
                                 ..._mainController.navigationBars.map((e) {
                                   return NavigationDestination(
                                     icon: Badge(
-                                      label: _mainController
-                                                  .dynamicBadgeType.value ==
+                                      label:
+                                          _mainController
+                                                  .dynamicBadgeType
+                                                  .value ==
                                               DynamicBadgeMode.number
                                           ? Text(e['count'].toString())
                                           : null,
-                                      padding:
-                                          const EdgeInsets.fromLTRB(6, 0, 6, 0),
-                                      isLabelVisible: _mainController
-                                                  .dynamicBadgeType.value !=
+                                      padding: const EdgeInsets.fromLTRB(
+                                        6,
+                                        0,
+                                        6,
+                                        0,
+                                      ),
+                                      isLabelVisible:
+                                          _mainController
+                                                  .dynamicBadgeType
+                                                  .value !=
                                               DynamicBadgeMode.hidden &&
                                           e['count'] > 0,
                                       child: e['icon'],
@@ -211,7 +220,7 @@ class _MainAppState extends State<MainApp> with SingleTickerProviderStateMixin {
                                     selectedIcon: e['selectIcon'],
                                     label: e['label'],
                                   );
-                                }).toList(),
+                                }),
                               ],
                             ),
                           )
@@ -227,15 +236,23 @@ class _MainAppState extends State<MainApp> with SingleTickerProviderStateMixin {
                                 ..._mainController.navigationBars.map((e) {
                                   return BottomNavigationBarItem(
                                     icon: Badge(
-                                      label: _mainController
-                                                  .dynamicBadgeType.value ==
+                                      label:
+                                          _mainController
+                                                  .dynamicBadgeType
+                                                  .value ==
                                               DynamicBadgeMode.number
                                           ? Text(e['count'].toString())
                                           : null,
-                                      padding:
-                                          const EdgeInsets.fromLTRB(6, 0, 6, 0),
-                                      isLabelVisible: _mainController
-                                                  .dynamicBadgeType.value !=
+                                      padding: const EdgeInsets.fromLTRB(
+                                        6,
+                                        0,
+                                        6,
+                                        0,
+                                      ),
+                                      isLabelVisible:
+                                          _mainController
+                                                  .dynamicBadgeType
+                                                  .value !=
                                               DynamicBadgeMode.hidden &&
                                           e['count'] > 0,
                                       child: e['icon'],
@@ -243,7 +260,7 @@ class _MainAppState extends State<MainApp> with SingleTickerProviderStateMixin {
                                     activeIcon: e['selectIcon'],
                                     label: e['label'],
                                   );
-                                }).toList(),
+                                }),
                               ],
                             ),
                           ),

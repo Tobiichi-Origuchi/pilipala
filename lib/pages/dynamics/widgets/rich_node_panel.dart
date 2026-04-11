@@ -8,8 +8,9 @@ import 'package:pilipala/http/search.dart';
 InlineSpan richNode(item, context) {
   final spacer = _VerticalSpaceSpan(0.0);
   try {
-    TextStyle authorStyle =
-        TextStyle(color: Theme.of(context).colorScheme.primary);
+    TextStyle authorStyle = TextStyle(
+      color: Theme.of(context).colorScheme.primary,
+    );
     List<InlineSpan> spanChilds = [];
 
     dynamic richTextNodes;
@@ -23,10 +24,9 @@ InlineSpan richNode(item, context) {
         spanChilds.add(
           TextSpan(
             text: item.modules.moduleDynamic.major.opus.title + '\n',
-            style: Theme.of(context)
-                .textTheme
-                .titleMedium!
-                .copyWith(fontWeight: FontWeight.bold),
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold),
           ),
         );
       }
@@ -40,7 +40,8 @@ InlineSpan richNode(item, context) {
         //     i.type == 'RICH_TEXT_NODE_TYPE_TEXT') {
         if (i.type == 'RICH_TEXT_NODE_TYPE_TEXT') {
           spanChilds.add(
-              TextSpan(text: i.origText, style: const TextStyle(height: 1.65)));
+            TextSpan(text: i.origText, style: const TextStyle(height: 1.65)),
+          );
         }
         // @用户
         if (i.type == 'RICH_TEXT_NODE_TYPE_AT') {
@@ -51,12 +52,11 @@ InlineSpan richNode(item, context) {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   GestureDetector(
-                    onTap: () => Get.toNamed('/member?mid=${i.rid}',
-                        arguments: {'face': null}),
-                    child: Text(
-                      ' ${i.text}',
-                      style: authorStyle,
+                    onTap: () => Get.toNamed(
+                      '/member?mid=${i.rid}',
+                      arguments: {'face': null},
                     ),
+                    child: Text(' ${i.text}', style: authorStyle),
                   ),
                 ],
               ),
@@ -70,10 +70,7 @@ InlineSpan richNode(item, context) {
               alignment: PlaceholderAlignment.middle,
               child: GestureDetector(
                 onTap: () {},
-                child: Text(
-                  '${i.origText}',
-                  style: authorStyle,
-                ),
+                child: Text('${i.origText}', style: authorStyle),
               ),
             ),
           );
@@ -100,14 +97,11 @@ InlineSpan richNode(item, context) {
                     parameters: {
                       'url': i.origText,
                       'type': 'url',
-                      'pageTitle': ''
+                      'pageTitle': '',
                     },
                   );
                 },
-                child: Text(
-                  i.text,
-                  style: authorStyle,
-                ),
+                child: Text(i.text, style: authorStyle),
               ),
             ),
           );
@@ -127,15 +121,12 @@ InlineSpan richNode(item, context) {
                         'url':
                             'https://t.bilibili.com/vote/h5/index/#/result?vote_id=${i.rid}&dynamic_id=$dynamicId&isWeb=1',
                         'type': 'vote',
-                        'pageTitle': '投票'
+                        'pageTitle': '投票',
                       },
                     );
                   } catch (_) {}
                 },
-                child: Text(
-                  '投票：${i.text}',
-                  style: authorStyle,
-                ),
+                child: Text('投票：${i.text}', style: authorStyle),
               ),
             ),
           );
@@ -170,10 +161,7 @@ InlineSpan richNode(item, context) {
               alignment: PlaceholderAlignment.middle,
               child: GestureDetector(
                 onTap: () {},
-                child: Text(
-                  '${i.origText} ',
-                  style: authorStyle,
-                ),
+                child: Text('${i.origText} ', style: authorStyle),
               ),
             ),
           );
@@ -196,10 +184,7 @@ InlineSpan richNode(item, context) {
               alignment: PlaceholderAlignment.middle,
               child: GestureDetector(
                 onTap: () {},
-                child: Text(
-                  '${i.text} ',
-                  style: authorStyle,
-                ),
+                child: Text('${i.text} ', style: authorStyle),
               ),
             ),
           );
@@ -223,16 +208,15 @@ InlineSpan richNode(item, context) {
                 onTap: () async {
                   try {
                     int cid = await SearchHttp.ab2c(bvid: i.rid);
-                    Get.toNamed('/video?bvid=${i.rid}&cid=$cid',
-                        arguments: {'pic': null, 'heroTag': i.rid});
+                    Get.toNamed(
+                      '/video?bvid=${i.rid}&cid=$cid',
+                      arguments: {'pic': null, 'heroTag': i.rid},
+                    );
                   } catch (err) {
                     SmartDialog.showToast(err.toString());
                   }
                 },
-                child: Text(
-                  '${i.text} ',
-                  style: authorStyle,
-                ),
+                child: Text('${i.text} ', style: authorStyle),
               ),
             ),
           );
@@ -350,17 +334,17 @@ InlineSpan richNode(item, context) {
       //   ),
       // );
       // }
-      return TextSpan(
-        children: spanChilds,
-      );
+      return TextSpan(children: spanChilds);
     }
   } catch (err) {
-    print('❌rich_node_panel err: $err');
+    debugPrint('❌rich_node_panel err: $err');
     return spacer;
   }
 }
 
 class _VerticalSpaceSpan extends WidgetSpan {
   _VerticalSpaceSpan(double height)
-      : super(child: SizedBox(height: height, width: double.infinity));
+    : super(
+        child: SizedBox(height: height, width: double.infinity),
+      );
 }

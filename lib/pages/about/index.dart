@@ -35,8 +35,10 @@ class _AboutPageState extends State<AboutPage> {
   @override
   Widget build(BuildContext context) {
     final Color outline = Theme.of(context).colorScheme.outline;
-    TextStyle subTitleStyle =
-        TextStyle(fontSize: 13, color: Theme.of(context).colorScheme.outline);
+    TextStyle subTitleStyle = TextStyle(
+      fontSize: 13,
+      color: Theme.of(context).colorScheme.outline,
+    );
     return Scaffold(
       appBar: AppBar(
         title: Text('关于', style: Theme.of(context).textTheme.titleMedium),
@@ -44,14 +46,8 @@ class _AboutPageState extends State<AboutPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Image.asset(
-              'assets/images/logo/logo_android_2.png',
-              width: 150,
-            ),
-            Text(
-              'PiliPala',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
+            Image.asset('assets/images/logo/logo_android_2.png', width: 150),
+            Text('PiliPala', style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 6),
             Obx(
               () => Badge(
@@ -86,9 +82,9 @@ class _AboutPageState extends State<AboutPage> {
                                 title: const Text('奇妙应用'),
                               ),
                               SizedBox(
-                                  height:
-                                      MediaQuery.of(context).padding.bottom +
-                                          20)
+                                height:
+                                    MediaQuery.of(context).padding.bottom + 20,
+                              ),
                             ],
                           );
                         },
@@ -142,11 +138,7 @@ class _AboutPageState extends State<AboutPage> {
             ListTile(
               onTap: () => _aboutController.feedback(),
               title: const Text('问题反馈'),
-              trailing: Icon(
-                Icons.arrow_forward_ios,
-                size: 16,
-                color: outline,
-              ),
+              trailing: Icon(Icons.arrow_forward_ios, size: 16, color: outline),
             ),
             ListTile(
               onTap: () {
@@ -159,10 +151,7 @@ class _AboutPageState extends State<AboutPage> {
                         ListTile(
                           onTap: () => _aboutController.qqChanel(),
                           title: const Text('QQ群'),
-                          trailing: Text(
-                            '616150809',
-                            style: subTitleStyle,
-                          ),
+                          trailing: Text('616150809', style: subTitleStyle),
                         ),
                         ListTile(
                           onTap: () => _aboutController.tgChanel(),
@@ -173,18 +162,15 @@ class _AboutPageState extends State<AboutPage> {
                           ),
                         ),
                         SizedBox(
-                            height: MediaQuery.of(context).padding.bottom + 20)
+                          height: MediaQuery.of(context).padding.bottom + 20,
+                        ),
                       ],
                     );
                   },
                 );
               },
               title: const Text('交流社区'),
-              trailing: Icon(
-                Icons.arrow_forward_ios,
-                size: 16,
-                color: outline,
-              ),
+              trailing: Icon(Icons.arrow_forward_ios, size: 16, color: outline),
             ),
             ListTile(
               onTap: () => _aboutController.aPay(),
@@ -206,7 +192,7 @@ class _AboutPageState extends State<AboutPage> {
               title: const Text('清除缓存'),
               subtitle: Text('图片及网络缓存 $cacheSize', style: subTitleStyle),
             ),
-            SizedBox(height: MediaQuery.of(context).padding.bottom + 20)
+            SizedBox(height: MediaQuery.of(context).padding.bottom + 20),
           ],
         ),
       ),
@@ -261,8 +247,10 @@ class AboutController extends GetxController {
     data = LatestDataModel.fromJson(result.data);
     remoteAppInfo = data;
     remoteVersion.value = data.tagName!;
-    isUpdate.value =
-        Utils.needUpdate(currentVersion.value, remoteVersion.value);
+    isUpdate.value = Utils.needUpdate(
+      currentVersion.value,
+      remoteVersion.value,
+    );
   }
 
   // 跳转下载/本地更新
@@ -287,9 +275,7 @@ class AboutController extends GetxController {
 
   // 从网盘下载
   panDownload() {
-    Clipboard.setData(
-      const ClipboardData(text: 'pili'),
-    );
+    Clipboard.setData(const ClipboardData(text: 'pili'));
     SmartDialog.showToast(
       '已复制提取码：pili',
       displayTime: const Duration(milliseconds: 500),
@@ -312,9 +298,7 @@ class AboutController extends GetxController {
 
   // qq频道
   qqChanel() {
-    Clipboard.setData(
-      const ClipboardData(text: '616150809'),
-    );
+    Clipboard.setData(const ClipboardData(text: '616150809'));
     SmartDialog.showToast('已复制QQ群号');
   }
 
@@ -338,11 +322,12 @@ class AboutController extends GetxController {
     try {
       launchUrl(
         Uri.parse(
-            'alipayqr://platformapi/startapp?saId=10000007&qrcode=https://qr.alipay.com/fkx14623ddwl1ping3ddd73'),
+          'alipayqr://platformapi/startapp?saId=10000007&qrcode=https://qr.alipay.com/fkx14623ddwl1ping3ddd73',
+        ),
         mode: LaunchMode.externalApplication,
       );
     } catch (e) {
-      print(e);
+      debugPrint('$e');
     }
   }
 

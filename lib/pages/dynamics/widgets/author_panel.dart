@@ -26,7 +26,7 @@ class AuthorPanel extends StatelessWidget {
               '/member?mid=${item.modules.moduleAuthor.mid}',
               arguments: {
                 'face': item.modules.moduleAuthor.face,
-                'heroTag': heroTag
+                'heroTag': heroTag,
               },
             );
           },
@@ -49,7 +49,8 @@ class AuthorPanel extends StatelessWidget {
                 Text(
                   item.modules.moduleAuthor.name,
                   style: TextStyle(
-                    color: item.modules.moduleAuthor!.vip != null &&
+                    color:
+                        item.modules.moduleAuthor!.vip != null &&
                             item.modules.moduleAuthor!.vip['status'] > 0
                         ? const Color.fromARGB(255, 251, 100, 163)
                         : Theme.of(context).colorScheme.onSurface,
@@ -72,7 +73,7 @@ class AuthorPanel extends StatelessWidget {
                   Text(item.modules.moduleAuthor.pubAction),
                 ],
               ),
-            )
+            ),
           ],
         ),
         const Spacer(),
@@ -82,7 +83,7 @@ class AuthorPanel extends StatelessWidget {
             height: 32,
             child: IconButton(
               style: ButtonStyle(
-                padding: MaterialStateProperty.all(EdgeInsets.zero),
+                padding: WidgetStateProperty.all(EdgeInsets.zero),
               ),
               onPressed: () {
                 showModalBottomSheet(
@@ -124,8 +125,9 @@ class MorePanel extends StatelessWidget {
                   width: 32,
                   height: 3,
                   decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.outline,
-                      borderRadius: const BorderRadius.all(Radius.circular(3))),
+                    color: Theme.of(context).colorScheme.outline,
+                    borderRadius: const BorderRadius.all(Radius.circular(3)),
+                  ),
                 ),
               ),
             ),
@@ -144,10 +146,7 @@ class MorePanel extends StatelessWidget {
             minLeadingWidth: 0,
             // dense: true,
             leading: const Icon(Icons.watch_later_outlined, size: 19),
-            title: Text(
-              '稍后再看',
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
+            title: Text('稍后再看', style: Theme.of(context).textTheme.titleSmall),
           ),
           const Divider(thickness: 0.1, height: 1),
           ListTile(

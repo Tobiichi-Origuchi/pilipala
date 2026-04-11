@@ -1,4 +1,5 @@
-import 'package:appscheme/appscheme.dart';
+import 'dart:async';
+import 'package:app_links/app_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
@@ -10,39 +11,44 @@ import 'url_utils.dart';
 import 'utils.dart';
 
 class PiliSchame {
-  static AppScheme appScheme = AppSchemeImpl.getInstance()!;
+  static final AppLinks _appLinks = AppLinks();
+  static StreamSubscription<Uri>? _linkSubscription;
+
   static Future<void> init() async {
-    ///
-    final SchemeEntity? value = await appScheme.getInitScheme();
-    if (value != null) {
-      _routePush(value);
+    /// 1. 获取冷启动时的 Scheme
+    try {
+      final Uri? initialUri = await _appLinks.getInitialLink();
+      if (initialUri != null) {
+        _routePush(initialUri);
+      }
+    } catch (e) {
+      debugPrint('AppLinks 冷启动获取失败: $e');
     }
 
-    /// 完整链接进入 b23.无效
-    appScheme.getLatestScheme().then((SchemeEntity? value) {
-      if (value != null) {
-        _routePush(value);
-      }
-    });
-
-    /// 注册从外部打开的Scheme监听信息 #
-    appScheme.registerSchemeListener().listen((SchemeEntity? event) {
-      if (event != null) {
-        _routePush(event);
-      }
-    });
+    /// 2. 注册在后台运行时的 Scheme 唤醒监听
+    _linkSubscription = _appLinks.uriLinkStream.listen(
+      (Uri uri) {
+        _routePush(uri);
+      },
+      onError: (err) {
+        debugPrint('AppLinks 监听流错误: $err');
+      },
+    );
   }
 
-  /// 路由跳转
-  static void _routePush(value) async {
-    final String scheme = value.scheme;
-    final String host = value.host;
-    final String path = value.path;
+  /// 路由统一分发中心
+  static void _routePush(Uri uri) async {
+    final String scheme = uri.scheme;
+    final String host = uri.host;
+    final String path = uri.path;
+
     if (scheme == 'bilibili') {
       switch (host) {
         case 'root':
           Navigator.popUntil(
-              Get.context!, (Route<dynamic> route) => route.isFirst);
+            Get.context!,
+            (Route<dynamic> route) => route.isFirst,
+          );
           break;
         case 'space':
           final String mid = path.split('/').last;
@@ -82,11 +88,10 @@ class PiliSchame {
         case 'opus':
           if (path.startsWith('/detail')) {
             var opusId = path.split('/').last;
-            Get.toNamed('/opus', parameters: {
-              'title': '',
-              'id': opusId,
-              'articleType': 'opus',
-            });
+            Get.toNamed(
+              '/opus',
+              parameters: {'title': '', 'id': opusId, 'articleType': 'opus'},
+            );
           }
           break;
         case 'search':
@@ -96,32 +101,32 @@ class PiliSchame {
           final String id = path.split('/').last.split('?').first;
           Get.toNamed(
             '/read',
-            parameters: {
-              'title': 'cv$id',
-              'id': id,
-              'dynamicType': 'read',
-            },
+            parameters: {'title': 'cv$id', 'id': id, 'dynamicType': 'read'},
           );
           break;
         case 'pgc':
           if (path.contains('ep')) {
             final String lastPathSegment = path.split('/').last;
             RoutePush.bangumiPush(
-                null, int.parse(lastPathSegment.split('?').first));
+              null,
+              int.parse(lastPathSegment.split('?').first),
+            );
           }
           break;
         default:
           SmartDialog.showToast('未匹配地址，请联系开发者');
-          Clipboard.setData(ClipboardData(text: value.toJson().toString()));
+          Clipboard.setData(ClipboardData(text: uri.toString()));
           break;
       }
     }
-    if (scheme == 'https') {
-      fullPathPush(value);
+
+    // 处理标准 http/https 链接
+    if (scheme == 'https' || scheme == 'http') {
+      fullPathPush(uri);
     }
   }
 
-  // 投稿跳转
+  // 投稿跳转 (保持不变)
   static Future<void> _videoPush(int? aidVal, String? bvidVal) async {
     SmartDialog.showLoading<dynamic>(msg: '获取中...');
     try {
@@ -136,28 +141,26 @@ class PiliSchame {
       final int cid = await SearchHttp.ab2c(bvid: bvidVal, aid: aidVal);
       final String heroTag = Utils.makeHeroTag(aid);
       SmartDialog.dismiss<dynamic>().then(
-        // ignore: always_specify_types
-        (e) => Get.toNamed<dynamic>('/video?bvid=$bvid&cid=$cid',
-            arguments: <String, String?>{
-              'pic': '',
-              'heroTag': heroTag,
-            }),
+        (e) => Get.toNamed<dynamic>(
+          '/video?bvid=$bvid&cid=$cid',
+          arguments: <String, String?>{'pic': '', 'heroTag': heroTag},
+        ),
       );
     } catch (e) {
       SmartDialog.showToast('video获取失败: $e');
     }
   }
 
-  static Future<void> fullPathPush(SchemeEntity value) async {
-    // https://m.bilibili.com/bangumi/play/ss39708
-    // https | m.bilibili.com | /bangumi/play/ss39708
-    // final String scheme = value.scheme!;
-    final String host = value.host!;
-    final String? path = value.path;
-    Map<String, String>? query = value.query;
+  // HTTP/HTTPS 完整路径分发
+  static Future<void> fullPathPush(Uri uri) async {
+    final String host = uri.host;
+    final String path = uri.path;
+    final Map<String, String> query = uri.queryParameters;
+    final String dataString = uri.toString(); // 替代了原来的 value.dataString
+
     RegExp regExp = RegExp(r'^((www\.)|(m\.))?bilibili\.com$');
     if (regExp.hasMatch(host)) {
-      final String lastPathSegment = path!.split('/').last;
+      final String lastPathSegment = path.split('/').last;
       if (path.startsWith('/video')) {
         Map matchRes = IdUtils.matchAvorBv(input: path);
         if (matchRes.containsKey('AV')) {
@@ -176,30 +179,30 @@ class PiliSchame {
           RoutePush.bangumiPush(null, Utils.matchNum(lastPathSegment).first);
         }
       } else if (path.startsWith('/BV')) {
-        final String bvid = path.split('?').first.split('/').last;
+        final String bvid = path.split('/').last;
         _videoPush(null, bvid);
       } else if (path.startsWith('/av')) {
-        _videoPush(Utils.matchNum(path.split('?').first).first, null);
+        _videoPush(Utils.matchNum(path).first, null);
       }
     } else if (host.contains('live')) {
-      int roomId = int.parse(path!.split('/').last);
+      int roomId = int.parse(path.split('/').last);
       Get.toNamed(
         '/liveRoom?roomid=$roomId',
         arguments: {'liveItem': null, 'heroTag': roomId.toString()},
       );
     } else if (host.contains('space')) {
-      var mid = path!.split('/').last;
+      var mid = path.split('/').last;
       Get.toNamed('/member?mid=$mid', arguments: {'face': ''});
       return;
     } else if (host == 'b23.tv') {
-      final String fullPath = 'https://$host$path';
-      final String redirectUrl = await UrlUtils.parseRedirectUrl(fullPath);
+      final String redirectUrl = await UrlUtils.parseRedirectUrl(dataString);
       final String pathSegment = Uri.parse(redirectUrl).path;
       final String lastPathSegment = pathSegment.split('/').last;
       final RegExp avRegex = RegExp(r'^[aA][vV]\d+', caseSensitive: false);
       if (avRegex.hasMatch(lastPathSegment)) {
-        final Map<String, dynamic> map =
-            IdUtils.matchAvorBv(input: lastPathSegment);
+        final Map<String, dynamic> map = IdUtils.matchAvorBv(
+          input: lastPathSegment,
+        );
         if (map.containsKey('AV')) {
           _videoPush(map['AV']! as int, null);
         } else if (map.containsKey('BV')) {
@@ -212,22 +215,18 @@ class PiliSchame {
       } else if (lastPathSegment.startsWith('ss')) {
         _handleSeasonPath(lastPathSegment, redirectUrl);
       } else if (lastPathSegment.startsWith('BV')) {
-        UrlUtils.matchUrlPush(
-          lastPathSegment,
-          '',
-          redirectUrl,
-        );
+        UrlUtils.matchUrlPush(lastPathSegment, '', redirectUrl);
       } else {
         Get.toNamed(
           '/webview',
           parameters: {'url': redirectUrl, 'type': 'url', 'pageTitle': ''},
         );
       }
-    } else if (path != null) {
+    } else if (path.isNotEmpty) {
       final String area = path.split('/').last;
       switch (area) {
         case 'bangumi':
-          print('番剧');
+          debugPrint('番剧');
           if (area.startsWith('ep')) {
             RoutePush.bangumiPush(null, Utils.matchNum(area).first);
           } else if (area.startsWith('ss')) {
@@ -235,7 +234,7 @@ class PiliSchame {
           }
           break;
         case 'video':
-          print('投稿');
+          debugPrint('投稿');
           final Map<String, dynamic> map = IdUtils.matchAvorBv(input: path);
           if (map.containsKey('AV')) {
             _videoPush(map['AV']! as int, null);
@@ -246,22 +245,26 @@ class PiliSchame {
           }
           break;
         case 'read':
-          print('专栏');
-          String id = Utils.matchNum(query!['id']!).first.toString();
-          Get.toNamed('/read', parameters: {
-            'url': value.dataString!,
-            'title': '',
-            'id': id,
-            'articleType': 'read'
-          });
+          debugPrint('专栏');
+          if (query.containsKey('id')) {
+            String id = Utils.matchNum(query['id']!).first.toString();
+            Get.toNamed(
+              '/read',
+              parameters: {
+                'url': dataString,
+                'title': '',
+                'id': id,
+                'articleType': 'read',
+              },
+            );
+          }
           break;
         case 'space':
-          print('个人空间');
+          debugPrint('个人空间');
           Get.toNamed('/member?mid=$area', arguments: {'face': ''});
           break;
         default:
-          final Map<String, dynamic> map =
-              IdUtils.matchAvorBv(input: area.split('?').first);
+          final Map<String, dynamic> map = IdUtils.matchAvorBv(input: area);
           if (map.containsKey('AV')) {
             _videoPush(map['AV']! as int, null);
           } else if (map.containsKey('BV')) {
@@ -269,11 +272,7 @@ class PiliSchame {
           } else {
             Get.toNamed(
               '/webview',
-              parameters: {
-                'url': value.dataString ?? "",
-                'type': 'url',
-                'pageTitle': ''
-              },
+              parameters: {'url': dataString, 'type': 'url', 'pageTitle': ''},
             );
           }
           break;
@@ -293,5 +292,10 @@ class PiliSchame {
 
   static String _extractIdFromPath(String lastPathSegment) {
     return lastPathSegment.split('/').last;
+  }
+
+  // 资源释放
+  static void dispose() {
+    _linkSubscription?.cancel();
   }
 }

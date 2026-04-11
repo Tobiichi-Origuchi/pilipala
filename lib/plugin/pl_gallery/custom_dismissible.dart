@@ -9,8 +9,8 @@ class CustomDismissible extends StatefulWidget {
     this.onDismissed,
     this.dismissThreshold = 0.2,
     this.enabled = true,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final Widget child;
   final double dismissThreshold;
@@ -56,16 +56,12 @@ class _CustomDismissibleState extends State<CustomDismissible>
     final double end = _dragExtent.sign;
 
     _moveAnimation = _animateController.drive(
-      Tween<Offset>(
-        begin: Offset.zero,
-        end: Offset(0, end),
-      ),
+      Tween<Offset>(begin: Offset.zero, end: Offset(0, end)),
     );
 
-    _scaleAnimation = _animateController.drive(Tween<double>(
-      begin: 1,
-      end: 0.5,
-    ));
+    _scaleAnimation = _animateController.drive(
+      Tween<double>(begin: 1, end: 0.5),
+    );
 
     _opacityAnimation = DecorationTween(
       begin: const BoxDecoration(color: Color(0xFF000000)),
@@ -138,10 +134,7 @@ class _CustomDismissibleState extends State<CustomDismissible>
       decoration: _opacityAnimation,
       child: SlideTransition(
         position: _moveAnimation,
-        child: ScaleTransition(
-          scale: _scaleAnimation,
-          child: widget.child,
-        ),
+        child: ScaleTransition(scale: _scaleAnimation, child: widget.child),
       ),
     );
 

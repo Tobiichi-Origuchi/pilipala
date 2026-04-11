@@ -6,10 +6,10 @@ class BackwardSeekIndicator extends StatefulWidget {
   final void Function(Duration) onChanged;
   final void Function(Duration) onSubmitted;
   const BackwardSeekIndicator({
-    Key? key,
+    super.key,
     required this.onChanged,
     required this.onSubmitted,
-  }) : super(key: key);
+  });
 
   @override
   State<BackwardSeekIndicator> createState() => BackwardSeekIndicatorState();
@@ -52,10 +52,7 @@ class BackwardSeekIndicatorState extends State<BackwardSeekIndicator> {
     return Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            Color(0x88767676),
-            Color(0x00767676),
-          ],
+          colors: [Color(0x88767676), Color(0x00767676)],
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
         ),

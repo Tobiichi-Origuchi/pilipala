@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:html/parser.dart';
@@ -52,11 +51,10 @@ class UserHttp {
     required int ps,
     required int mid,
   }) async {
-    var res = await Request().get(Api.userFavFolder, data: {
-      'pn': pn,
-      'ps': ps,
-      'up_mid': mid,
-    });
+    var res = await Request().get(
+      Api.userFavFolder,
+      data: {'pn': pn, 'ps': ps, 'up_mid': mid},
+    );
     if (res.data['code'] == 0) {
       late FavFolderData data;
       if (res.data['data'] != null) {
@@ -75,23 +73,27 @@ class UserHttp {
     }
   }
 
-  static Future<dynamic> userFavFolderDetail(
-      {required int mediaId,
-      required int pn,
-      required int ps,
-      String keyword = '',
-      String order = 'mtime',
-      int type = 0}) async {
-    var res = await Request().get(Api.userFavFolderDetail, data: {
-      'media_id': mediaId,
-      'pn': pn,
-      'ps': ps,
-      'keyword': keyword,
-      'order': order,
-      'type': type,
-      'tid': 0,
-      'platform': 'web'
-    });
+  static Future<dynamic> userFavFolderDetail({
+    required int mediaId,
+    required int pn,
+    required int ps,
+    String keyword = '',
+    String order = 'mtime',
+    int type = 0,
+  }) async {
+    var res = await Request().get(
+      Api.userFavFolderDetail,
+      data: {
+        'media_id': mediaId,
+        'pn': pn,
+        'ps': ps,
+        'keyword': keyword,
+        'order': order,
+        'type': type,
+        'tid': 0,
+        'platform': 'web',
+      },
+    );
     if (res.data['code'] == 0) {
       FavDetailData data = FavDetailData.fromJson(res.data['data']);
       return {'status': true, 'data': data};
@@ -107,7 +109,7 @@ class UserHttp {
       if (res.data['data']['count'] == 0) {
         return {
           'status': true,
-          'data': {'list': [], 'count': 0}
+          'data': {'list': [], 'count': 0},
         };
       }
       List<HotVideoItemModel> list = [];
@@ -116,7 +118,7 @@ class UserHttp {
       }
       return {
         'status': true,
-        'data': {'list': list, 'count': res.data['data']['count']}
+        'data': {'list': list, 'count': res.data['data']['count']},
       };
     } else {
       return {
@@ -130,12 +132,10 @@ class UserHttp {
 
   // 观看历史
   static Future historyList(int? max, int? viewAt) async {
-    var res = await Request().get(Api.historyList, data: {
-      'type': 'all',
-      'ps': 20,
-      'max': max ?? 0,
-      'view_at': viewAt ?? 0,
-    });
+    var res = await Request().get(
+      Api.historyList,
+      data: {'type': 'all', 'ps': 20, 'max': max ?? 0, 'view_at': viewAt ?? 0},
+    );
     if (res.data['code'] == 0) {
       return {'status': true, 'data': HistoryData.fromJson(res.data['data'])};
     } else {
@@ -172,10 +172,7 @@ class UserHttp {
   static Future clearHistory() async {
     var res = await Request().post(
       Api.clearHistory,
-      data: {
-        'jsonp': 'jsonp',
-        'csrf': await Request.getCsrf(),
-      },
+      data: {'jsonp': 'jsonp', 'csrf': await Request.getCsrf()},
     );
     return res;
   }
@@ -188,10 +185,7 @@ class UserHttp {
     } else if (aid != null) {
       data['aid'] = aid;
     }
-    var res = await Request().post(
-      Api.toViewLater,
-      data: data,
-    );
+    var res = await Request().post(Api.toViewLater, data: data);
     if (res.data['code'] == 0) {
       return {'status': true, 'msg': 'yeah！稍后再看'};
     } else {
@@ -207,10 +201,7 @@ class UserHttp {
     };
 
     params[aid != null ? 'aid' : 'viewed'] = aid ?? true;
-    var res = await Request().post(
-      Api.toViewDel,
-      data: params,
-    );
+    var res = await Request().post(Api.toViewDel, data: params);
     if (res.data['code'] == 0) {
       return {'status': true, 'msg': 'yeah！成功移除'};
     } else {
@@ -241,10 +232,7 @@ class UserHttp {
   static Future toViewClear() async {
     var res = await Request().post(
       Api.toViewClear,
-      data: {
-        'jsonp': 'jsonp',
-        'csrf': await Request.getCsrf(),
-      },
+      data: {'jsonp': 'jsonp', 'csrf': await Request.getCsrf()},
     );
     if (res.data['code'] == 0) {
       return {'status': true, 'msg': '操作完成'};
@@ -257,11 +245,7 @@ class UserHttp {
   static Future delHistory(kid) async {
     var res = await Request().post(
       Api.delHistory,
-      data: {
-        'kid': kid,
-        'jsonp': 'jsonp',
-        'csrf': await Request.getCsrf(),
-      },
+      data: {'kid': kid, 'jsonp': 'jsonp', 'csrf': await Request.getCsrf()},
     );
     if (res.data['code'] == 0) {
       return {'status': true, 'msg': '已删除'};
@@ -271,12 +255,7 @@ class UserHttp {
   }
 
   static Future hasFollow(int mid) async {
-    var res = await Request().get(
-      Api.hasFollow,
-      data: {
-        'fid': mid,
-      },
-    );
+    var res = await Request().get(Api.hasFollow, data: {'fid': mid});
     if (res.data['code'] == 0) {
       return {'status': true, 'data': res.data['data']};
     } else {
@@ -309,15 +288,13 @@ class UserHttp {
   // }
 
   // 搜索历史记录
-  static Future searchHistory(
-      {required int pn, required String keyword}) async {
+  static Future searchHistory({
+    required int pn,
+    required String keyword,
+  }) async {
     var res = await Request().get(
       Api.searchHistory,
-      data: {
-        'pn': pn,
-        'keyword': keyword,
-        'business': 'all',
-      },
+      data: {'pn': pn, 'keyword': keyword, 'business': 'all'},
     );
     if (res.data['code'] == 0) {
       return {'status': true, 'data': HistoryData.fromJson(res.data['data'])};
@@ -332,16 +309,14 @@ class UserHttp {
     required int pn,
     required int ps,
   }) async {
-    var res = await Request().get(Api.userSubFolder, data: {
-      'up_mid': mid,
-      'ps': ps,
-      'pn': pn,
-      'platform': 'web',
-    });
+    var res = await Request().get(
+      Api.userSubFolder,
+      data: {'up_mid': mid, 'ps': ps, 'pn': pn, 'platform': 'web'},
+    );
     if (res.data['code'] == 0) {
       return {
         'status': true,
-        'data': SubFolderModelData.fromJson(res.data['data'])
+        'data': SubFolderModelData.fromJson(res.data['data']),
       };
     } else {
       return {
@@ -358,15 +333,14 @@ class UserHttp {
     required int pn,
     required int ps,
   }) async {
-    var res = await Request().get(Api.userSeasonList, data: {
-      'season_id': seasonId,
-      'ps': ps,
-      'pn': pn,
-    });
+    var res = await Request().get(
+      Api.userSeasonList,
+      data: {'season_id': seasonId, 'ps': ps, 'pn': pn},
+    );
     if (res.data['code'] == 0) {
       return {
         'status': true,
-        'data': SubDetailModelData.fromJson(res.data['data'])
+        'data': SubDetailModelData.fromJson(res.data['data']),
       };
     } else {
       return {'status': false, 'msg': res.data['message']};
@@ -378,21 +352,24 @@ class UserHttp {
     required int pn,
     required int ps,
   }) async {
-    var res = await Request().get(Api.userResourceList, data: {
-      'media_id': seasonId,
-      'ps': ps,
-      'pn': pn,
-      'keyword': '',
-      'order': 'mtime',
-      'type': 0,
-      'tid': 0,
-      'platform': 'web',
-    });
+    var res = await Request().get(
+      Api.userResourceList,
+      data: {
+        'media_id': seasonId,
+        'ps': ps,
+        'pn': pn,
+        'keyword': '',
+        'order': 'mtime',
+        'type': 0,
+        'tid': 0,
+        'platform': 'web',
+      },
+    );
     if (res.data['code'] == 0) {
       try {
         return {
           'status': true,
-          'data': SubDetailModelData.fromJson(res.data['data'])
+          'data': SubDetailModelData.fromJson(res.data['data']),
         };
       } catch (err) {
         return {'status': false, 'msg': err};
@@ -500,10 +477,11 @@ class UserHttp {
         'status': true,
         'data': res.data['data']['media_list'] != null
             ? res.data['data']['media_list']
-                .map<MediaVideoItemModel>(
-                    (e) => MediaVideoItemModel.fromJson(e))
-                .toList()
-            : []
+                  .map<MediaVideoItemModel>(
+                    (e) => MediaVideoItemModel.fromJson(e),
+                  )
+                  .toList()
+            : [],
       };
     } else {
       return {'status': false, 'msg': res.data['message']};
@@ -518,13 +496,11 @@ class UserHttp {
   }) async {
     var res = await Request().get(
       'https://www.bilibili.com/list/ml$mediaId',
-      data: {
-        'oid': mediaId,
-        'bvid': bvid,
-      },
+      data: {'oid': mediaId, 'bvid': bvid},
     );
-    String scriptContent =
-        extractScriptContents(parse(res.data).body!.outerHtml)[0];
+    String scriptContent = extractScriptContents(
+      parse(res.data).body!.outerHtml,
+    )[0];
     int startIndex = scriptContent.indexOf('{');
     int endIndex = scriptContent.lastIndexOf('};');
     String jsonContent = scriptContent.substring(startIndex, endIndex + 1);
@@ -534,7 +510,7 @@ class UserHttp {
       'status': true,
       'data': jsonData['resourceList']
           .map<MediaVideoItemModel>((e) => MediaVideoItemModel.fromJson(e))
-          .toList()
+          .toList(),
     };
   }
 }

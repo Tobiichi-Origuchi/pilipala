@@ -7,11 +7,7 @@ import 'package:pilipala/models/video/reply/item.dart';
 import 'package:pilipala/utils/feed_back.dart';
 
 class ZanButton extends StatefulWidget {
-  const ZanButton({
-    super.key,
-    this.replyItem,
-    this.replyType,
-  });
+  const ZanButton({super.key, this.replyItem, this.replyType});
 
   final ReplyItemModel? replyItem;
   final ReplyType? replyType;
@@ -31,7 +27,11 @@ class _ZanButtonState extends State<ZanButton> {
     // 1 已点赞 2 不喜欢 0 未操作
     final int action = replyItem.action == 0 ? 1 : 0;
     final res = await ReplyHttp.likeReply(
-        type: widget.replyType!.index, oid: oid, rpid: rpid, action: action);
+      type: widget.replyType!.index,
+      oid: oid,
+      rpid: rpid,
+      action: action,
+    );
     // SmartDialog.dismiss();
     if (res['status']) {
       SmartDialog.showToast(replyItem.action == 0 ? '点赞成功 👍' : '取消赞 💔');
@@ -70,7 +70,7 @@ class _ZanButtonState extends State<ZanButton> {
         onPressed: handleState(onLikeReply),
         child: Row(
           children: [
-            Icon(
+            FaIcon(
               widget.replyItem!.action == 1
                   ? FontAwesomeIcons.solidThumbsUp
                   : FontAwesomeIcons.thumbsUp,

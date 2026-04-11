@@ -54,35 +54,33 @@ class _HtmlRenderPageState extends State<HtmlRenderPage>
 
   void scrollListener() {
     scrollController = _htmlRenderCtr.scrollController;
-    scrollController.addListener(
-      () {
-        // 分页加载
-        if (scrollController.position.pixels >=
-            scrollController.position.maxScrollExtent - 300) {
-          EasyThrottle.throttle('replylist', const Duration(seconds: 2), () {
-            _htmlRenderCtr.queryReplyList(reqType: 'onLoad');
-          });
-        }
+    scrollController.addListener(() {
+      // 分页加载
+      if (scrollController.position.pixels >=
+          scrollController.position.maxScrollExtent - 300) {
+        EasyThrottle.throttle('replylist', const Duration(seconds: 2), () {
+          _htmlRenderCtr.queryReplyList(reqType: 'onLoad');
+        });
+      }
 
-        // 标题
-        // if (scrollController.offset > 55 && !_visibleTitle) {
-        //   _visibleTitle = true;
-        //   titleStreamC.add(true);
-        // } else if (scrollController.offset <= 55 && _visibleTitle) {
-        //   _visibleTitle = false;
-        //   titleStreamC.add(false);
-        // }
+      // 标题
+      // if (scrollController.offset > 55 && !_visibleTitle) {
+      //   _visibleTitle = true;
+      //   titleStreamC.add(true);
+      // } else if (scrollController.offset <= 55 && _visibleTitle) {
+      //   _visibleTitle = false;
+      //   titleStreamC.add(false);
+      // }
 
-        // fab按钮
-        final ScrollDirection direction =
-            scrollController.position.userScrollDirection;
-        if (direction == ScrollDirection.forward) {
-          _showFab();
-        } else if (direction == ScrollDirection.reverse) {
-          _hideFab();
-        }
-      },
-    );
+      // fab按钮
+      final ScrollDirection direction =
+          scrollController.position.userScrollDirection;
+      if (direction == ScrollDirection.forward) {
+        _showFab();
+      } else if (direction == ScrollDirection.reverse) {
+        _hideFab();
+      }
+    });
   }
 
   void _showFab() {
@@ -107,10 +105,7 @@ class _HtmlRenderPageState extends State<HtmlRenderPage>
         appBar: AppBar(
           titleSpacing: 0,
           centerTitle: false,
-          title: Text(
-            '评论详情',
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
+          title: Text('评论详情', style: Theme.of(context).textTheme.titleMedium),
         ),
         body: VideoReplyReplyPanel(
           oid: oid,
@@ -129,19 +124,19 @@ class _HtmlRenderPageState extends State<HtmlRenderPage>
       appBar: AppBar(
         centerTitle: false,
         titleSpacing: 0,
-        title: Text(
-          title,
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
+        title: Text(title, style: Theme.of(context).textTheme.titleMedium),
         actions: [
           const SizedBox(width: 4),
           IconButton(
             onPressed: () {
-              Get.toNamed('/webview', parameters: {
-                'url': url.startsWith('http') ? url : 'https:$url',
-                'type': 'url',
-                'pageTitle': title,
-              });
+              Get.toNamed(
+                '/webview',
+                parameters: {
+                  'url': url.startsWith('http') ? url : 'https:$url',
+                  'type': 'url',
+                  'pageTitle': title,
+                },
+              );
             },
             icon: const Icon(Icons.open_in_browser_outlined, size: 19),
           ),
@@ -175,7 +170,7 @@ class _HtmlRenderPageState extends State<HtmlRenderPage>
               ),
             ],
           ),
-          const SizedBox(width: 6)
+          const SizedBox(width: 6),
         ],
       ),
       body: Stack(
@@ -208,23 +203,23 @@ class _HtmlRenderPageState extends State<HtmlRenderPage>
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text(_htmlRenderCtr.response['uname'],
-                                          style: TextStyle(
-                                            fontSize: Theme.of(context)
-                                                .textTheme
-                                                .titleSmall!
-                                                .fontSize,
-                                          )),
+                                      Text(
+                                        _htmlRenderCtr.response['uname'],
+                                        style: TextStyle(
+                                          fontSize: Theme.of(
+                                            context,
+                                          ).textTheme.titleSmall!.fontSize,
+                                        ),
+                                      ),
                                       Text(
                                         _htmlRenderCtr.response['updateTime'],
                                         style: TextStyle(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .outline,
-                                          fontSize: Theme.of(context)
-                                              .textTheme
-                                              .labelSmall!
-                                              .fontSize,
+                                          color: Theme.of(
+                                            context,
+                                          ).colorScheme.outline,
+                                          fontSize: Theme.of(
+                                            context,
+                                          ).textTheme.labelSmall!.fontSize,
                                         ),
                                       ),
                                     ],
@@ -244,9 +239,9 @@ class _HtmlRenderPageState extends State<HtmlRenderPage>
                                 border: Border(
                                   bottom: BorderSide(
                                     width: 8,
-                                    color: Theme.of(context)
-                                        .dividerColor
-                                        .withOpacity(0.05),
+                                    color: Theme.of(
+                                      context,
+                                    ).dividerColor.withValues(alpha: 0.05),
                                   ),
                                 ),
                               ),
@@ -270,9 +265,9 @@ class _HtmlRenderPageState extends State<HtmlRenderPage>
                             border: Border(
                               top: BorderSide(
                                 width: 0.6,
-                                color: Theme.of(context)
-                                    .dividerColor
-                                    .withOpacity(0.05),
+                                color: Theme.of(
+                                  context,
+                                ).dividerColor.withValues(alpha: 0.05),
                               ),
                             ),
                           ),
@@ -294,7 +289,7 @@ class _HtmlRenderPageState extends State<HtmlRenderPage>
                                     ),
                                   ),
                                 ),
-                              )
+                              ),
                             ],
                           ),
                         )
@@ -311,7 +306,8 @@ class _HtmlRenderPageState extends State<HtmlRenderPage>
                               if (snapshot.data['status']) {
                                 // 请求成功
                                 return Obx(
-                                  () => _htmlRenderCtr.replyList.isEmpty &&
+                                  () =>
+                                      _htmlRenderCtr.replyList.isEmpty &&
                                           _htmlRenderCtr.isLoadingMore
                                       ? ListView.builder(
                                           itemCount: 5,
@@ -328,31 +324,34 @@ class _HtmlRenderPageState extends State<HtmlRenderPage>
                                               const NeverScrollableScrollPhysics(),
                                           itemCount:
                                               _htmlRenderCtr.replyList.length +
-                                                  1,
+                                              1,
                                           itemBuilder: (context, index) {
                                             if (index ==
                                                 _htmlRenderCtr
-                                                    .replyList.length) {
+                                                    .replyList
+                                                    .length) {
                                               return Container(
                                                 padding: EdgeInsets.only(
-                                                    bottom:
-                                                        MediaQuery.of(context)
-                                                            .padding
-                                                            .bottom),
-                                                height: MediaQuery.of(context)
-                                                        .padding
-                                                        .bottom +
+                                                  bottom: MediaQuery.of(
+                                                    context,
+                                                  ).padding.bottom,
+                                                ),
+                                                height:
+                                                    MediaQuery.of(
+                                                      context,
+                                                    ).padding.bottom +
                                                     100,
                                                 child: Center(
                                                   child: Obx(
                                                     () => Text(
                                                       _htmlRenderCtr
-                                                          .noMore.value,
+                                                          .noMore
+                                                          .value,
                                                       style: TextStyle(
                                                         fontSize: 12,
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .outline,
+                                                        color: Theme.of(
+                                                          context,
+                                                        ).colorScheme.outline,
                                                       ),
                                                     ),
                                                   ),
@@ -370,7 +369,8 @@ class _HtmlRenderPageState extends State<HtmlRenderPage>
                                                     ReplyType.values[type],
                                                 addReply: (replyItem) {
                                                   _htmlRenderCtr
-                                                      .replyList[index].replies!
+                                                      .replyList[index]
+                                                      .replies!
                                                       .add(replyItem);
                                                 },
                                               );
@@ -385,7 +385,7 @@ class _HtmlRenderPageState extends State<HtmlRenderPage>
                                     HttpError(
                                       errMsg: data['msg'],
                                       fn: () => setState(() {}),
-                                    )
+                                    ),
                                   ],
                                 );
                               }
@@ -403,7 +403,7 @@ class _HtmlRenderPageState extends State<HtmlRenderPage>
                           },
                         )
                       : const SizedBox(),
-                )
+                ),
               ],
             ),
           ),
@@ -411,13 +411,16 @@ class _HtmlRenderPageState extends State<HtmlRenderPage>
             bottom: MediaQuery.of(context).padding.bottom + 14,
             right: 14,
             child: SlideTransition(
-              position: Tween<Offset>(
-                begin: const Offset(0, 2),
-                end: const Offset(0, 0),
-              ).animate(CurvedAnimation(
-                parent: fabAnimationCtr,
-                curve: Curves.easeInOut,
-              )),
+              position:
+                  Tween<Offset>(
+                    begin: const Offset(0, 2),
+                    end: const Offset(0, 0),
+                  ).animate(
+                    CurvedAnimation(
+                      parent: fabAnimationCtr,
+                      curve: Curves.easeInOut,
+                    ),
+                  ),
               child: FloatingActionButton(
                 heroTag: null,
                 onPressed: () {
@@ -439,8 +442,8 @@ class _HtmlRenderPageState extends State<HtmlRenderPage>
                       if (value != null && value['data'] != null)
                         {
                           _htmlRenderCtr.replyList.add(value['data']),
-                          _htmlRenderCtr.acount.value++
-                        }
+                          _htmlRenderCtr.acount.value++,
+                        },
                     },
                   );
                 },

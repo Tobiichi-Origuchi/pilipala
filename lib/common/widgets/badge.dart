@@ -34,11 +34,11 @@ class PBadge extends StatelessWidget {
     // 边框色
     Color borderColor = Colors.transparent;
     if (type == 'gray') {
-      bgColor = Colors.black54.withOpacity(0.4);
+      bgColor = Colors.black54.withValues(alpha: 0.4);
       color = Colors.white;
     }
     if (type == 'color') {
-      bgColor = t.primaryContainer.withOpacity(0.6);
+      bgColor = t.primaryContainer.withValues(alpha: 0.6);
       color = t.primary;
     }
     if (type == 'line') {
@@ -47,8 +47,10 @@ class PBadge extends StatelessWidget {
       borderColor = t.primary;
     }
 
-    EdgeInsets paddingStyle =
-        const EdgeInsets.symmetric(vertical: 1, horizontal: 6);
+    EdgeInsets paddingStyle = const EdgeInsets.symmetric(
+      vertical: 1,
+      horizontal: 6,
+    );
     double fontSize = 11;
     BorderRadius br = BorderRadius.circular(4);
 
@@ -79,10 +81,7 @@ class PBadge extends StatelessWidget {
         child: content,
       );
     } else {
-      return Padding(
-        padding: const EdgeInsets.only(right: 5),
-        child: content,
-      );
+      return Padding(padding: const EdgeInsets.only(right: 5), child: content);
     }
   }
 }

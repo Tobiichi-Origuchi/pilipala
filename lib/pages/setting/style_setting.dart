@@ -26,8 +26,9 @@ class StyleSetting extends ConsumerStatefulWidget {
 
 class _StyleSettingState extends ConsumerState<StyleSetting> {
   final SettingController settingController = Get.put(SettingController());
-  final ColorSelectController colorSelectController =
-      Get.put(ColorSelectController());
+  final ColorSelectController colorSelectController = Get.put(
+    ColorSelectController(),
+  );
 
   Box setting = GStrorage.setting;
   late int picQuality;
@@ -45,18 +46,14 @@ class _StyleSettingState extends ConsumerState<StyleSetting> {
   @override
   Widget build(BuildContext context) {
     TextStyle titleStyle = Theme.of(context).textTheme.titleMedium!;
-    TextStyle subTitleStyle = Theme.of(context)
-        .textTheme
-        .labelMedium!
-        .copyWith(color: Theme.of(context).colorScheme.outline);
+    TextStyle subTitleStyle = Theme.of(context).textTheme.labelMedium!.copyWith(
+      color: Theme.of(context).colorScheme.outline,
+    );
     return Scaffold(
       appBar: AppBar(
         centerTitle: false,
         titleSpacing: 0,
-        title: Text(
-          '外观设置',
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
+        title: Text('外观设置', style: Theme.of(context).textTheme.titleMedium),
       ),
       body: ListView(
         children: [
@@ -70,16 +67,18 @@ class _StyleSettingState extends ConsumerState<StyleSetting> {
                 alignment: Alignment.centerRight,
                 scale: 0.8,
                 child: Switch(
-                    thumbIcon: MaterialStateProperty.resolveWith<Icon?>(
-                        (Set<MaterialState> states) {
-                      if (states.isNotEmpty &&
-                          states.first == MaterialState.selected) {
-                        return const Icon(Icons.done);
-                      }
-                      return null; // All other states will use the default thumbIcon.
-                    }),
-                    value: settingController.feedBackEnable.value,
-                    onChanged: (value) => settingController.onOpenFeedBack()),
+                  thumbIcon: WidgetStateProperty.resolveWith<Icon?>((
+                    Set<WidgetState> states,
+                  ) {
+                    if (states.isNotEmpty &&
+                        states.first == WidgetState.selected) {
+                      return const Icon(Icons.done);
+                    }
+                    return null; // All other states will use the default thumbIcon.
+                  }),
+                  value: settingController.feedBackEnable.value,
+                  onChanged: (value) => settingController.onOpenFeedBack(),
+                ),
               ),
             ),
           ),
@@ -115,11 +114,12 @@ class _StyleSettingState extends ConsumerState<StyleSetting> {
                 context: context,
                 builder: (context) {
                   return SelectDialog<int>(
-                      title: '自定义列数',
-                      value: defaultCustomRows,
-                      values: [1, 2, 3, 4, 5].map((e) {
-                        return {'title': '$e 列', 'value': e};
-                      }).toList());
+                    title: '自定义列数',
+                    value: defaultCustomRows,
+                    values: [1, 2, 3, 4, 5].map((e) {
+                      return {'title': '$e 列', 'value': e};
+                    }).toList(),
+                  );
                 },
               );
               if (result != null) {
@@ -130,10 +130,7 @@ class _StyleSettingState extends ConsumerState<StyleSetting> {
             },
             dense: false,
             title: Text('自定义列数', style: titleStyle),
-            subtitle: Text(
-              '当前列数 $defaultCustomRows 列',
-              style: subTitleStyle,
-            ),
+            subtitle: Text('当前列数 $defaultCustomRows 列', style: subTitleStyle),
           ),
           ListTile(
             dense: false,
@@ -143,12 +140,17 @@ class _StyleSettingState extends ConsumerState<StyleSetting> {
                 builder: (context) {
                   return StatefulBuilder(
                     builder: (context, StateSetter setState) {
-                      final SettingController settingController =
-                          Get.put(SettingController());
+                      final SettingController settingController = Get.put(
+                        SettingController(),
+                      );
                       return AlertDialog(
                         title: const Text('图片质量'),
                         contentPadding: const EdgeInsets.only(
-                            top: 20, left: 8, right: 8, bottom: 8),
+                          top: 20,
+                          left: 8,
+                          right: 8,
+                          bottom: 8,
+                        ),
                         content: SizedBox(
                           height: 40,
                           child: Slider(
@@ -165,16 +167,20 @@ class _StyleSettingState extends ConsumerState<StyleSetting> {
                         ),
                         actions: [
                           TextButton(
-                              onPressed: () => Get.back(),
-                              child: Text('取消',
-                                  style: TextStyle(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .outline))),
+                            onPressed: () => Get.back(),
+                            child: Text(
+                              '取消',
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.outline,
+                              ),
+                            ),
+                          ),
                           TextButton(
                             onPressed: () {
                               setting.put(
-                                  SettingBoxKey.defaultPicQa, picQuality);
+                                SettingBoxKey.defaultPicQa,
+                                picQuality,
+                              );
                               Get.back();
                               settingController.picQuality.value = picQuality;
                               ref
@@ -183,7 +189,7 @@ class _StyleSettingState extends ConsumerState<StyleSetting> {
                               SmartDialog.showToast('设置成功');
                             },
                             child: const Text('确定'),
-                          )
+                          ),
                         ],
                       );
                     },
@@ -234,11 +240,12 @@ class _StyleSettingState extends ConsumerState<StyleSetting> {
                 context: context,
                 builder: (context) {
                   return SelectDialog<ThemeType>(
-                      title: '主题模式',
-                      value: _tempThemeValue,
-                      values: ThemeType.values.map((e) {
-                        return {'title': e.description, 'value': e};
-                      }).toList());
+                    title: '主题模式',
+                    value: _tempThemeValue,
+                    values: ThemeType.values.map((e) {
+                      return {'title': e.description, 'value': e};
+                    }).toList(),
+                  );
                 },
               );
               if (result != null) {
@@ -249,33 +256,45 @@ class _StyleSettingState extends ConsumerState<StyleSetting> {
               }
             },
             title: Text('主题模式', style: titleStyle),
-            subtitle: Obx(() => Text(
+            subtitle: Obx(
+              () => Text(
                 '当前模式：${settingController.themeType.value.description}',
-                style: subTitleStyle)),
+                style: subTitleStyle,
+              ),
+            ),
           ),
           ListTile(
             dense: false,
             onTap: () => settingController.setDynamicBadgeMode(context),
             title: Text('动态未读标记', style: titleStyle),
-            subtitle: Obx(() => Text(
+            subtitle: Obx(
+              () => Text(
                 '当前标记样式：${settingController.dynamicBadgeType.value.description}',
-                style: subTitleStyle)),
+                style: subTitleStyle,
+              ),
+            ),
           ),
           ListTile(
             dense: false,
             onTap: () => Get.toNamed('/colorSetting'),
             title: Text('应用主题', style: titleStyle),
-            subtitle: Obx(() => Text(
+            subtitle: Obx(
+              () => Text(
                 '当前主题：${colorSelectController.type.value == 0 ? '动态取色' : '指定颜色'}',
-                style: subTitleStyle)),
+                style: subTitleStyle,
+              ),
+            ),
           ),
           ListTile(
             dense: false,
             onTap: () => settingController.seteDefaultHomePage(context),
             title: Text('默认启动页', style: titleStyle),
-            subtitle: Obx(() => Text(
+            subtitle: Obx(
+              () => Text(
                 '当前启动页：${defaultNavigationBars.firstWhere((e) => e['id'] == settingController.defaultHomePage.value)['label']}',
-                style: subTitleStyle)),
+                style: subTitleStyle,
+              ),
+            ),
           ),
           ListTile(
             dense: false,

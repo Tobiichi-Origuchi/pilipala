@@ -67,8 +67,10 @@ class _PagesPanelState extends State<PagesPanel> {
   void scrollToIndex() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // 在回调函数中获取更新后的状态
-      final double offset = min((currentIndex * 150) - 75,
-          listViewScrollCtr.position.maxScrollExtent);
+      final double offset = min(
+        (currentIndex * 150) - 75,
+        listViewScrollCtr.position.maxScrollExtent,
+      );
       if (currentIndex.value == 0) {
         listViewScrollCtr.jumpTo(0);
       } else {
@@ -92,32 +94,34 @@ class _PagesPanelState extends State<PagesPanel> {
             children: [
               const Text('视频选集 '),
               Expanded(
-                child: Obx(() => Text(
-                      ' 正在播放：${widget.pages[currentIndex.value].pagePart}',
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Theme.of(context).colorScheme.outline,
-                      ),
-                    )),
+                child: Obx(
+                  () => Text(
+                    ' 正在播放：${widget.pages[currentIndex.value].pagePart}',
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Theme.of(context).colorScheme.outline,
+                    ),
+                  ),
+                ),
               ),
               const SizedBox(width: 10),
               SizedBox(
                 height: 34,
                 child: TextButton(
                   style: ButtonStyle(
-                    padding: MaterialStateProperty.all(EdgeInsets.zero),
+                    padding: WidgetStateProperty.all(EdgeInsets.zero),
                   ),
                   onPressed: () {
                     widget.videoIntroCtr.bottomSheetController =
                         _bottomSheetController = EpisodeBottomSheet(
-                      currentCid: cid,
-                      episodes: episodes,
-                      changeFucCall: changeFucCall,
-                      sheetHeight: widget.sheetHeight,
-                      dataType: VideoEpidoesType.videoPart,
-                      context: context,
-                    ).show(context);
+                          currentCid: cid,
+                          episodes: episodes,
+                          changeFucCall: changeFucCall,
+                          sheetHeight: widget.sheetHeight,
+                          dataType: VideoEpidoesType.videoPart,
+                          context: context,
+                        ).show(context);
                   },
                   child: Text(
                     '共${widget.pages.length}集',
@@ -149,7 +153,9 @@ class _PagesPanelState extends State<PagesPanel> {
                     onTap: () => changeFucCall(widget.pages[i], i),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
-                          vertical: 8, horizontal: 8),
+                        vertical: 8,
+                        horizontal: 8,
+                      ),
                       child: Row(
                         children: <Widget>[
                           if (isCurrentIndex) ...<Widget>[
@@ -158,19 +164,21 @@ class _PagesPanelState extends State<PagesPanel> {
                               color: Theme.of(context).colorScheme.primary,
                               height: 12,
                             ),
-                            const SizedBox(width: 6)
+                            const SizedBox(width: 6),
                           ],
                           Expanded(
-                              child: Text(
-                            widget.pages[i].pagePart!,
-                            maxLines: 2,
-                            style: TextStyle(
+                            child: Text(
+                              widget.pages[i].pagePart!,
+                              maxLines: 2,
+                              style: TextStyle(
                                 fontSize: 13,
                                 color: isCurrentIndex
                                     ? Theme.of(context).colorScheme.primary
-                                    : Theme.of(context).colorScheme.onSurface),
-                            overflow: TextOverflow.ellipsis,
-                          ))
+                                    : Theme.of(context).colorScheme.onSurface,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -179,7 +187,7 @@ class _PagesPanelState extends State<PagesPanel> {
               );
             },
           ),
-        )
+        ),
       ],
     );
   }

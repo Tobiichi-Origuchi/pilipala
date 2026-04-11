@@ -1,6 +1,7 @@
 import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 import 'index.dart';
+import 'package:flutter/foundation.dart';
 
 class HtmlHttp {
   // article
@@ -35,11 +36,13 @@ class HtmlHttp {
       // 动态详情
       Element opusDetail = appDom.querySelector('.opus-detail')!;
       // 发布时间
-      String updateTime =
-          opusDetail.querySelector('.opus-module-author__pub__text')!.text;
+      String updateTime = opusDetail
+          .querySelector('.opus-module-author__pub__text')!
+          .text;
       //
-      String opusContent =
-          opusDetail.querySelector('.opus-module-content')!.innerHtml;
+      String opusContent = opusDetail
+          .querySelector('.opus-module-content')!
+          .innerHtml;
       String? test;
       try {
         test = opusDetail
@@ -59,10 +62,10 @@ class HtmlHttp {
         'uname': uname,
         'updateTime': updateTime,
         'content': (test ?? '') + opusContent,
-        'commentId': int.parse(commentId)
+        'commentId': int.parse(commentId),
       };
     } catch (err) {
-      print('err: $err');
+      debugPrint('err: $err');
     }
   }
 
@@ -90,8 +93,9 @@ class HtmlHttp {
     // print(updateTime);
 
     //
-    String opusContent =
-        opusDetail.querySelector('#read-article-holder')!.innerHtml;
+    String opusContent = opusDetail
+        .querySelector('#read-article-holder')!
+        .innerHtml;
     RegExp digitRegExp = RegExp(r'\d+');
     Iterable<Match> matches = digitRegExp.allMatches(id);
     String number = matches.first.group(0)!;
@@ -101,7 +105,7 @@ class HtmlHttp {
       'uname': uname,
       'updateTime': '',
       'content': opusContent,
-      'commentId': int.parse(number)
+      'commentId': int.parse(number),
     };
   }
 }

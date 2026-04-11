@@ -6,8 +6,8 @@ class AppBarAni extends StatelessWidget implements PreferredSizeWidget {
     required this.controller,
     required this.visible,
     this.position,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final PreferredSizeWidget child;
   final AnimationController controller;
@@ -24,10 +24,7 @@ class AppBarAni extends StatelessWidget implements PreferredSizeWidget {
       position: Tween<Offset>(
         begin: Offset(0, position! == 'top' ? -1 : 1),
         end: Offset.zero,
-      ).animate(CurvedAnimation(
-        parent: controller,
-        curve: Curves.linear,
-      )),
+      ).animate(CurvedAnimation(parent: controller, curve: Curves.linear)),
       child: Container(
         padding: EdgeInsets.only(
           left: MediaQuery.of(context).padding.left,
@@ -38,19 +35,13 @@ class AppBarAni extends StatelessWidget implements PreferredSizeWidget {
               ? const LinearGradient(
                   begin: Alignment.bottomCenter,
                   end: Alignment.topCenter,
-                  colors: <Color>[
-                    Colors.transparent,
-                    Colors.black54,
-                  ],
+                  colors: <Color>[Colors.transparent, Colors.black54],
                   tileMode: TileMode.mirror,
                 )
               : const LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: <Color>[
-                    Colors.transparent,
-                    Colors.black54,
-                  ],
+                  colors: <Color>[Colors.transparent, Colors.black54],
                   tileMode: TileMode.mirror,
                 ),
         ),

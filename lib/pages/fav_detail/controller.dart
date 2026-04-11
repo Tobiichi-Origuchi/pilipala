@@ -64,7 +64,10 @@ class FavDetailController extends GetxController {
 
   onCancelFav(int id) async {
     var result = await VideoHttp.favVideo(
-        aid: id, addIds: '', delIds: mediaId.toString());
+      aid: id,
+      addIds: '',
+      delIds: mediaId.toString(),
+    );
     if (result['status']) {
       List dataList = favList;
       for (var i in dataList) {
@@ -111,7 +114,7 @@ class FavDetailController extends GetxController {
                 }
               },
               child: const Text('确认'),
-            )
+            ),
           ],
         );
       },
@@ -130,7 +133,7 @@ class FavDetailController extends GetxController {
       },
     );
     title.value = res['title'];
-    print(title);
+    debugPrint('$title');
   }
 
   Future toViewPlayAll() async {

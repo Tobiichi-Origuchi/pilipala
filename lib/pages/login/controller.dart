@@ -115,9 +115,9 @@ class LoginPageController extends GetxController {
           String rhash = webKeyRes['data']['hash'];
           String key = webKeyRes['data']['key'];
           dynamic publicKey = RSAKeyParser().parse(key);
-          String passwordEncryptyed = Encrypter(RSA(publicKey: publicKey))
-              .encrypt(rhash + passwordTextController.text)
-              .base64;
+          String passwordEncryptyed = Encrypter(
+            RSA(publicKey: publicKey),
+          ).encrypt(rhash + passwordTextController.text).base64;
           var res = await LoginHttp.loginInByWebPwd(
             username: tel,
             password: passwordEncryptyed,
@@ -131,11 +131,14 @@ class LoginPageController extends GetxController {
           } else {
             await SmartDialog.showToast(res['msg']);
             if (res.containsKey('code') && res['code'] == 1) {
-              Get.toNamed('/webview', parameters: {
-                'url': res['data']['data']['url'],
-                'type': 'url',
-                'pageTitle': '登录验证',
-              });
+              Get.toNamed(
+                '/webview',
+                parameters: {
+                  'url': res['data']['data']['url'],
+                  'type': 'url',
+                  'pageTitle': '登录验证',
+                },
+              );
             }
           }
         } else {
@@ -175,7 +178,7 @@ class LoginPageController extends GetxController {
         validate: captchaData.validate!,
         seccode: captchaData.seccode!,
       );
-      print(res);
+      debugPrint(res);
     });
   }
 
@@ -190,86 +193,91 @@ class LoginPageController extends GetxController {
         gt: captchaData.geetest!.gt!,
         success: true,
       );
-      captcha.addEventHandler(onShow: (Map<String, dynamic> message) async {
-        SmartDialog.dismiss();
-      }, onClose: (Map<String, dynamic> message) async {
-        SmartDialog.showToast('取消验证');
-      }, onResult: (Map<String, dynamic> message) async {
-        debugPrint("Captcha result: $message");
-        String code = message["code"];
-        if (code == "1") {
-          // 发送 message["result"] 中的数据向 B 端的业务服务接口进行查询
-          SmartDialog.showToast('验证成功');
-          captchaData.validate = message['result']['geetest_validate'];
-          captchaData.seccode = message['result']['geetest_seccode'];
-          captchaData.geetest!.challenge =
-              message['result']['geetest_challenge'];
-          oncall(captchaData);
-        } else {
-          // 终端用户完成验证失败，自动重试 If the verification fails, it will be automatically retried.
-          debugPrint("Captcha result code : $code");
-        }
-      }, onError: (Map<String, dynamic> message) async {
-        String code = message["code"];
-
-        // 处理验证中返回的错误 Handling errors returned in verification
-        if (Platform.isAndroid) {
-          // Android 平台
-          if (code == "-2") {
-            // Dart 调用异常 Call exception
-          } else if (code == "-1") {
-            // Gt3RegisterData 参数不合法 Parameter is invalid
-          } else if (code == "201") {
-            // 网络无法访问 Network inaccessible
-          } else if (code == "202") {
-            // Json 解析错误 Analysis error
-          } else if (code == "204") {
-            // WebView 加载超时，请检查是否混淆极验 SDK   Load timed out
-          } else if (code == "204_1") {
-            // WebView 加载前端页面错误，请查看日志 Error loading front-end page, please check the log
-          } else if (code == "204_2") {
-            // WebView 加载 SSLError
-          } else if (code == "206") {
-            // gettype 接口错误或返回为 null   API error or return null
-          } else if (code == "207") {
-            // getphp 接口错误或返回为 null    API error or return null
-          } else if (code == "208") {
-            // ajax 接口错误或返回为 null      API error or return null
+      captcha.addEventHandler(
+        onShow: (Map<String, dynamic> message) async {
+          SmartDialog.dismiss();
+        },
+        onClose: (Map<String, dynamic> message) async {
+          SmartDialog.showToast('取消验证');
+        },
+        onResult: (Map<String, dynamic> message) async {
+          debugPrint("Captcha result: $message");
+          String code = message["code"];
+          if (code == "1") {
+            // 发送 message["result"] 中的数据向 B 端的业务服务接口进行查询
+            SmartDialog.showToast('验证成功');
+            captchaData.validate = message['result']['geetest_validate'];
+            captchaData.seccode = message['result']['geetest_seccode'];
+            captchaData.geetest!.challenge =
+                message['result']['geetest_challenge'];
+            oncall(captchaData);
           } else {
-            // 更多错误码参考开发文档  More error codes refer to the development document
-            // https://docs.geetest.com/sensebot/apirefer/errorcode/android
+            // 终端用户完成验证失败，自动重试 If the verification fails, it will be automatically retried.
+            debugPrint("Captcha result code : $code");
           }
-        }
+        },
+        onError: (Map<String, dynamic> message) async {
+          String code = message["code"];
 
-        if (Platform.isIOS) {
-          // iOS 平台
-          if (code == "-1009") {
-            // 网络无法访问 Network inaccessible
-          } else if (code == "-1004") {
-            // 无法查找到 HOST  Unable to find HOST
-          } else if (code == "-1002") {
-            // 非法的 URL  Illegal URL
-          } else if (code == "-1001") {
-            // 网络超时 Network timeout
-          } else if (code == "-999") {
-            // 请求被意外中断, 一般由用户进行取消操作导致 The interrupted request was usually caused by the user cancelling the operation
-          } else if (code == "-21") {
-            // 使用了重复的 challenge   Duplicate challenges are used
-            // 检查获取 challenge 是否进行了缓存  Check if the fetch challenge is cached
-          } else if (code == "-20") {
-            // 尝试过多, 重新引导用户触发验证即可 Try too many times, lead the user to request verification again
-          } else if (code == "-10") {
-            // 预判断时被封禁, 不会再进行图形验证 Banned during pre-judgment, and no more image captcha verification
-          } else if (code == "-2") {
-            // Dart 调用异常 Call exception
-          } else if (code == "-1") {
-            // Gt3RegisterData 参数不合法  Parameter is invalid
-          } else {
-            // 更多错误码参考开发文档 More error codes refer to the development document
-            // https://docs.geetest.com/sensebot/apirefer/errorcode/ios
+          // 处理验证中返回的错误 Handling errors returned in verification
+          if (Platform.isAndroid) {
+            // Android 平台
+            if (code == "-2") {
+              // Dart 调用异常 Call exception
+            } else if (code == "-1") {
+              // Gt3RegisterData 参数不合法 Parameter is invalid
+            } else if (code == "201") {
+              // 网络无法访问 Network inaccessible
+            } else if (code == "202") {
+              // Json 解析错误 Analysis error
+            } else if (code == "204") {
+              // WebView 加载超时，请检查是否混淆极验 SDK   Load timed out
+            } else if (code == "204_1") {
+              // WebView 加载前端页面错误，请查看日志 Error loading front-end page, please check the log
+            } else if (code == "204_2") {
+              // WebView 加载 SSLError
+            } else if (code == "206") {
+              // gettype 接口错误或返回为 null   API error or return null
+            } else if (code == "207") {
+              // getphp 接口错误或返回为 null    API error or return null
+            } else if (code == "208") {
+              // ajax 接口错误或返回为 null      API error or return null
+            } else {
+              // 更多错误码参考开发文档  More error codes refer to the development document
+              // https://docs.geetest.com/sensebot/apirefer/errorcode/android
+            }
           }
-        }
-      });
+
+          if (Platform.isIOS) {
+            // iOS 平台
+            if (code == "-1009") {
+              // 网络无法访问 Network inaccessible
+            } else if (code == "-1004") {
+              // 无法查找到 HOST  Unable to find HOST
+            } else if (code == "-1002") {
+              // 非法的 URL  Illegal URL
+            } else if (code == "-1001") {
+              // 网络超时 Network timeout
+            } else if (code == "-999") {
+              // 请求被意外中断, 一般由用户进行取消操作导致 The interrupted request was usually caused by the user cancelling the operation
+            } else if (code == "-21") {
+              // 使用了重复的 challenge   Duplicate challenges are used
+              // 检查获取 challenge 是否进行了缓存  Check if the fetch challenge is cached
+            } else if (code == "-20") {
+              // 尝试过多, 重新引导用户触发验证即可 Try too many times, lead the user to request verification again
+            } else if (code == "-10") {
+              // 预判断时被封禁, 不会再进行图形验证 Banned during pre-judgment, and no more image captcha verification
+            } else if (code == "-2") {
+              // Dart 调用异常 Call exception
+            } else if (code == "-1") {
+              // Gt3RegisterData 参数不合法  Parameter is invalid
+            } else {
+              // 更多错误码参考开发文档 More error codes refer to the development document
+              // https://docs.geetest.com/sensebot/apirefer/errorcode/ios
+            }
+          }
+        },
+      );
       captcha.startCaptcha(registerData);
     } else {}
   }

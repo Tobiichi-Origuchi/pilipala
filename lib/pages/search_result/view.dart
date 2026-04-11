@@ -19,8 +19,10 @@ class _SearchResultPageState extends State<SearchResultPage>
   @override
   void initState() {
     super.initState();
-    _searchResultController = Get.put(SearchResultController(),
-        tag: DateTime.now().millisecondsSinceEpoch.toString());
+    _searchResultController = Get.put(
+      SearchResultController(),
+      tag: DateTime.now().millisecondsSinceEpoch.toString(),
+    );
 
     _tabController = TabController(
       vsync: this,
@@ -35,7 +37,7 @@ class _SearchResultPageState extends State<SearchResultPage>
       appBar: AppBar(
         shape: Border(
           bottom: BorderSide(
-            color: Theme.of(context).dividerColor.withOpacity(0.08),
+            color: Theme.of(context).dividerColor.withValues(alpha: 0.08),
             width: 1,
           ),
         ),
@@ -69,19 +71,22 @@ class _SearchResultPageState extends State<SearchResultPage>
                   controller: _tabController,
                   tabs: [
                     for (var i in _searchResultController.searchTabs)
-                      Tab(text: "${i['label']} ${i['count'] ?? ''}")
+                      Tab(text: "${i['label']} ${i['count'] ?? ''}"),
                   ],
                   isScrollable: true,
                   indicatorWeight: 0,
-                  indicatorPadding:
-                      const EdgeInsets.symmetric(horizontal: 3, vertical: 8),
+                  indicatorPadding: const EdgeInsets.symmetric(
+                    horizontal: 3,
+                    vertical: 8,
+                  ),
                   indicator: BoxDecoration(
                     color: Theme.of(context).colorScheme.secondaryContainer,
                     borderRadius: const BorderRadius.all(Radius.circular(20)),
                   ),
                   indicatorSize: TabBarIndicatorSize.tab,
-                  labelColor:
-                      Theme.of(context).colorScheme.onSecondaryContainer,
+                  labelColor: Theme.of(
+                    context,
+                  ).colorScheme.onSecondaryContainer,
                   labelStyle: const TextStyle(fontSize: 13),
                   dividerColor: Colors.transparent,
                   unselectedLabelColor: Theme.of(context).colorScheme.outline,
@@ -89,9 +94,10 @@ class _SearchResultPageState extends State<SearchResultPage>
                   onTap: (index) {
                     if (index == _searchResultController.tabIndex) {
                       Get.find<SearchPanelController>(
-                              tag: SearchType.values[index].type +
-                                  _searchResultController.keyword!)
-                          .animateToTop();
+                        tag:
+                            SearchType.values[index].type +
+                            _searchResultController.keyword!,
+                      ).animateToTop();
                     }
 
                     _searchResultController.tabIndex = index;
@@ -109,8 +115,8 @@ class _SearchResultPageState extends State<SearchResultPage>
                     keyword: _searchResultController.keyword,
                     searchType: i,
                     tag: DateTime.now().millisecondsSinceEpoch.toString(),
-                  )
-                }
+                  ),
+                },
               ],
             ),
           ),

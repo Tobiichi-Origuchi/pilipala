@@ -8,14 +8,10 @@ import 'package:pilipala/http/dynamics.dart';
 import 'package:pilipala/models/dynamics/result.dart';
 import 'package:pilipala/pages/dynamics/index.dart';
 import 'package:pilipala/utils/feed_back.dart';
-import 'package:status_bar_control/status_bar_control.dart';
 import 'rich_node_panel.dart';
 
 class ActionPanel extends StatefulWidget {
-  const ActionPanel({
-    super.key,
-    required this.item,
-  });
+  const ActionPanel({super.key, required this.item});
   // ignore: prefer_typing_uninitialized_variables
   final DynamicItemModel item;
 
@@ -31,8 +27,7 @@ class _ActionPanelState extends State<ActionPanel>
   double defaultHeight = 260;
   RxDouble height = 0.0.obs;
   RxBool isExpand = false.obs;
-  late double statusHeight;
-  TextEditingController _inputController = TextEditingController();
+  final TextEditingController _inputController = TextEditingController();
   FocusNode myFocusNode = FocusNode();
   String _inputText = '';
 
@@ -50,17 +45,12 @@ class _ActionPanelState extends State<ActionPanel>
   void initState() {
     super.initState();
     stat = widget.item.modules!.moduleStat!;
-    onInit();
-  }
-
-  onInit() async {
-    statusHeight = await StatusBarControl.getHeight;
   }
 
   // 动态点赞
   Future onLikeDynamic() async {
     feedBack();
-    var item = widget.item!;
+    var item = widget.item;
     String dynamicId = item.idStr!;
     // 1 已点赞 2 不喜欢 0 未操作
     Like like = item.modules!.moduleStat!.like!;
@@ -173,13 +163,15 @@ class _ActionPanelState extends State<ActionPanel>
       height: 95,
       margin: const EdgeInsets.fromLTRB(12, 0, 12, 14),
       decoration: BoxDecoration(
-        color:
-            Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.4),
+        color: Theme.of(
+          context,
+        ).colorScheme.secondaryContainer.withValues(alpha: 0.4),
         borderRadius: BorderRadius.circular(6),
         border: Border(
           left: BorderSide(
-              width: 4,
-              color: Theme.of(context).colorScheme.primary.withOpacity(0.8)),
+            width: 4,
+            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.8),
+          ),
         ),
       ),
       child: Padding(
@@ -190,9 +182,7 @@ class _ActionPanelState extends State<ActionPanel>
           children: [
             Text(
               '@${widget.item.modules!.moduleAuthor!.name}',
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.primary,
-              ),
+              style: TextStyle(color: Theme.of(context).colorScheme.primary),
             ),
             const SizedBox(height: 8),
             Row(
@@ -214,7 +204,7 @@ class _ActionPanelState extends State<ActionPanel>
                 ),
                 // Text(data)
               ],
-            )
+            ),
           ],
         ),
       ),
@@ -229,6 +219,8 @@ class _ActionPanelState extends State<ActionPanel>
       useRootNavigator: true,
       isScrollControlled: true,
       builder: (context) {
+        final double currentStatusHeight = MediaQuery.paddingOf(context).top;
+        final double safeBottom = MediaQuery.paddingOf(context).bottom;
         return Obx(
           () => AnimatedContainer(
             duration: Durations.medium1,
@@ -238,12 +230,12 @@ class _ActionPanelState extends State<ActionPanel>
                 myFocusNode.requestFocus();
               }
             },
-            height: height.value + MediaQuery.of(context).padding.bottom,
+            height: height.value + safeBottom,
             child: Column(
               children: [
                 AnimatedContainer(
                   duration: Durations.medium1,
-                  height: isExpand.value ? statusHeight : 0,
+                  height: isExpand.value ? currentStatusHeight : 0,
                 ),
                 Padding(
                   padding: EdgeInsets.fromLTRB(
@@ -262,16 +254,14 @@ class _ActionPanelState extends State<ActionPanel>
                         ),
                         Text(
                           '转发动态',
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleMedium!
+                          style: Theme.of(context).textTheme.titleMedium!
                               .copyWith(fontWeight: FontWeight.bold),
-                        )
+                        ),
                       ] else ...[
                         const Text(
                           '转发动态',
                           style: TextStyle(fontWeight: FontWeight.bold),
-                        )
+                        ),
                       ],
                       isExpand.value
                           ? FilledButton(
@@ -281,7 +271,7 @@ class _ActionPanelState extends State<ActionPanel>
                           : TextButton(
                               onPressed: () {},
                               child: const Text('立即转发'),
-                            )
+                            ),
                     ],
                   ),
                 ),
@@ -297,7 +287,8 @@ class _ActionPanelState extends State<ActionPanel>
                         '说点什么吧',
                         textAlign: TextAlign.start,
                         style: TextStyle(
-                            color: Theme.of(context).colorScheme.outline),
+                          color: Theme.of(context).colorScheme.outline,
+                        ),
                       ),
                     ),
                   ),
@@ -330,11 +321,12 @@ class _ActionPanelState extends State<ActionPanel>
                     title: Text(
                       '取消',
                       style: TextStyle(
-                          color: Theme.of(context).colorScheme.outline),
+                        color: Theme.of(context).colorScheme.outline,
+                      ),
                       textAlign: TextAlign.center,
                     ),
                   ),
-                ]
+                ],
               ],
             ),
           ),
@@ -380,7 +372,7 @@ class _ActionPanelState extends State<ActionPanel>
     var color = Theme.of(context).colorScheme.outline;
     var primary = Theme.of(context).colorScheme.primary;
     height.value = defaultHeight;
-    print('height.value: ${height.value}');
+    debugPrint('height.value: ${height.value}');
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
@@ -388,10 +380,7 @@ class _ActionPanelState extends State<ActionPanel>
           flex: 1,
           child: TextButton.icon(
             onPressed: forwardHandler,
-            icon: const Icon(
-              FontAwesomeIcons.shareFromSquare,
-              size: 16,
-            ),
+            icon: const FaIcon(FontAwesomeIcons.shareFromSquare, size: 16),
             style: TextButton.styleFrom(
               padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
               foregroundColor: Theme.of(context).colorScheme.outline,
@@ -402,12 +391,12 @@ class _ActionPanelState extends State<ActionPanel>
         Expanded(
           flex: 1,
           child: TextButton.icon(
-            onPressed: () => _dynamicsController.pushDetail(widget.item, 1,
-                action: 'comment'),
-            icon: const Icon(
-              FontAwesomeIcons.comment,
-              size: 16,
+            onPressed: () => _dynamicsController.pushDetail(
+              widget.item,
+              1,
+              action: 'comment',
             ),
+            icon: const FaIcon(FontAwesomeIcons.comment, size: 16),
             style: TextButton.styleFrom(
               padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
               foregroundColor: Theme.of(context).colorScheme.outline,
@@ -419,7 +408,7 @@ class _ActionPanelState extends State<ActionPanel>
           flex: 1,
           child: TextButton.icon(
             onPressed: handleState(onLikeDynamic),
-            icon: Icon(
+            icon: FaIcon(
               stat.like!.status!
                   ? FontAwesomeIcons.solidThumbsUp
                   : FontAwesomeIcons.thumbsUp,
@@ -438,13 +427,11 @@ class _ActionPanelState extends State<ActionPanel>
               child: Text(
                 stat.like!.count ?? '点赞',
                 key: ValueKey<String>(stat.like!.count ?? '点赞'),
-                style: TextStyle(
-                  color: stat.like!.status! ? primary : color,
-                ),
+                style: TextStyle(color: stat.like!.status! ? primary : color),
               ),
             ),
           ),
-        )
+        ),
       ],
     );
   }

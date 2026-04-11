@@ -3,12 +3,9 @@ import 'dart:async';
 import 'package:pilipala/utils/live.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:flutter/foundation.dart';
 
-enum SocketStatus {
-  connected,
-  failed,
-  closed,
-}
+enum SocketStatus { connected, failed, closed }
 
 class PlSocket {
   SocketStatus status = SocketStatus.closed;
@@ -62,21 +59,22 @@ class PlSocket {
   void onReady() {
     status = SocketStatus.connected;
     onReadyCb?.call();
-    channelStreamSub = channel?.stream.listen((message) {
-      onMessageCb?.call(message);
-    }, onDone: () {
-      // 流被关闭
-      print('结束了');
-    }, onError: (err) {
-      onError(err);
-    });
+    channelStreamSub = channel?.stream.listen(
+      (message) {
+        onMessageCb?.call(message);
+      },
+      onDone: () {
+        // 流被关闭
+        debugPrint('结束了');
+      },
+      onError: (err) {
+        onError(err);
+      },
+    );
     // 每30s发送心跳
     Timer.periodic(Duration(seconds: heartTime), (timer) {
       if (status == SocketStatus.connected) {
-        sendMessage(LiveUtils.encodeData(
-          "",
-          2,
-        ));
+        sendMessage(LiveUtils.encodeData("", 2));
       } else {
         timer.cancel();
       }

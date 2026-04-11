@@ -14,8 +14,9 @@ import 'rich_node_panel.dart';
 import 'video_panel.dart';
 
 Widget forWard(item, context, ctr, source, {floor = 1}) {
-  TextStyle authorStyle =
-      TextStyle(color: Theme.of(context).colorScheme.primary);
+  TextStyle authorStyle = TextStyle(
+    color: Theme.of(context).colorScheme.primary,
+  );
   switch (item.type) {
     // 图文
     case 'DYNAMIC_TYPE_DRAW':
@@ -27,8 +28,9 @@ Widget forWard(item, context, ctr, source, {floor = 1}) {
               children: [
                 GestureDetector(
                   onTap: () => Get.toNamed(
-                      '/member?mid=${item.modules.moduleAuthor.mid}',
-                      arguments: {'face': item.modules.moduleAuthor.face}),
+                    '/member?mid=${item.modules.moduleAuthor.mid}',
+                    arguments: {'face': item.modules.moduleAuthor.face},
+                  ),
                   child: Text(
                     '@${item.modules.moduleAuthor.name}',
                     style: authorStyle,
@@ -38,9 +40,9 @@ Widget forWard(item, context, ctr, source, {floor = 1}) {
                 Text(
                   Utils.dateFormat(item.modules.moduleAuthor.pubTs),
                   style: TextStyle(
-                      color: Theme.of(context).colorScheme.outline,
-                      fontSize:
-                          Theme.of(context).textTheme.labelSmall!.fontSize),
+                    color: Theme.of(context).colorScheme.outline,
+                    fontSize: Theme.of(context).textTheme.labelSmall!.fontSize,
+                  ),
                 ),
               ],
             ),
@@ -82,7 +84,7 @@ Widget forWard(item, context, ctr, source, {floor = 1}) {
               context,
               item.modules.moduleDynamic.additional.type,
               floor: floor,
-            )
+            ),
         ],
       );
     // 视频
@@ -96,9 +98,13 @@ Widget forWard(item, context, ctr, source, {floor = 1}) {
       return InkWell(
         onTap: () => ctr.pushDetail(item.orig, floor + 1),
         child: Container(
-          padding:
-              const EdgeInsets.only(left: 15, top: 10, right: 15, bottom: 8),
-          color: Theme.of(context).dividerColor.withOpacity(0.08),
+          padding: const EdgeInsets.only(
+            left: 15,
+            top: 10,
+            right: 15,
+            bottom: 8,
+          ),
+          color: Theme.of(context).dividerColor.withValues(alpha: 0.08),
           child: forWard(item.orig, context, ctr, source, floor: floor + 1),
         ),
       );
@@ -120,8 +126,9 @@ Widget forWard(item, context, ctr, source, {floor = 1}) {
                   children: [
                     GestureDetector(
                       onTap: () => Get.toNamed(
-                          '/member?mid=${item.modules.moduleAuthor.mid}',
-                          arguments: {'face': item.modules.moduleAuthor.face}),
+                        '/member?mid=${item.modules.moduleAuthor.mid}',
+                        arguments: {'face': item.modules.moduleAuthor.face},
+                      ),
                       child: Text(
                         '@${item.modules.moduleAuthor.name}',
                         style: authorStyle,
@@ -131,9 +138,11 @@ Widget forWard(item, context, ctr, source, {floor = 1}) {
                     Text(
                       Utils.dateFormat(item.modules.moduleAuthor.pubTs),
                       style: TextStyle(
-                          color: Theme.of(context).colorScheme.outline,
-                          fontSize:
-                              Theme.of(context).textTheme.labelSmall!.fontSize),
+                        color: Theme.of(context).colorScheme.outline,
+                        fontSize: Theme.of(
+                          context,
+                        ).textTheme.labelSmall!.fontSize,
+                      ),
                     ),
                   ],
                 ),
@@ -147,13 +156,13 @@ Widget forWard(item, context, ctr, source, {floor = 1}) {
               ],
             )
           : item.modules.moduleDynamic.additional != null
-              ? addWidget(
-                  item,
-                  context,
-                  item.modules.moduleDynamic.additional.type,
-                  floor: floor,
-                )
-              : const SizedBox(height: 0);
+          ? addWidget(
+              item,
+              context,
+              item.modules.moduleDynamic.additional.type,
+              floor: floor,
+            )
+          : const SizedBox(height: 0);
     case 'DYNAMIC_TYPE_PGC':
       return videoSeasonWidget(item, context, 'pgc', floor: floor);
     case 'DYNAMIC_TYPE_PGC_UNION':
@@ -162,12 +171,9 @@ Widget forWard(item, context, ctr, source, {floor = 1}) {
     case 'DYNAMIC_TYPE_NONE':
       return Row(
         children: [
-          const Icon(
-            FontAwesomeIcons.ghost,
-            size: 14,
-          ),
+          const FaIcon(FontAwesomeIcons.ghost, size: 14),
           const SizedBox(width: 4),
-          Text(item.modules.moduleDynamic.major.none.tips)
+          Text(item.modules.moduleDynamic.major.none.tips),
         ],
       );
     // 课堂
@@ -180,7 +186,7 @@ Widget forWard(item, context, ctr, source, {floor = 1}) {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
-          )
+          ),
         ],
       );
     // 活动
@@ -189,17 +195,24 @@ Widget forWard(item, context, ctr, source, {floor = 1}) {
         padding: const EdgeInsets.only(top: 8),
         child: InkWell(
           onTap: () {
-            Get.toNamed('/webview', parameters: {
-              'url': item.modules.moduleDynamic.major.common['jump_url'],
-              'type': 'url',
-              'pageTitle': item.modules.moduleDynamic.major.common['title']
-            });
+            Get.toNamed(
+              '/webview',
+              parameters: {
+                'url': item.modules.moduleDynamic.major.common['jump_url'],
+                'type': 'url',
+                'pageTitle': item.modules.moduleDynamic.major.common['title'],
+              },
+            );
           },
           child: Container(
             width: double.infinity,
-            padding:
-                const EdgeInsets.only(left: 12, top: 10, right: 12, bottom: 10),
-            color: Theme.of(context).dividerColor.withOpacity(0.08),
+            padding: const EdgeInsets.only(
+              left: 12,
+              top: 10,
+              right: 12,
+              bottom: 10,
+            ),
+            color: Theme.of(context).dividerColor.withValues(alpha: 0.08),
             child: Row(
               children: [
                 NetworkImgLayer(
@@ -224,14 +237,15 @@ Widget forWard(item, context, ctr, source, {floor = 1}) {
                       item.modules.moduleDynamic.major.common['desc'],
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.outline,
-                        fontSize:
-                            Theme.of(context).textTheme.labelMedium!.fontSize,
+                        fontSize: Theme.of(
+                          context,
+                        ).textTheme.labelMedium!.fontSize,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ],
-                )
+                ),
               ],
             ),
             // TextButton(onPressed: () {}, child: Text('123'))
@@ -244,24 +258,27 @@ Widget forWard(item, context, ctr, source, {floor = 1}) {
         padding: const EdgeInsets.only(top: 8),
         child: InkWell(
           onTap: () {
-            Get.toNamed('/webview', parameters: {
-              'url': "https:${music['jump_url']}",
-              'type': 'url',
-              'pageTitle': music['title']
-            });
+            Get.toNamed(
+              '/webview',
+              parameters: {
+                'url': "https:${music['jump_url']}",
+                'type': 'url',
+                'pageTitle': music['title'],
+              },
+            );
           },
           child: Container(
             width: double.infinity,
-            padding:
-                const EdgeInsets.only(left: 12, top: 10, right: 12, bottom: 10),
-            color: Theme.of(context).dividerColor.withOpacity(0.08),
+            padding: const EdgeInsets.only(
+              left: 12,
+              top: 10,
+              right: 12,
+              bottom: 10,
+            ),
+            color: Theme.of(context).dividerColor.withValues(alpha: 0.08),
             child: Row(
               children: [
-                NetworkImgLayer(
-                  width: 45,
-                  height: 45,
-                  src: music['cover'],
-                ),
+                NetworkImgLayer(width: 45, height: 45, src: music['cover']),
                 const SizedBox(width: 10),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -279,14 +296,15 @@ Widget forWard(item, context, ctr, source, {floor = 1}) {
                       music['label'],
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.outline,
-                        fontSize:
-                            Theme.of(context).textTheme.labelMedium!.fontSize,
+                        fontSize: Theme.of(
+                          context,
+                        ).textTheme.labelMedium!.fontSize,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ],
-                )
+                ),
               ],
             ),
             // TextButton(onPressed: () {}, child: Text('123'))

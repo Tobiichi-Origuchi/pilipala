@@ -21,12 +21,12 @@ class FavVideoCardH extends StatelessWidget {
   final String isOwner;
 
   const FavVideoCardH({
-    Key? key,
+    super.key,
     required this.videoItem,
     this.callFn,
     this.searchType,
     required this.isOwner,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -58,23 +58,29 @@ class FavVideoCardH extends StatelessWidget {
         // if (seasonId != null) {
         //   parameters['seasonId'] = seasonId.toString();
         // }
-        Get.toNamed('/video', parameters: parameters, arguments: {
-          'videoItem': videoItem,
-          'heroTag': heroTag,
-          'videoType':
-              epId != null ? SearchType.media_bangumi : SearchType.video,
-        });
+        Get.toNamed(
+          '/video',
+          parameters: parameters,
+          arguments: {
+            'videoItem': videoItem,
+            'heroTag': heroTag,
+            'videoType': epId != null
+                ? SearchType.media_bangumi
+                : SearchType.video,
+          },
+        );
       },
-      onLongPress: () => imageSaveDialog(
-        context,
-        videoItem,
-        SmartDialog.dismiss,
-      ),
+      onLongPress: () =>
+          imageSaveDialog(context, videoItem, SmartDialog.dismiss),
       child: Column(
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(
-                StyleString.safeSpace, 5, StyleString.safeSpace, 5),
+              StyleString.safeSpace,
+              5,
+              StyleString.safeSpace,
+              5,
+            ),
             child: LayoutBuilder(
               builder: (context, boxConstraints) {
                 double width =
@@ -126,7 +132,7 @@ class FavVideoCardH extends StatelessWidget {
                         callFn: callFn,
                         searchType: searchType,
                         isOwner: isOwner,
-                      )
+                      ),
                     ],
                   ),
                 );
@@ -176,8 +182,9 @@ class VideoContent extends StatelessWidget {
                   Text(
                     videoItem.intro,
                     style: TextStyle(
-                      fontSize:
-                          Theme.of(context).textTheme.labelMedium!.fontSize,
+                      fontSize: Theme.of(
+                        context,
+                      ).textTheme.labelMedium!.fontSize,
                       color: Theme.of(context).colorScheme.outline,
                     ),
                   ),
@@ -186,15 +193,17 @@ class VideoContent extends StatelessWidget {
                 Text(
                   Utils.dateFormat(videoItem.favTime),
                   style: TextStyle(
-                      fontSize: 11,
-                      color: Theme.of(context).colorScheme.outline),
+                    fontSize: 11,
+                    color: Theme.of(context).colorScheme.outline,
+                  ),
                 ),
                 if (videoItem.owner.name != '') ...[
                   Text(
                     videoItem.owner.name,
                     style: TextStyle(
-                      fontSize:
-                          Theme.of(context).textTheme.labelMedium!.fontSize,
+                      fontSize: Theme.of(
+                        context,
+                      ).textTheme.labelMedium!.fontSize,
                       color: Theme.of(context).colorScheme.outline,
                     ),
                   ),
@@ -218,7 +227,7 @@ class VideoContent extends StatelessWidget {
                     bottom: -4,
                     child: IconButton(
                       style: ButtonStyle(
-                        padding: MaterialStateProperty.all(EdgeInsets.zero),
+                        padding: WidgetStateProperty.all(EdgeInsets.zero),
                       ),
                       onPressed: () {
                         showDialog(
@@ -229,21 +238,23 @@ class VideoContent extends StatelessWidget {
                               content: const Text('要取消收藏吗?'),
                               actions: [
                                 TextButton(
-                                    onPressed: () => Get.back(),
-                                    child: Text(
-                                      '取消',
-                                      style: TextStyle(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .outline),
-                                    )),
+                                  onPressed: () => Get.back(),
+                                  child: Text(
+                                    '取消',
+                                    style: TextStyle(
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.outline,
+                                    ),
+                                  ),
+                                ),
                                 TextButton(
                                   onPressed: () async {
                                     await callFn!();
                                     Get.back();
                                   },
                                   child: const Text('确定取消'),
-                                )
+                                ),
                               ],
                             );
                           },

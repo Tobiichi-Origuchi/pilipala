@@ -56,8 +56,10 @@ class _VideoIntroPanelState extends ConsumerState<VideoIntroPanel>
 
     /// fix 全屏时参数丢失
     heroTag = Get.arguments['heroTag'];
-    videoIntroController =
-        Get.put(VideoIntroController(bvid: widget.bvid), tag: heroTag);
+    videoIntroController = Get.put(
+      VideoIntroController(bvid: widget.bvid),
+      tag: heroTag,
+    );
     _futureBuilderFuture = videoIntroController.queryVideoIntro();
     videoIntroController.videoDetail.listen((value) {
       videoDetail = value;
@@ -93,7 +95,8 @@ class _VideoIntroPanelState extends ConsumerState<VideoIntroPanel>
             // 请求错误
             return HttpError(
               errMsg: snapshot.data['msg'],
-              btnText: snapshot.data['code'] == -404 ||
+              btnText:
+                  snapshot.data['code'] == -404 ||
                       snapshot.data['code'] == 62002
                   ? '返回上一页'
                   : null,
@@ -105,10 +108,7 @@ class _VideoIntroPanelState extends ConsumerState<VideoIntroPanel>
             child: SizedBox(
               height: 100,
               child: Center(
-                child: Lottie.asset(
-                  'assets/loading.json',
-                  width: 200,
-                ),
+                child: Lottie.asset('assets/loading.json', width: 200),
               ),
             ),
           );
@@ -124,11 +124,11 @@ class VideoInfo extends ConsumerStatefulWidget {
   final String bvid;
 
   const VideoInfo({
-    Key? key,
+    super.key,
     this.videoDetail,
     this.heroTag,
     required this.bvid,
-  }) : super(key: key);
+  });
 
   @override
   ConsumerState<VideoInfo> createState() => _VideoInfoState();
@@ -164,8 +164,10 @@ class _VideoInfoState extends ConsumerState<VideoInfo>
   void initState() {
     super.initState();
     heroTag = widget.heroTag!;
-    videoIntroController =
-        Get.put(VideoIntroController(bvid: widget.bvid), tag: heroTag);
+    videoIntroController = Get.put(
+      VideoIntroController(bvid: widget.bvid),
+      tag: heroTag,
+    );
     videoDetailCtr = Get.find<VideoDetailController>(tag: heroTag);
     sheetHeight = localCache.get('sheetHeight');
 
@@ -180,8 +182,10 @@ class _VideoInfoState extends ConsumerState<VideoInfo>
       SmartDialog.showToast('账号未登录');
       return;
     }
-    final bool enableDragQuickFav =
-        setting.get(SettingBoxKey.enableQuickFav, defaultValue: false);
+    final bool enableDragQuickFav = setting.get(
+      SettingBoxKey.enableQuickFav,
+      defaultValue: false,
+    );
     // 快速收藏 &
     // 点按 收藏至默认文件夹
     // 长按选择文件夹
@@ -210,13 +214,17 @@ class _VideoInfoState extends ConsumerState<VideoInfo>
       initHeight: 0.6,
       maxHeight: 1,
       context: context,
-      builder: (BuildContext context, ScrollController scrollController,
-          double offset) {
-        return FavPanel(
-          ctr: videoIntroController,
-          scrollController: scrollController,
-        );
-      },
+      builder:
+          (
+            BuildContext context,
+            ScrollController scrollController,
+            double offset,
+          ) {
+            return FavPanel(
+              ctr: videoIntroController,
+              scrollController: scrollController,
+            );
+          },
       anchors: [0.6, 1],
       isSafeArea: true,
     );
@@ -235,8 +243,10 @@ class _VideoInfoState extends ConsumerState<VideoInfo>
     mid = widget.videoDetail!.owner!.mid!;
     memberHeroTag = Utils.makeHeroTag(mid);
     String face = widget.videoDetail!.owner!.face!;
-    Get.toNamed('/member?mid=$mid',
-        arguments: {'face': face, 'heroTag': memberHeroTag});
+    Get.toNamed(
+      '/member?mid=$mid',
+      arguments: {'face': face, 'heroTag': memberHeroTag},
+    );
   }
 
   // ai总结
@@ -267,39 +277,115 @@ class _VideoInfoState extends ConsumerState<VideoInfo>
         top: 16,
       ),
       sliver: SliverToBoxAdapter(
-          child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          GestureDetector(
-            behavior: HitTestBehavior.translucent,
-            onTap: () => showIntroDetail(),
-            onLongPress: () async {
-              feedBack();
-              await Clipboard.setData(
-                  ClipboardData(text: widget.videoDetail!.title!));
-              SmartDialog.showToast('标题已复制');
-            },
-            child: ExpandablePanel(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onTap: () => showIntroDetail(),
+              onLongPress: () async {
+                feedBack();
+                await Clipboard.setData(
+                  ClipboardData(text: widget.videoDetail!.title!),
+                );
+                SmartDialog.showToast('标题已复制');
+              },
+              child: ExpandablePanel(
+                controller: _expandableCtr,
+                collapsed: Text(
+                  widget.videoDetail!.title!,
+                  softWrap: true,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                expanded: Text(
+                  widget.videoDetail!.title!,
+                  softWrap: true,
+                  maxLines: 10,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                theme: const ExpandableThemeData(
+                  animationDuration: Duration(milliseconds: 300),
+                  scrollAnimationDuration: Duration(milliseconds: 300),
+                  crossFadePoint: 0,
+                  fadeCurve: Curves.ease,
+                  sizeCurve: Curves.linear,
+                ),
+              ),
+            ),
+            Stack(
+              children: [
+                GestureDetector(
+                  behavior: HitTestBehavior.translucent,
+                  onTap: () => showIntroDetail(),
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 7, bottom: 6),
+                    child: Row(
+                      children: [
+                        StatView(
+                          view: widget.videoDetail!.stat!.view,
+                          size: 'medium',
+                        ),
+                        const SizedBox(width: 10),
+                        StatDanMu(
+                          danmu: widget.videoDetail!.stat!.danmaku,
+                          size: 'medium',
+                        ),
+                        const SizedBox(width: 10),
+                        Text(
+                          Utils.dateFormat(
+                            widget.videoDetail!.pubdate,
+                            formatType: 'detail',
+                          ),
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: t.colorScheme.outline,
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        if (videoIntroController.isShowOnlineTotal)
+                          Obx(
+                            () => Text(
+                              '${videoIntroController.total.value}人在看',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: t.colorScheme.outline,
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+                if (enableAi)
+                  Positioned(
+                    right: 10,
+                    top: 6,
+                    child: GestureDetector(
+                      onTap: () async {
+                        final res = await videoIntroController.aiConclusion();
+                        if (res['status']) {
+                          showAiBottomSheet();
+                        }
+                      },
+                      child: Image.asset('assets/images/ai.png', height: 22),
+                    ),
+                  ),
+              ],
+            ),
+
+            /// 视频简介
+            ExpandablePanel(
               controller: _expandableCtr,
-              collapsed: Text(
-                widget.videoDetail!.title!,
-                softWrap: true,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              expanded: Text(
-                widget.videoDetail!.title!,
-                softWrap: true,
-                maxLines: 10,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+              collapsed: const SizedBox(height: 0),
+              expanded: IntroDetail(videoDetail: widget.videoDetail!),
               theme: const ExpandableThemeData(
                 animationDuration: Duration(milliseconds: 300),
                 scrollAnimationDuration: Duration(milliseconds: 300),
@@ -308,153 +394,78 @@ class _VideoInfoState extends ConsumerState<VideoInfo>
                 sizeCurve: Curves.linear,
               ),
             ),
-          ),
-          Stack(
-            children: [
+
+            /// 点赞收藏转发
+            Material(child: actionGrid(context, videoIntroController)),
+            // 合集 videoPart 简洁
+            if (widget.videoDetail!.ugcSeason != null) ...[
+              Obx(
+                () => SeasonPanel(
+                  ugcSeason: widget.videoDetail!.ugcSeason!,
+                  cid: videoIntroController.lastPlayCid.value != 0
+                      ? videoIntroController.lastPlayCid.value
+                      : widget.videoDetail!.pages!.first.cid,
+                  sheetHeight: videoDetailCtr.sheetHeight.value,
+                  changeFuc: (bvid, cid, aid, cover) => videoIntroController
+                      .changeSeasonOrbangu(bvid, cid, aid, cover),
+                  videoIntroCtr: videoIntroController,
+                ),
+              ),
+            ],
+            // 合集 videoEpisode
+            if (widget.videoDetail!.pages != null &&
+                widget.videoDetail!.pages!.length > 1) ...[
+              Obx(
+                () => PagesPanel(
+                  pages: widget.videoDetail!.pages!,
+                  cid: videoIntroController.lastPlayCid.value,
+                  sheetHeight: videoDetailCtr.sheetHeight.value,
+                  changeFuc: (cid, cover) =>
+                      videoIntroController.changeSeasonOrbangu(
+                        videoIntroController.bvid,
+                        cid,
+                        null,
+                        cover,
+                      ),
+                  videoIntroCtr: videoIntroController,
+                ),
+              ),
+            ],
+            if (widget.videoDetail!.staff == null)
               GestureDetector(
-                behavior: HitTestBehavior.translucent,
-                onTap: () => showIntroDetail(),
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 7, bottom: 6),
+                onTap: onPushMember,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 12,
+                    horizontal: 4,
+                  ),
                   child: Row(
                     children: [
-                      StatView(
-                        view: widget.videoDetail!.stat!.view,
-                        size: 'medium',
-                      ),
-                      const SizedBox(width: 10),
-                      StatDanMu(
-                        danmu: widget.videoDetail!.stat!.danmaku,
-                        size: 'medium',
+                      NetworkImgLayer(
+                        type: 'avatar',
+                        src: widget.videoDetail!.owner!.face,
+                        width: 34,
+                        height: 34,
+                        fadeInDuration: Duration.zero,
+                        fadeOutDuration: Duration.zero,
                       ),
                       const SizedBox(width: 10),
                       Text(
-                        Utils.dateFormat(widget.videoDetail!.pubdate,
-                            formatType: 'detail'),
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: t.colorScheme.outline,
-                        ),
+                        widget.videoDetail!.owner!.name!,
+                        style: const TextStyle(fontSize: 13),
                       ),
-                      const SizedBox(width: 10),
-                      if (videoIntroController.isShowOnlineTotal)
-                        Obx(
-                          () => Text(
-                            '${videoIntroController.total.value}人在看',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: t.colorScheme.outline,
-                            ),
+                      const SizedBox(width: 6),
+                      Obx(
+                        () => Text(
+                          Utils.numFormat(videoIntroController.follower.value),
+                          style: TextStyle(
+                            fontSize: t.textTheme.labelSmall!.fontSize,
+                            color: outline,
                           ),
                         ),
-                    ],
-                  ),
-                ),
-              ),
-              if (enableAi)
-                Positioned(
-                  right: 10,
-                  top: 6,
-                  child: GestureDetector(
-                    onTap: () async {
-                      final res = await videoIntroController.aiConclusion();
-                      if (res['status']) {
-                        showAiBottomSheet();
-                      }
-                    },
-                    child: Image.asset('assets/images/ai.png', height: 22),
-                  ),
-                )
-            ],
-          ),
-
-          /// 视频简介
-          ExpandablePanel(
-            controller: _expandableCtr,
-            collapsed: const SizedBox(height: 0),
-            expanded: IntroDetail(videoDetail: widget.videoDetail!),
-            theme: const ExpandableThemeData(
-              animationDuration: Duration(milliseconds: 300),
-              scrollAnimationDuration: Duration(milliseconds: 300),
-              crossFadePoint: 0,
-              fadeCurve: Curves.ease,
-              sizeCurve: Curves.linear,
-            ),
-          ),
-
-          /// 点赞收藏转发
-          Material(child: actionGrid(context, videoIntroController)),
-          // 合集 videoPart 简洁
-          if (widget.videoDetail!.ugcSeason != null) ...[
-            Obx(
-              () => SeasonPanel(
-                ugcSeason: widget.videoDetail!.ugcSeason!,
-                cid: videoIntroController.lastPlayCid.value != 0
-                    ? videoIntroController.lastPlayCid.value
-                    : widget.videoDetail!.pages!.first.cid,
-                sheetHeight: videoDetailCtr.sheetHeight.value,
-                changeFuc: (bvid, cid, aid, cover) =>
-                    videoIntroController.changeSeasonOrbangu(
-                  bvid,
-                  cid,
-                  aid,
-                  cover,
-                ),
-                videoIntroCtr: videoIntroController,
-              ),
-            )
-          ],
-          // 合集 videoEpisode
-          if (widget.videoDetail!.pages != null &&
-              widget.videoDetail!.pages!.length > 1) ...[
-            Obx(
-              () => PagesPanel(
-                pages: widget.videoDetail!.pages!,
-                cid: videoIntroController.lastPlayCid.value,
-                sheetHeight: videoDetailCtr.sheetHeight.value,
-                changeFuc: (cid, cover) =>
-                    videoIntroController.changeSeasonOrbangu(
-                  videoIntroController.bvid,
-                  cid,
-                  null,
-                  cover,
-                ),
-                videoIntroCtr: videoIntroController,
-              ),
-            )
-          ],
-          if (widget.videoDetail!.staff == null)
-            GestureDetector(
-              onTap: onPushMember,
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
-                child: Row(
-                  children: [
-                    NetworkImgLayer(
-                      type: 'avatar',
-                      src: widget.videoDetail!.owner!.face,
-                      width: 34,
-                      height: 34,
-                      fadeInDuration: Duration.zero,
-                      fadeOutDuration: Duration.zero,
-                    ),
-                    const SizedBox(width: 10),
-                    Text(widget.videoDetail!.owner!.name!,
-                        style: const TextStyle(fontSize: 13)),
-                    const SizedBox(width: 6),
-                    Obx(
-                      () => Text(
-                        Utils.numFormat(videoIntroController.follower.value),
-                        style: TextStyle(
-                          fontSize: t.textTheme.labelSmall!.fontSize,
-                          color: outline,
-                        ),
                       ),
-                    ),
-                    const Spacer(),
-                    Obx(
-                      () {
+                      const Spacer(),
+                      Obx(() {
                         final bool isFollowed =
                             videoIntroController.followStatus['attribute'] != 0;
                         return videoIntroController.followStatus.isEmpty
@@ -485,73 +496,72 @@ class _VideoInfoState extends ConsumerState<VideoInfo>
                                   ),
                                 ),
                               );
-                      },
-                    )
-                  ],
+                      }),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          if (widget.videoDetail!.staff != null) ...[
-            const SizedBox(height: 15),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text.rich(
-                  TextSpan(
-                    style: TextStyle(
-                      fontSize:
-                          Theme.of(context).textTheme.labelMedium!.fontSize,
-                    ),
-                    children: [
-                      TextSpan(
-                        text: '创作团队',
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleSmall!
-                            .copyWith(fontWeight: FontWeight.bold),
+            if (widget.videoDetail!.staff != null) ...[
+              const SizedBox(height: 15),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text.rich(
+                    TextSpan(
+                      style: TextStyle(
+                        fontSize: Theme.of(
+                          context,
+                        ).textTheme.labelMedium!.fontSize,
                       ),
-                      const WidgetSpan(child: SizedBox(width: 6)),
-                      TextSpan(
-                        text: '${widget.videoDetail!.staff!.length}人',
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.outline,
+                      children: [
+                        TextSpan(
+                          text: '创作团队',
+                          style: Theme.of(context).textTheme.titleSmall!
+                              .copyWith(fontWeight: FontWeight.bold),
                         ),
-                      )
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: 120,
-                  child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    children: [
-                      for (int i = 0;
-                          i < widget.videoDetail!.staff!.length;
-                          i++) ...[
-                        StaffUpItem(item: widget.videoDetail!.staff![i])
+                        const WidgetSpan(child: SizedBox(width: 6)),
+                        TextSpan(
+                          text: '${widget.videoDetail!.staff!.length}人',
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.outline,
+                          ),
+                        ),
                       ],
-                    ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ]
-        ],
-      )),
+                  SizedBox(
+                    height: 120,
+                    child: ListView(
+                      scrollDirection: Axis.horizontal,
+                      children: [
+                        for (
+                          int i = 0;
+                          i < widget.videoDetail!.staff!.length;
+                          i++
+                        ) ...[StaffUpItem(item: widget.videoDetail!.staff![i])],
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ],
+        ),
+      ),
     );
   }
 
   Widget actionGrid(BuildContext context, videoIntroController) {
     final actionTypeSort =
         ref.watch(appSettingsNotifierProvider).value?.actionTypeSort ??
-            ['like', 'coin', 'collect', 'watchLater', 'share'];
+        ['like', 'coin', 'collect', 'watchLater', 'share'];
 
     Map<String, Widget> menuListWidgets = {
       'like': Obx(
         () => ActionItem(
-          icon: const Icon(FontAwesomeIcons.thumbsUp),
-          selectIcon: const Icon(FontAwesomeIcons.solidThumbsUp),
+          icon: const FaIcon(FontAwesomeIcons.thumbsUp),
+          selectIcon: const FaIcon(FontAwesomeIcons.solidThumbsUp),
           onTap: handleState(videoIntroController.actionLikeVideo),
           onLongPress: () => videoIntroController.oneThreeDialog(),
           selectStatus: videoIntroController.hasLike.value,
@@ -560,8 +570,8 @@ class _VideoInfoState extends ConsumerState<VideoInfo>
       ),
       'coin': Obx(
         () => ActionItem(
-          icon: const Icon(FontAwesomeIcons.b),
-          selectIcon: const Icon(FontAwesomeIcons.b),
+          icon: const FaIcon(FontAwesomeIcons.b),
+          selectIcon: const FaIcon(FontAwesomeIcons.b),
           onTap: handleState(videoIntroController.actionCoinVideo),
           selectStatus: videoIntroController.hasCoin.value,
           text: widget.videoDetail!.stat!.coin!.toString(),
@@ -569,8 +579,8 @@ class _VideoInfoState extends ConsumerState<VideoInfo>
       ),
       'collect': Obx(
         () => ActionItem(
-          icon: const Icon(FontAwesomeIcons.star),
-          selectIcon: const Icon(FontAwesomeIcons.solidStar),
+          icon: const FaIcon(FontAwesomeIcons.star),
+          selectIcon: const FaIcon(FontAwesomeIcons.solidStar),
           onTap: () => showFavBottomSheet(),
           onLongPress: () => showFavBottomSheet(type: 'longPress'),
           selectStatus: videoIntroController.hasFav.value,
@@ -578,25 +588,26 @@ class _VideoInfoState extends ConsumerState<VideoInfo>
         ),
       ),
       'watchLater': ActionItem(
-        icon: const Icon(FontAwesomeIcons.clock),
+        icon: const FaIcon(FontAwesomeIcons.clock),
         onTap: () async {
-          final res =
-              await UserHttp.toViewLater(bvid: widget.videoDetail!.bvid);
+          final res = await UserHttp.toViewLater(
+            bvid: widget.videoDetail!.bvid,
+          );
           SmartDialog.showToast(res['msg']);
         },
         selectStatus: false,
         text: '稍后看',
       ),
       'share': ActionItem(
-        icon: const Icon(FontAwesomeIcons.shareFromSquare),
+        icon: const FaIcon(FontAwesomeIcons.shareFromSquare),
         onTap: () => videoIntroController.actionShareVideo(),
         selectStatus: false,
         text: '分享',
       ),
       'dislike': Obx(
         () => ActionItem(
-          icon: const Icon(FontAwesomeIcons.thumbsDown),
-          selectIcon: const Icon(FontAwesomeIcons.solidThumbsDown),
+          icon: const FaIcon(FontAwesomeIcons.thumbsDown),
+          selectIcon: const FaIcon(FontAwesomeIcons.solidThumbsDown),
           onTap: () {},
           selectStatus: videoIntroController.hasDisLike.value,
           text: '不喜欢',
@@ -621,15 +632,13 @@ class _VideoInfoState extends ConsumerState<VideoInfo>
     }
 
     return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-      return Container(
-        margin: const EdgeInsets.only(top: 6, bottom: 4),
-        height: constraints.maxWidth / 5,
-        child: ListView(
-          scrollDirection: Axis.horizontal,
-          children: list,
-        ),
-      );
-    });
+      builder: (BuildContext context, BoxConstraints constraints) {
+        return Container(
+          margin: const EdgeInsets.only(top: 6, bottom: 4),
+          height: constraints.maxWidth / 5,
+          child: ListView(scrollDirection: Axis.horizontal, children: list),
+        );
+      },
+    );
   }
 }

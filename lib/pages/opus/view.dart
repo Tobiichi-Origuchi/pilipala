@@ -31,10 +31,7 @@ class _OpusPageState extends State<OpusPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildTitle(),
-            _buildFutureContent(),
-          ],
+          children: [_buildTitle(), _buildFutureContent()],
         ),
       ),
     );
@@ -66,7 +63,7 @@ class _OpusPageState extends State<OpusPage> {
             PopupMenuItem(
               onTap: controller.onJumpWebview,
               child: const Text('查看原网页'),
-            )
+            ),
           ],
         ),
         const SizedBox(width: 16),
@@ -119,8 +116,9 @@ class _OpusPageState extends State<OpusPage> {
     late ModuleContent moduleContent;
     // 获取所有的图片链接
     final List<String> picList = [];
-    final int moduleIndex =
-        modules.indexWhere((module) => module.moduleContent != null);
+    final int moduleIndex = modules.indexWhere(
+      (module) => module.moduleContent != null,
+    );
     if (moduleIndex != -1) {
       moduleContent = modules[moduleIndex].moduleContent!;
       for (var paragraph in moduleContent.paragraphs!) {
@@ -131,12 +129,16 @@ class _OpusPageState extends State<OpusPage> {
         }
       }
     } else {
-      print('No moduleContent found');
+      debugPrint('No moduleContent found');
     }
 
     return Padding(
       padding: EdgeInsets.fromLTRB(
-          16, 0, 16, MediaQuery.of(context).padding.bottom + 40),
+        16,
+        0,
+        16,
+        MediaQuery.of(context).padding.bottom + 40,
+      ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -149,57 +151,59 @@ class _OpusPageState extends State<OpusPage> {
             padding: const EdgeInsets.only(bottom: 20),
             child: _buildAuthorWidget(opusData),
           ),
-          ...moduleContent.paragraphs!.map(
-            (ModuleParagraph paragraph) {
-              return Column(
-                children: [
-                  if (paragraph.paraType == 1) ...[
-                    Container(
-                      alignment: TextHelper.getAlignment(paragraph.align),
-                      margin: const EdgeInsets.only(bottom: 10),
-                      child: SelectableText.rich(
-                        TextSpan(
-                          children: paragraph.text?.nodes?.map((node) {
-                                return TextHelper.buildTextSpan(
-                                    node, paragraph.align, context);
-                              }).toList() ??
-                              [],
-                        ),
+          ...moduleContent.paragraphs!.map((ModuleParagraph paragraph) {
+            return Column(
+              children: [
+                if (paragraph.paraType == 1) ...[
+                  Container(
+                    alignment: TextHelper.getAlignment(paragraph.align),
+                    margin: const EdgeInsets.only(bottom: 10),
+                    child: SelectableText.rich(
+                      TextSpan(
+                        children:
+                            paragraph.text?.nodes?.map((node) {
+                              return TextHelper.buildTextSpan(
+                                node,
+                                paragraph.align,
+                                context,
+                              );
+                            }).toList() ??
+                            [],
                       ),
-                    )
-                  ] else if (paragraph.paraType == 2) ...[
-                    ...paragraph.pic?.pics?.map(
-                          (Pic pic) => Center(
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.only(top: 10, bottom: 10),
-                              child: InkWell(
-                                onTap: () {
-                                  controller.onPreviewImg(
-                                    picList,
-                                    picList.indexOf(pic.url!),
-                                    context,
-                                  );
-                                },
-                                child: NetworkImgLayer(
-                                  src: pic.url,
-                                  width: (Get.size.width - 32) * pic.scale!,
-                                  height: (Get.size.width - 32) *
-                                      pic.scale! /
-                                      pic.aspectRatio!,
-                                  type: 'emote',
-                                ),
+                    ),
+                  ),
+                ] else if (paragraph.paraType == 2) ...[
+                  ...paragraph.pic?.pics?.map(
+                        (Pic pic) => Center(
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 10, bottom: 10),
+                            child: InkWell(
+                              onTap: () {
+                                controller.onPreviewImg(
+                                  picList,
+                                  picList.indexOf(pic.url!),
+                                  context,
+                                );
+                              },
+                              child: NetworkImgLayer(
+                                src: pic.url,
+                                width: (Get.size.width - 32) * pic.scale!,
+                                height:
+                                    (Get.size.width - 32) *
+                                    pic.scale! /
+                                    pic.aspectRatio!,
+                                type: 'emote',
                               ),
                             ),
                           ),
-                        ) ??
-                        [],
-                  ] else
-                    const SizedBox(),
-                ],
-              );
-            },
-          ),
+                        ),
+                      ) ??
+                      [],
+                ] else
+                  const SizedBox(),
+              ],
+            );
+          }),
         ],
       ),
     );
@@ -208,8 +212,9 @@ class _OpusPageState extends State<OpusPage> {
   Widget _buildAuthorWidget(OpusDataModel opusData) {
     final modules = opusData.detail!.modules!;
     late ModuleAuthor moduleAuthor;
-    final int moduleIndex =
-        modules.indexWhere((module) => module.moduleAuthor != null);
+    final int moduleIndex = modules.indexWhere(
+      (module) => module.moduleAuthor != null,
+    );
     if (moduleIndex != -1) {
       moduleAuthor = modules[moduleIndex].moduleAuthor!;
     } else {
@@ -229,9 +234,7 @@ class _OpusPageState extends State<OpusPage> {
           children: [
             Text(
               moduleAuthor.name!,
-              style: const TextStyle(
-                fontWeight: FontWeight.w500,
-              ),
+              style: const TextStyle(fontWeight: FontWeight.w500),
             ),
             StyledText(moduleAuthor.pubTime!),
           ],
@@ -255,20 +258,13 @@ class _OpusPageState extends State<OpusPage> {
   }
 
   Widget _buildError(String message) {
-    return SizedBox(
-      height: 100,
-      child: Center(
-        child: Text(message),
-      ),
-    );
+    return SizedBox(height: 100, child: Center(child: Text(message)));
   }
 
   Widget _buildLoading() {
     return const SizedBox(
       height: 100,
-      child: Center(
-        child: CircularProgressIndicator(),
-      ),
+      child: Center(child: CircularProgressIndicator()),
     );
   }
 }
@@ -276,7 +272,7 @@ class _OpusPageState extends State<OpusPage> {
 class StyledText extends StatelessWidget {
   final String text;
 
-  const StyledText(this.text, {Key? key}) : super(key: key);
+  const StyledText(this.text, {super.key});
 
   @override
   Widget build(BuildContext context) {

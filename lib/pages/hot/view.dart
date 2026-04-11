@@ -10,7 +10,7 @@ import 'package:pilipala/pages/hot/controller.dart';
 import 'package:pilipala/utils/main_stream.dart';
 
 class HotPage extends StatefulWidget {
-  const HotPage({Key? key}) : super(key: key);
+  const HotPage({super.key});
 
   @override
   State<HotPage> createState() => _HotPageState();
@@ -30,18 +30,16 @@ class _HotPageState extends State<HotPage> with AutomaticKeepAliveClientMixin {
     super.initState();
     _futureBuilderFuture = _hotController.queryHotFeed('init');
     scrollController = _hotController.scrollController;
-    scrollController.addListener(
-      () {
-        if (scrollController.position.pixels >=
-            scrollController.position.maxScrollExtent - 200) {
-          if (!_hotController.isLoadingMore) {
-            _hotController.isLoadingMore = true;
-            _hotController.onLoad();
-          }
+    scrollController.addListener(() {
+      if (scrollController.position.pixels >=
+          scrollController.position.maxScrollExtent - 200) {
+        if (!_hotController.isLoadingMore) {
+          _hotController.isLoadingMore = true;
+          _hotController.onLoad();
         }
-        handleScrollEvent(scrollController);
-      },
-    );
+      }
+      handleScrollEvent(scrollController);
+    });
   }
 
   @override
@@ -62,8 +60,12 @@ class _HotPageState extends State<HotPage> with AutomaticKeepAliveClientMixin {
         slivers: [
           SliverPadding(
             // 单列布局 EdgeInsets.zero
-            padding:
-                const EdgeInsets.fromLTRB(0, StyleString.safeSpace - 5, 0, 0),
+            padding: const EdgeInsets.fromLTRB(
+              0,
+              StyleString.safeSpace - 5,
+              0,
+              0,
+            ),
             sliver: FutureBuilder(
               future: _futureBuilderFuture,
               builder: (context, snapshot) {
@@ -85,8 +87,9 @@ class _HotPageState extends State<HotPage> with AutomaticKeepAliveClientMixin {
                       errMsg: data['msg'],
                       fn: () {
                         setState(() {
-                          _futureBuilderFuture =
-                              _hotController.queryHotFeed('init');
+                          _futureBuilderFuture = _hotController.queryHotFeed(
+                            'init',
+                          );
                         });
                       },
                     );
@@ -103,10 +106,8 @@ class _HotPageState extends State<HotPage> with AutomaticKeepAliveClientMixin {
             ),
           ),
           SliverToBoxAdapter(
-            child: SizedBox(
-              height: MediaQuery.of(context).padding.bottom + 10,
-            ),
-          )
+            child: SizedBox(height: MediaQuery.of(context).padding.bottom + 10),
+          ),
         ],
       ),
     );

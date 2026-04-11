@@ -20,8 +20,8 @@ class BottomControl extends StatefulWidget implements PreferredSizeWidget {
     this.liveRoomCtr,
     this.floating,
     this.onRefresh,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   State<BottomControl> createState() => _BottomControlState();
@@ -124,7 +124,7 @@ class _BottomControlState extends State<BottomControl> {
               height: 34,
               child: IconButton(
                 style: ButtonStyle(
-                  padding: MaterialStateProperty.all(EdgeInsets.zero),
+                  padding: WidgetStateProperty.all(EdgeInsets.zero),
                 ),
                 onPressed: () async {
                   bool canUsePiP = false;
@@ -135,7 +135,7 @@ class _BottomControlState extends State<BottomControl> {
                     canUsePiP = false;
                   }
                   if (canUsePiP) {
-                    await widget.floating!.enable();
+                    await widget.floating!.enable(ImmediatePiP());
                   } else {}
                 },
                 icon: const Icon(
@@ -148,13 +148,10 @@ class _BottomControlState extends State<BottomControl> {
             const SizedBox(width: 10),
           ],
           ComBtn(
-            icon: const Icon(
-              Icons.fullscreen,
-              size: 20,
-              color: Colors.white,
-            ),
+            icon: const Icon(Icons.fullscreen, size: 20, color: Colors.white),
             fuc: () => widget.controller!.triggerFullScreen(
-                status: !(widget.controller!.isFullScreen.value)),
+              status: !(widget.controller!.isFullScreen.value),
+            ),
           ),
         ],
       ),

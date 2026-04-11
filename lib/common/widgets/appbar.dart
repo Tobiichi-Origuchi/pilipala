@@ -5,8 +5,8 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
     required this.child,
     required this.controller,
     required this.visible,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final PreferredSizeWidget child;
   final AnimationController controller;
@@ -19,13 +19,10 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     visible ? controller.reverse() : controller.forward();
     return SlideTransition(
-      position: Tween<Offset>(
-        begin: Offset.zero,
-        end: const Offset(0, -1),
-      ).animate(CurvedAnimation(
-        parent: controller,
-        curve: Curves.easeInOutBack,
-      )),
+      position: Tween<Offset>(begin: Offset.zero, end: const Offset(0, -1))
+          .animate(
+            CurvedAnimation(parent: controller, curve: Curves.easeInOutBack),
+          ),
       child: child,
     );
   }

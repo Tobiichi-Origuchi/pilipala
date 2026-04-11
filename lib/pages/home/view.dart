@@ -10,7 +10,7 @@ import 'package:pilipala/utils/feed_back.dart';
 import './controller.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -35,10 +35,7 @@ class _HomePageState extends State<HomePage>
     feedBack();
     showModalBottomSheet(
       context: context,
-      builder: (_) => const SizedBox(
-        height: 450,
-        child: MinePage(),
-      ),
+      builder: (_) => const SizedBox(height: 450, child: MinePage()),
       clipBehavior: Clip.hardEdge,
       isScrollControlled: true,
     );
@@ -59,12 +56,12 @@ class _HomePageState extends State<HomePage>
             ? SystemUiOverlayStyle(
                 statusBarIconBrightness:
                     Theme.of(context).brightness == Brightness.dark
-                        ? Brightness.light
-                        : Brightness.dark,
+                    ? Brightness.light
+                    : Brightness.dark,
               )
             : Theme.of(context).brightness == Brightness.dark
-                ? SystemUiOverlayStyle.light
-                : SystemUiOverlayStyle.dark,
+            ? SystemUiOverlayStyle.light
+            : SystemUiOverlayStyle.dark,
       ),
       body: Column(
         children: [
@@ -88,7 +85,7 @@ class _HomePageState extends State<HomePage>
                   child: TabBar(
                     controller: _homeController.tabController,
                     tabs: [
-                      for (var i in _homeController.tabs) Tab(text: i['label'])
+                      for (var i in _homeController.tabs) Tab(text: i['label']),
                     ],
                     isScrollable: true,
                     dividerColor: Colors.transparent,
@@ -170,13 +167,13 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
 class UserInfoWidget extends StatelessWidget {
   const UserInfoWidget({
-    Key? key,
+    super.key,
     required this.top,
     required this.userLogin,
     required this.userFace,
     required this.callback,
     required this.ctr,
-  }) : super(key: key);
+  });
 
   final double top;
   final RxBool userLogin;
@@ -187,27 +184,19 @@ class UserInfoWidget extends StatelessWidget {
   Widget buildLoggedInWidget(context) {
     return Stack(
       children: [
-        NetworkImgLayer(
-          type: 'avatar',
-          width: 34,
-          height: 34,
-          src: userFace,
-        ),
+        NetworkImgLayer(type: 'avatar', width: 34, height: 34, src: userFace),
         Positioned.fill(
           child: Material(
             color: Colors.transparent,
             child: InkWell(
               onTap: () => callback?.call(),
-              splashColor: Theme.of(context)
-                  .colorScheme
-                  .primaryContainer
-                  .withOpacity(0.3),
-              borderRadius: const BorderRadius.all(
-                Radius.circular(50),
-              ),
+              splashColor: Theme.of(
+                context,
+              ).colorScheme.primaryContainer.withValues(alpha: 0.3),
+              borderRadius: const BorderRadius.all(Radius.circular(50)),
             ),
           ),
-        )
+        ),
       ],
     );
   }
@@ -224,7 +213,7 @@ class UserInfoWidget extends StatelessWidget {
               onPressed: () => Get.toNamed('/whisper'),
               icon: const Icon(Icons.notifications_none),
             ),
-          )
+          ),
         ],
         const SizedBox(width: 8),
         Obx(
@@ -248,12 +237,11 @@ class DefaultUser extends StatelessWidget {
       height: 38,
       child: IconButton(
         style: ButtonStyle(
-          padding: MaterialStateProperty.all(EdgeInsets.zero),
-          backgroundColor: MaterialStateProperty.resolveWith((states) {
-            return Theme.of(context)
-                .colorScheme
-                .onSecondaryContainer
-                .withOpacity(0.05);
+          padding: WidgetStateProperty.all(EdgeInsets.zero),
+          backgroundColor: WidgetStateProperty.resolveWith((states) {
+            return Theme.of(
+              context,
+            ).colorScheme.onSecondaryContainer.withValues(alpha: 0.05);
           }),
         ),
         onPressed: () => callback?.call(),
@@ -335,14 +323,16 @@ class CustomChip extends StatelessWidget {
     final TextStyle chipTextStyle = selected
         ? TextStyle(fontSize: 13, color: onPrimary)
         : TextStyle(fontSize: 13, color: colorTheme.onSecondaryContainer);
-    const VisualDensity visualDensity =
-        VisualDensity(horizontal: -4.0, vertical: -2.0);
+    const VisualDensity visualDensity = VisualDensity(
+      horizontal: -4.0,
+      vertical: -2.0,
+    );
     return InputChip(
       side: BorderSide.none,
       backgroundColor: secondaryContainer,
-      color: MaterialStateProperty.resolveWith((states) {
-        if (states.contains(MaterialState.selected) ||
-            states.contains(MaterialState.hovered)) {
+      color: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected) ||
+            states.contains(WidgetState.hovered)) {
           return primary;
         }
         return colorTheme.secondaryContainer;
@@ -350,9 +340,7 @@ class CustomChip extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(6, 1, 6, 1),
       label: Text(label, style: chipTextStyle),
       onPressed: () => onTap(),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(6),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
       selected: selected,
       showCheckmark: false,
       visualDensity: visualDensity,
@@ -361,10 +349,7 @@ class CustomChip extends StatelessWidget {
 }
 
 class SearchBar extends StatelessWidget {
-  const SearchBar({
-    Key? key,
-    required this.ctr,
-  }) : super(key: key);
+  const SearchBar({super.key, required this.ctr});
 
   final HomeController? ctr;
 
@@ -376,15 +361,15 @@ class SearchBar extends StatelessWidget {
         width: 250,
         height: 44,
         clipBehavior: Clip.hardEdge,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(25),
-        ),
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(25)),
         child: Material(
-          color: colorScheme.onSecondaryContainer.withOpacity(0.05),
+          color: colorScheme.onSecondaryContainer.withValues(alpha: 0.05),
           child: InkWell(
-            splashColor: colorScheme.primaryContainer.withOpacity(0.3),
-            onTap: () => Get.toNamed('/search',
-                parameters: {'hintText': ctr!.defaultSearch.value}),
+            splashColor: colorScheme.primaryContainer.withValues(alpha: 0.3),
+            onTap: () => Get.toNamed(
+              '/search',
+              parameters: {'hintText': ctr!.defaultSearch.value},
+            ),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 14),
               child: Row(

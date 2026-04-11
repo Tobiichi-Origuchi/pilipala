@@ -53,8 +53,10 @@ class LiveRoomController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    currentQn = setting.get(SettingBoxKey.defaultLiveQa,
-        defaultValue: LiveQuality.values.last.code);
+    currentQn = setting.get(
+      SettingBoxKey.defaultLiveQa,
+      defaultValue: LiveQuality.values.last.code,
+    );
     roomId = int.parse(Get.parameters['roomid']!);
     if (Get.arguments != null) {
       liveItem = Get.arguments['liveItem'];
@@ -63,8 +65,8 @@ class LiveRoomController extends GetxController {
         cover = (liveItem.pic != null && liveItem.pic != '')
             ? liveItem.pic
             : (liveItem.cover != null && liveItem.cover != '')
-                ? liveItem.cover
-                : null;
+            ? liveItem.cover
+            : null;
       }
       Request.getBuvid().then((value) => buvid = value);
     }
@@ -89,7 +91,7 @@ class LiveRoomController extends GetxController {
         httpHeaders: {
           'user-agent':
               'Mozilla/5.0 (Macintosh; Intel Mac OS X 13_3_1) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.4 Safari/605.1.15',
-          'referer': HttpString.baseUrl
+          'referer': HttpString.baseUrl,
         },
       ),
       // 硬解
@@ -127,8 +129,8 @@ class LiveRoomController extends GetxController {
       String videoUrl = enableCDN
           ? VideoUtils.getCdnUrl(item)
           : (item.urlInfo?.first.host)! +
-              item.baseUrl! +
-              item.urlInfo!.first.extra!;
+                item.baseUrl! +
+                item.urlInfo!.first.extra!;
       await playerInit(videoUrl);
       return res;
     }
@@ -189,11 +191,12 @@ class LiveRoomController extends GetxController {
         joinRoom();
       },
       onMessageCb: (message) {
-        final List<LiveMessageModel>? liveMsg =
-            LiveUtils.decodeMessage(message);
+        final List<LiveMessageModel>? liveMsg = LiveUtils.decodeMessage(
+          message,
+        );
         if (liveMsg != null && liveMsg.isNotEmpty) {
           if (liveMsg.first.type == LiveMessageType.online) {
-            print('当前直播间人气：${liveMsg.first.data}');
+            debugPrint('当前直播间人气：${liveMsg.first.data}');
           } else if (liveMsg.first.type == LiveMessageType.join ||
               liveMsg.first.type == LiveMessageType.follow) {
             // 每隔一秒依次liveMsg中的每一项赋给activeUserName
@@ -217,8 +220,9 @@ class LiveRoomController extends GetxController {
             return;
           }
           // 过滤出聊天消息
-          var chatMessages =
-              liveMsg.where((msg) => msg.type == LiveMessageType.chat).toList();
+          var chatMessages = liveMsg
+              .where((msg) => msg.type == LiveMessageType.chat)
+              .toList();
 
           // 添加到 messageList
           messageList.addAll(chatMessages);
@@ -227,12 +231,7 @@ class LiveRoomController extends GetxController {
           List<DanmakuItem> danmakuItems = chatMessages.map<DanmakuItem>((e) {
             return DanmakuItem(
               e.message ?? '',
-              color: Color.fromARGB(
-                255,
-                e.color.r,
-                e.color.g,
-                e.color.b,
-              ),
+              color: Color.fromARGB(255, e.color.r, e.color.g, e.color.b),
             );
           }).toList();
 
@@ -243,7 +242,7 @@ class LiveRoomController extends GetxController {
         }
       },
       onErrorCb: (e) {
-        print('error: $e');
+        debugPrint('error: $e');
       },
     );
     await plSocket?.connect();
@@ -271,10 +270,7 @@ class LiveRoomController extends GetxController {
     if (msg.isEmpty) {
       return;
     }
-    final res = await LiveHttp.sendDanmaku(
-      roomId: roomId,
-      msg: msg,
-    );
+    final res = await LiveHttp.sendDanmaku(roomId: roomId, msg: msg);
     if (res['status']) {
       inputController.clear();
     } else {

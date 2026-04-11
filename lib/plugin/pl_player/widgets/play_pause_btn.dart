@@ -44,9 +44,7 @@ class PlayOrPauseButtonState extends State<PlayOrPauseButton>
     super.didChangeDependencies();
     subscription ??= player.stream.playing.listen((event) {
       if (event) {
-        animation.forward().then((value) => {
-              isOpacity = true,
-            });
+        animation.forward().then((value) => {isOpacity = true});
       } else {
         animation.reverse().then((value) => {isOpacity = false});
       }
@@ -67,9 +65,7 @@ class PlayOrPauseButtonState extends State<PlayOrPauseButton>
       width: 34,
       height: 34,
       child: IconButton(
-        style: ButtonStyle(
-          padding: MaterialStateProperty.all(EdgeInsets.zero),
-        ),
+        style: ButtonStyle(padding: WidgetStateProperty.all(EdgeInsets.zero)),
         onPressed: player.playOrPause,
         color: Colors.white,
         iconSize: 20,

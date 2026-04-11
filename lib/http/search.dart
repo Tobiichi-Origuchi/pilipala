@@ -9,6 +9,7 @@ import '../models/search/result.dart';
 import '../models/search/suggest.dart';
 import '../utils/storage.dart';
 import 'index.dart';
+import 'package:flutter/foundation.dart';
 
 class SearchHttp {
   static Box setting = GStrorage.setting;
@@ -17,29 +18,21 @@ class SearchHttp {
     if (res.data is String) {
       Map<String, dynamic> resultMap = json.decode(res.data);
       if (resultMap['code'] == 0) {
-        return {
-          'status': true,
-          'data': HotSearchModel.fromJson(resultMap),
-        };
+        return {'status': true, 'data': HotSearchModel.fromJson(resultMap)};
       }
     } else if (res.data is Map<String, dynamic> && res.data['code'] == 0) {
-      return {
-        'status': true,
-        'data': HotSearchModel.fromJson(res.data),
-      };
+      return {'status': true, 'data': HotSearchModel.fromJson(res.data)};
     }
 
-    return {
-      'status': false,
-      'data': [],
-      'msg': '请求错误 🙅',
-    };
+    return {'status': false, 'data': [], 'msg': '请求错误 🙅'};
   }
 
   // 获取搜索建议
   static Future searchSuggest({required term}) async {
-    var res = await Request().get(Api.searchSuggest,
-        data: {'term': term, 'main_ver': 'v1', 'highlight': term});
+    var res = await Request().get(
+      Api.searchSuggest,
+      data: {'term': term, 'main_ver': 'v1', 'highlight': term},
+    );
     if (res.data is String) {
       Map<String, dynamic> resultMap = json.decode(res.data);
       if (resultMap['code'] == 0) {
@@ -53,18 +46,10 @@ class SearchHttp {
               : [],
         };
       } else {
-        return {
-          'status': false,
-          'data': [],
-          'msg': '请求错误 🙅',
-        };
+        return {'status': false, 'data': [], 'msg': '请求错误 🙅'};
       }
     } else {
-      return {
-        'status': false,
-        'data': [],
-        'msg': '请求错误 🙅',
-      };
+      return {'status': false, 'data': [], 'msg': '请求错误 🙅'};
     }
   }
 
@@ -83,8 +68,8 @@ class SearchHttp {
       // 'order_sort': 0,
       // 'user_type': 0,
       'page': page,
-      if (order != null) 'order': order,
-      if (duration != null) 'duration': duration,
+      'order': ?order,
+      'duration': ?duration,
       if (tids != null && tids != -1) 'tids': tids,
     };
     var res = await Request().get(Api.searchByType, data: reqData);
@@ -97,8 +82,10 @@ class SearchHttp {
       try {
         switch (searchType) {
           case SearchType.video:
-            List<int> blackMidsList =
-                setting.get(SettingBoxKey.blackMidsList, defaultValue: [-1]);
+            List<int> blackMidsList = setting.get(
+              SettingBoxKey.blackMidsList,
+              defaultValue: [-1],
+            );
             for (var i in res.data['data']['result']) {
               // 屏蔽推广和拉黑用户
               i['available'] = !blackMidsList.contains(i['mid']);
@@ -118,19 +105,12 @@ class SearchHttp {
             data = SearchArticleModel.fromJson(res.data['data']);
             break;
         }
-        return {
-          'status': true,
-          'data': data,
-        };
+        return {'status': true, 'data': data};
       } catch (err) {
-        print(err);
+        debugPrint('$err');
       }
     } else {
-      return {
-        'status': false,
-        'data': [],
-        'msg': res.data['message'],
-      };
+      return {'status': false, 'data': [], 'msg': res.data['message']};
     }
   }
 
@@ -141,8 +121,10 @@ class SearchHttp {
     } else if (bvid != null) {
       data['bvid'] = bvid;
     }
-    final dynamic res =
-        await Request().get(Api.ab2c, data: <String, dynamic>{...data});
+    final dynamic res = await Request().get(
+      Api.ab2c,
+      data: <String, dynamic>{...data},
+    );
     if (res.data['code'] == 0) {
       return res.data['data'].first['cid'];
     } else {
@@ -150,52 +132,54 @@ class SearchHttp {
     }
   }
 
-  static Future<Map<String, dynamic>> bangumiInfo(
-      {int? seasonId, int? epId}) async {
+  static Future<Map<String, dynamic>> bangumiInfo({
+    int? seasonId,
+    int? epId,
+  }) async {
     final Map<String, dynamic> data = {};
     if (seasonId != null) {
       data['season_id'] = seasonId;
     } else if (epId != null) {
       data['ep_id'] = epId;
     }
-    final dynamic res =
-        await Request().get(Api.bangumiInfo, data: <String, dynamic>{...data});
+    final dynamic res = await Request().get(
+      Api.bangumiInfo,
+      data: <String, dynamic>{...data},
+    );
     if (res.data['code'] == 0) {
       return {
         'status': true,
         'data': BangumiInfoModel.fromJson(res.data['result']),
       };
     } else {
-      return {
-        'status': false,
-        'data': [],
-        'msg': '请求错误 🙅',
-      };
+      return {'status': false, 'data': [], 'msg': '请求错误 🙅'};
     }
   }
 
-  static Future<Map<String, dynamic>> ab2cWithPic(
-      {int? aid, String? bvid}) async {
+  static Future<Map<String, dynamic>> ab2cWithPic({
+    int? aid,
+    String? bvid,
+  }) async {
     Map<String, dynamic> data = {};
     if (aid != null) {
       data['aid'] = aid;
     } else if (bvid != null) {
       data['bvid'] = bvid;
     }
-    final dynamic res =
-        await Request().get(Api.ab2c, data: <String, dynamic>{...data});
+    final dynamic res = await Request().get(
+      Api.ab2c,
+      data: <String, dynamic>{...data},
+    );
     return {
       'cid': res.data['data'].first['cid'],
       'pic': res.data['data'].first['first_frame'],
     };
   }
 
-  static Future<Map<String, dynamic>> searchCount(
-      {required String keyword}) async {
-    Map<String, dynamic> data = {
-      'keyword': keyword,
-      'web_location': 333.999,
-    };
+  static Future<Map<String, dynamic>> searchCount({
+    required String keyword,
+  }) async {
+    Map<String, dynamic> data = {'keyword': keyword, 'web_location': 333.999};
     Map params = await WbiSign().makSign(data);
     final dynamic res = await Request().get(Api.searchCount, data: params);
     if (res.data['code'] == 0) {
@@ -204,11 +188,7 @@ class SearchHttp {
         'data': SearchAllModel.fromJson(res.data['data']),
       };
     } else {
-      return {
-        'status': false,
-        'data': [],
-        'msg': '请求错误 🙅',
-      };
+      return {'status': false, 'data': [], 'msg': '请求错误 🙅'};
     }
   }
 }

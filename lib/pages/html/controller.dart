@@ -71,9 +71,9 @@ class HtmlRenderController extends GetxController {
       if (reqType == 'init') {
         // 添加置顶回复
         if (res['data'].upper.top != null) {
-          bool flag = res['data']
-              .topReplies
-              .any((reply) => reply.rpid == res['data'].upper.top.rpid);
+          bool flag = res['data'].topReplies.any(
+            (reply) => reply.rpid == res['data'].upper.top.rpid,
+          );
           if (!flag) {
             replies.insert(0, res['data'].upper.top);
           }
@@ -98,7 +98,6 @@ class HtmlRenderController extends GetxController {
       case ReplySortType.like:
         _sortType = ReplySortType.time;
         break;
-      default:
     }
     sortTypeTitle.value = _sortType.titles;
     sortTypeLabel.value = _sortType.labels;

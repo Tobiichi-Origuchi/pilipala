@@ -17,8 +17,9 @@ class WhisperPage extends StatefulWidget {
 }
 
 class _WhisperPageState extends State<WhisperPage> {
-  late final WhisperController _whisperController =
-      Get.put(WhisperController());
+  late final WhisperController _whisperController = Get.put(
+    WhisperController(),
+  );
   late Future _futureBuilderFuture;
   final ScrollController _scrollController = ScrollController();
 
@@ -32,20 +33,21 @@ class _WhisperPageState extends State<WhisperPage> {
   Future _scrollListener() async {
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 200) {
-      EasyThrottle.throttle('my-throttler', const Duration(milliseconds: 800),
-          () async {
-        await _whisperController.onLoad();
-        _whisperController.isLoading = true;
-      });
+      EasyThrottle.throttle(
+        'my-throttler',
+        const Duration(milliseconds: 800),
+        () async {
+          await _whisperController.onLoad();
+          _whisperController.isLoading = true;
+        },
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('消息'),
-      ),
+      appBar: AppBar(title: const Text('消息')),
       body: RefreshIndicator(
         onRefresh: () async {
           _whisperController.unread();
@@ -71,8 +73,9 @@ class _WhisperPageState extends State<WhisperPage> {
                             ..._whisperController.noticesList.map((element) {
                               return InkWell(
                                 onTap: () {
-                                  if (['/messageAt']
-                                      .contains(element['path'])) {
+                                  if ([
+                                    '/messageAt',
+                                  ].contains(element['path'])) {
                                     SmartDialog.showToast('功能开发中');
                                     return;
                                   }
@@ -90,26 +93,28 @@ class _WhisperPageState extends State<WhisperPage> {
                                   children: [
                                     Badge(
                                       isLabelVisible: element['count'] > 0,
-                                      label: Text(element['count'] > 99
-                                          ? '99+'
-                                          : element['count'].toString()),
+                                      label: Text(
+                                        element['count'] > 99
+                                            ? '99+'
+                                            : element['count'].toString(),
+                                      ),
                                       child: Padding(
                                         padding: const EdgeInsets.all(10),
                                         child: Icon(
                                           element['icon'],
                                           size: 21,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primary,
+                                          color: Theme.of(
+                                            context,
+                                          ).colorScheme.primary,
                                         ),
                                       ),
                                     ),
                                     const SizedBox(height: 4),
-                                    Text(element['title'])
+                                    Text(element['title']),
                                   ],
                                 ),
                               );
-                            }).toList(),
+                            }),
                           ],
                         ),
                       ),
@@ -139,20 +144,20 @@ class _WhisperPageState extends State<WhisperPage> {
                                 },
                                 separatorBuilder:
                                     (BuildContext context, int index) {
-                                  return Divider(
-                                    indent: 72,
-                                    endIndent: 20,
-                                    height: 6,
-                                    color: Colors.grey.withOpacity(0.1),
-                                  );
-                                },
+                                      return Divider(
+                                        indent: 72,
+                                        endIndent: 20,
+                                        height: 6,
+                                        color: Colors.grey.withValues(
+                                          alpha: 0.1,
+                                        ),
+                                      );
+                                    },
                               ),
                       );
                     } else {
                       // 请求错误
-                      return Center(
-                        child: Text(data?['msg'] ?? '请求异常'),
-                      );
+                      return Center(child: Text(data?['msg'] ?? '请求异常'));
                     }
                   } else {
                     // 骨架屏
@@ -167,25 +172,25 @@ class _WhisperPageState extends State<WhisperPage> {
                               width: 45,
                               height: 45,
                               decoration: BoxDecoration(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .onInverseSurface,
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onInverseSurface,
                                 borderRadius: BorderRadius.circular(25),
                               ),
                             ),
                             title: Container(
                               width: 100,
                               height: 14,
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onInverseSurface,
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.onInverseSurface,
                             ),
                             subtitle: Container(
                               width: 80,
                               height: 14,
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onInverseSurface,
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.onInverseSurface,
                             ),
                           ),
                         );
@@ -250,23 +255,23 @@ class SessionItem extends StatelessWidget {
       ),
       title: Text(sessionItem.accountInfo.name),
       subtitle: Text(
-          msgStatus == 1
-              ? '你撤回了一条消息'
-              : msgType == 2
-                  ? '[图片]'
-                  : content != null && content != ''
-                      ? (content['text'] ??
-                          content['content'] ??
-                          content['title'] ??
-                          content['reply_content'] ??
-                          '不支持的消息类型')
-                      : '不支持的消息类型',
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: Theme.of(context)
-              .textTheme
-              .labelMedium!
-              .copyWith(color: Theme.of(context).colorScheme.outline)),
+        msgStatus == 1
+            ? '你撤回了一条消息'
+            : msgType == 2
+            ? '[图片]'
+            : content != null && content != ''
+            ? (content['text'] ??
+                  content['content'] ??
+                  content['title'] ??
+                  content['reply_content'] ??
+                  '不支持的消息类型')
+            : '不支持的消息类型',
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: Theme.of(context).textTheme.labelMedium!.copyWith(
+          color: Theme.of(context).colorScheme.outline,
+        ),
+      ),
       trailing: Text(
         Utils.dateFormat(sessionItem.lastMsg.timestamp),
         style: TextStyle(

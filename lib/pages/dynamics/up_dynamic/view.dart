@@ -15,11 +15,7 @@ class UpDyanmicsPage extends StatefulWidget {
   final UpItem upInfo;
   final DynamicsController ctr;
 
-  const UpDyanmicsPage({
-    required this.upInfo,
-    required this.ctr,
-    Key? key,
-  }) : super(key: key);
+  const UpDyanmicsPage({required this.upInfo, required this.ctr, super.key});
 
   @override
   State<UpDyanmicsPage> createState() => _UpDyanmicsPageState();
@@ -37,21 +33,24 @@ class _UpDyanmicsPageState extends State<UpDyanmicsPage>
   @override
   void initState() {
     super.initState();
-    _upDynamicsController = Get.put(UpDynamicsController(widget.upInfo),
-        tag: widget.upInfo.mid.toString());
+    _upDynamicsController = Get.put(
+      UpDynamicsController(widget.upInfo),
+      tag: widget.upInfo.mid.toString(),
+    );
     _futureBuilderFuture = _upDynamicsController.queryFollowDynamic();
 
-    scrollController.addListener(
-      () async {
-        if (scrollController.position.pixels >=
-            scrollController.position.maxScrollExtent - 200) {
-          EasyThrottle.throttle(
-              'queryFollowDynamic', const Duration(seconds: 1), () {
+    scrollController.addListener(() async {
+      if (scrollController.position.pixels >=
+          scrollController.position.maxScrollExtent - 200) {
+        EasyThrottle.throttle(
+          'queryFollowDynamic',
+          const Duration(seconds: 1),
+          () {
             _upDynamicsController.queryFollowDynamic(type: 'onLoad');
-          });
-        }
-      },
-    );
+          },
+        );
+      }
+    });
   }
 
   @override
@@ -82,15 +81,14 @@ class _UpDyanmicsPageState extends State<UpDyanmicsPage>
                 children: [
                   Text(
                     widget.upInfo.uname!,
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleMedium!
-                        .copyWith(fontWeight: FontWeight.bold),
+                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   IconButton(
                     onPressed: () => Navigator.of(context).pop(),
                     icon: const Icon(Icons.close),
-                  )
+                  ),
                 ],
               ),
             ),
@@ -107,26 +105,21 @@ class _UpDyanmicsPageState extends State<UpDyanmicsPage>
               if (data != null && data['status']) {
                 List<DynamicItemModel> list =
                     _upDynamicsController.dynamicsList;
-                return Obx(
-                  () {
-                    if (list.isEmpty) {
-                      if (_upDynamicsController.isLoadingDynamic.value) {
-                        return skeleton();
-                      } else {
-                        return const NoData();
-                      }
+                return Obx(() {
+                  if (list.isEmpty) {
+                    if (_upDynamicsController.isLoadingDynamic.value) {
+                      return skeleton();
                     } else {
-                      return SliverList(
-                        delegate: SliverChildBuilderDelegate(
-                          (context, index) {
-                            return DynamicPanel(item: list[index]);
-                          },
-                          childCount: list.length,
-                        ),
-                      );
+                      return const NoData();
                     }
-                  },
-                );
+                  } else {
+                    return SliverList(
+                      delegate: SliverChildBuilderDelegate((context, index) {
+                        return DynamicPanel(item: list[index]);
+                      }, childCount: list.length),
+                    );
+                  }
+                });
               } else {
                 return HttpError(
                   errMsg: data?['msg'] ?? '请求异常',
@@ -161,7 +154,10 @@ class _MySliverPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
     return child;
   }
 

@@ -58,37 +58,46 @@ class VideoCardH extends StatelessWidget {
           }
           if (showCharge && videoItem?.typeid == 33) {
             final String redirectUrl = await UrlUtils.parseRedirectUrl(
-                '${HttpString.baseUrl}/video/$bvid/');
+              '${HttpString.baseUrl}/video/$bvid/',
+            );
             final String lastPathSegment = redirectUrl.split('/').last;
             if (lastPathSegment.contains('ss')) {
               RoutePush.bangumiPush(
-                  Utils.matchNum(lastPathSegment).first, null);
+                Utils.matchNum(lastPathSegment).first,
+                null,
+              );
             }
             if (lastPathSegment.contains('ep')) {
               RoutePush.bangumiPush(
-                  null, Utils.matchNum(lastPathSegment).first);
+                null,
+                Utils.matchNum(lastPathSegment).first,
+              );
             }
             return;
           }
           final int cid =
               videoItem.cid ?? await SearchHttp.ab2c(aid: aid, bvid: bvid);
-          Get.toNamed('/video?bvid=$bvid&cid=$cid',
-              arguments: {'videoItem': videoItem, 'heroTag': heroTag});
+          Get.toNamed(
+            '/video?bvid=$bvid&cid=$cid',
+            arguments: {'videoItem': videoItem, 'heroTag': heroTag},
+          );
         } catch (err) {
           SmartDialog.showToast(err.toString());
         }
       },
-      onLongPress: () => imageSaveDialog(
-        context,
-        videoItem,
-        SmartDialog.dismiss,
-      ),
+      onLongPress: () =>
+          imageSaveDialog(context, videoItem, SmartDialog.dismiss),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(
-            StyleString.safeSpace, 5, StyleString.safeSpace, 5),
+          StyleString.safeSpace,
+          5,
+          StyleString.safeSpace,
+          5,
+        ),
         child: LayoutBuilder(
           builder: (BuildContext context, BoxConstraints boxConstraints) {
-            final double width = (boxConstraints.maxWidth -
+            final double width =
+                (boxConstraints.maxWidth -
                     StyleString.cardSpace *
                         6 /
                         MediaQuery.textScalerOf(context).scale(1.0)) /
@@ -103,48 +112,51 @@ class VideoCardH extends StatelessWidget {
                   AspectRatio(
                     aspectRatio: StyleString.aspectRatio,
                     child: LayoutBuilder(
-                      builder: (BuildContext context,
-                          BoxConstraints boxConstraints) {
-                        final double maxWidth = boxConstraints.maxWidth;
-                        final double maxHeight = boxConstraints.maxHeight;
-                        return Stack(
-                          children: [
-                            Hero(
-                              tag: heroTag,
-                              child: NetworkImgLayer(
-                                src: videoItem.pic as String,
-                                width: maxWidth,
-                                height: maxHeight,
-                              ),
-                            ),
-                            if (videoItem.duration != 0)
-                              PBadge(
-                                text: Utils.timeFormat(videoItem.duration!),
-                                right: 6.0,
-                                bottom: 6.0,
-                                type: 'gray',
-                              ),
-                            if (type != 'video')
-                              PBadge(
-                                text: type,
-                                left: 6.0,
-                                bottom: 6.0,
-                                type: 'primary',
-                              ),
-                            // if (videoItem.rcmdReason != null &&
-                            //     videoItem.rcmdReason.content != '')
-                            //   pBadge(videoItem.rcmdReason.content, context,
-                            //       6.0, 6.0, null, null),
-                            if (showCharge && videoItem?.isChargingSrc)
-                              const PBadge(
-                                text: '充电专属',
-                                right: 6.0,
-                                top: 6.0,
-                                type: 'primary',
-                              ),
-                          ],
-                        );
-                      },
+                      builder:
+                          (
+                            BuildContext context,
+                            BoxConstraints boxConstraints,
+                          ) {
+                            final double maxWidth = boxConstraints.maxWidth;
+                            final double maxHeight = boxConstraints.maxHeight;
+                            return Stack(
+                              children: [
+                                Hero(
+                                  tag: heroTag,
+                                  child: NetworkImgLayer(
+                                    src: videoItem.pic as String,
+                                    width: maxWidth,
+                                    height: maxHeight,
+                                  ),
+                                ),
+                                if (videoItem.duration != 0)
+                                  PBadge(
+                                    text: Utils.timeFormat(videoItem.duration!),
+                                    right: 6.0,
+                                    bottom: 6.0,
+                                    type: 'gray',
+                                  ),
+                                if (type != 'video')
+                                  PBadge(
+                                    text: type,
+                                    left: 6.0,
+                                    bottom: 6.0,
+                                    type: 'primary',
+                                  ),
+                                // if (videoItem.rcmdReason != null &&
+                                //     videoItem.rcmdReason.content != '')
+                                //   pBadge(videoItem.rcmdReason.content, context,
+                                //       6.0, 6.0, null, null),
+                                if (showCharge && videoItem?.isChargingSrc)
+                                  const PBadge(
+                                    text: '充电专属',
+                                    right: 6.0,
+                                    top: 6.0,
+                                    type: 'primary',
+                                  ),
+                              ],
+                            );
+                          },
                     ),
                   ),
                   VideoContent(
@@ -155,7 +167,7 @@ class VideoCardH extends StatelessWidget {
                     showDanmaku: showDanmaku,
                     showPubdate: showPubdate,
                     onPressedFn: onPressedFn,
-                  )
+                  ),
                 ],
               ),
             );
@@ -199,9 +211,7 @@ class VideoContent extends StatelessWidget {
               Text(
                 videoItem.title as String,
                 textAlign: TextAlign.start,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w500,
-                ),
+                style: const TextStyle(fontWeight: FontWeight.w500),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -221,7 +231,7 @@ class VideoContent extends StatelessWidget {
                               : Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
-                    ]
+                    ],
                   ],
                 ),
               ),
@@ -248,7 +258,9 @@ class VideoContent extends StatelessWidget {
               Text(
                 Utils.dateFormat(videoItem.pubdate!),
                 style: TextStyle(
-                    fontSize: 11, color: Theme.of(context).colorScheme.outline),
+                  fontSize: 11,
+                  color: Theme.of(context).colorScheme.outline,
+                ),
               ),
             if (showOwner)
               Row(
@@ -256,8 +268,9 @@ class VideoContent extends StatelessWidget {
                   Text(
                     videoItem.owner.name as String,
                     style: TextStyle(
-                      fontSize:
-                          Theme.of(context).textTheme.labelMedium!.fontSize,
+                      fontSize: Theme.of(
+                        context,
+                      ).textTheme.labelMedium!.fontSize,
                       color: Theme.of(context).colorScheme.outline,
                     ),
                   ),
@@ -299,7 +312,7 @@ class VideoContent extends StatelessWidget {
                 if (source == 'later') ...[
                   IconButton(
                     style: ButtonStyle(
-                      padding: MaterialStateProperty.all(EdgeInsets.zero),
+                      padding: WidgetStateProperty.all(EdgeInsets.zero),
                     ),
                     onPressed: () => onPressedFn?.call(),
                     icon: Icon(
@@ -307,7 +320,7 @@ class VideoContent extends StatelessWidget {
                       color: Theme.of(context).colorScheme.outline,
                       size: 18,
                     ),
-                  )
+                  ),
                 ],
               ],
             ),
@@ -343,8 +356,10 @@ class MorePanel extends StatelessWidget {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('提示'),
-          content: Text('确定拉黑:${videoItem.owner.name}(${videoItem.owner.mid})?'
-              '\n\n注：被拉黑的Up可以在隐私设置-黑名单管理中解除'),
+          content: Text(
+            '确定拉黑:${videoItem.owner.name}(${videoItem.owner.mid})?'
+            '\n\n注：被拉黑的Up可以在隐私设置-黑名单管理中解除',
+          ),
           actions: [
             TextButton(
               onPressed: () => SmartDialog.dismiss(),
@@ -364,7 +379,7 @@ class MorePanel extends StatelessWidget {
                 SmartDialog.showToast(res['msg'] ?? '成功');
               },
               child: const Text('确认'),
-            )
+            ),
           ],
         );
       },
@@ -388,8 +403,9 @@ class MorePanel extends StatelessWidget {
                   width: 32,
                   height: 3,
                   decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.outline,
-                      borderRadius: const BorderRadius.all(Radius.circular(3))),
+                    color: Theme.of(context).colorScheme.outline,
+                    borderRadius: const BorderRadius.all(Radius.circular(3)),
+                  ),
                 ),
               ),
             ),
@@ -407,16 +423,20 @@ class MorePanel extends StatelessWidget {
             onTap: () async => await menuActionHandler('watchLater'),
             minLeadingWidth: 0,
             leading: const Icon(Icons.watch_later_outlined, size: 19),
-            title:
-                Text('添加至稍后再看', style: Theme.of(context).textTheme.titleSmall),
+            title: Text(
+              '添加至稍后再看',
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
           ),
           ListTile(
             onTap: () =>
                 imageSaveDialog(context, videoItem, SmartDialog.dismiss),
             minLeadingWidth: 0,
             leading: const Icon(Icons.photo_outlined, size: 19),
-            title:
-                Text('查看视频封面', style: Theme.of(context).textTheme.titleSmall),
+            title: Text(
+              '查看视频封面',
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
           ),
           const SizedBox(height: 20),
         ],

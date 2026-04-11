@@ -16,12 +16,10 @@ import '../utils/storage.dart';
 import '../utils/utils.dart';
 import '../utils/wbi_sign.dart';
 import 'index.dart';
+import 'package:flutter/foundation.dart';
 
 class MemberHttp {
-  static Future memberInfo({
-    int? mid,
-    String token = '',
-  }) async {
+  static Future memberInfo({int? mid, String token = ''}) async {
     Map params = await WbiSign().makSign({
       'mid': mid,
       'token': token,
@@ -36,14 +34,10 @@ class MemberHttp {
     if (res.data['code'] == 0) {
       return {
         'status': true,
-        'data': MemberInfoModel.fromJson(res.data['data'])
+        'data': MemberInfoModel.fromJson(res.data['data']),
       };
     } else {
-      return {
-        'status': false,
-        'data': [],
-        'msg': res.data['message'],
-      };
+      return {'status': false, 'data': [], 'msg': res.data['message']};
     }
   }
 
@@ -52,25 +46,19 @@ class MemberHttp {
     if (res.data['code'] == 0) {
       return {'status': true, 'data': res.data['data']};
     } else {
-      return {
-        'status': false,
-        'data': [],
-        'msg': res.data['message'],
-      };
+      return {'status': false, 'data': [], 'msg': res.data['message']};
     }
   }
 
   static Future memberCardInfo({int? mid}) async {
-    var res = await Request()
-        .get(Api.memberCardInfo, data: {'mid': mid, 'photo': true});
+    var res = await Request().get(
+      Api.memberCardInfo,
+      data: {'mid': mid, 'photo': true},
+    );
     if (res.data['code'] == 0) {
       return {'status': true, 'data': res.data['data']};
     } else {
-      return {
-        'status': false,
-        'data': [],
-        'msg': res.data['message'],
-      };
+      return {'status': false, 'data': [], 'msg': res.data['message']};
     }
   }
 
@@ -100,11 +88,8 @@ class MemberHttp {
       'dm_cover_img_str': dmCoverImgStr.substring(0, dmCoverImgStr.length - 2),
       'dm_img_inter': '{"ds":[],"wh":[0,0,0],"of":[0,0,0]}',
       ...order == 'charge'
-          ? {
-              'order': 'pubdate',
-              'special_type': 'charging',
-            }
-          : {}
+          ? {'order': 'pubdate', 'special_type': 'charging'}
+          : {},
     });
 
     var res = await Request().get(
@@ -115,12 +100,10 @@ class MemberHttp {
     if (res.data['code'] == 0) {
       return {
         'status': true,
-        'data': MemberArchiveDataModel.fromJson(res.data['data'])
+        'data': MemberArchiveDataModel.fromJson(res.data['data']),
       };
     } else {
-      Map errMap = {
-        -352: '风控校验失败，请检查登录状态',
-      };
+      Map errMap = {-352: '风控校验失败，请检查登录状态'};
       return {
         'status': false,
         'data': [],
@@ -131,21 +114,22 @@ class MemberHttp {
 
   // 用户动态
   static Future memberDynamic({String? offset, int? mid}) async {
-    var res = await Request().get(Api.memberDynamic, data: {
-      'offset': offset ?? '',
-      'host_mid': mid,
-      'timezone_offset': '-480',
-      'features': 'itemOpusStyle',
-    });
+    var res = await Request().get(
+      Api.memberDynamic,
+      data: {
+        'offset': offset ?? '',
+        'host_mid': mid,
+        'timezone_offset': '-480',
+        'features': 'itemOpusStyle',
+      },
+    );
     if (res.data['code'] == 0) {
       return {
         'status': true,
         'data': DynamicsDataModel.fromJson(res.data['data']),
       };
     } else {
-      Map errMap = {
-        -352: '风控校验失败，请检查登录状态',
-      };
+      Map errMap = {-352: '风控校验失败，请检查登录状态'};
       return {
         'status': false,
         'data': [],
@@ -156,24 +140,23 @@ class MemberHttp {
 
   // 搜索用户动态
   static Future memberDynamicSearch({int? pn, int? ps, int? mid}) async {
-    var res = await Request().get(Api.memberDynamic, data: {
-      'keyword': '海拔',
-      'mid': mid,
-      'pn': pn,
-      'ps': ps,
-      'platform': 'web'
-    });
+    var res = await Request().get(
+      Api.memberDynamic,
+      data: {
+        'keyword': '海拔',
+        'mid': mid,
+        'pn': pn,
+        'ps': ps,
+        'platform': 'web',
+      },
+    );
     if (res.data['code'] == 0) {
       return {
         'status': true,
         'data': DynamicsDataModel.fromJson(res.data['data']),
       };
     } else {
-      return {
-        'status': false,
-        'data': [],
-        'msg': res.data['message'],
-      };
+      return {'status': false, 'data': [], 'msg': res.data['message']};
     }
   }
 
@@ -185,14 +168,10 @@ class MemberHttp {
         'status': true,
         'data': res.data['data']
             .map<MemberTagItemModel>((e) => MemberTagItemModel.fromJson(e))
-            .toList()
+            .toList(),
       };
     } else {
-      return {
-        'status': false,
-        'data': [],
-        'msg': res.data['message'],
-      };
+      return {'status': false, 'data': [], 'msg': res.data['message']};
     }
   }
 
@@ -210,41 +189,26 @@ class MemberHttp {
     if (res.data['code'] == 0) {
       return {'status': true, 'data': [], 'msg': '操作成功'};
     } else {
-      return {
-        'status': false,
-        'data': [],
-        'msg': res.data['message'],
-      };
+      return {'status': false, 'data': [], 'msg': res.data['message']};
     }
   }
 
   // 获取某分组下的up
-  static Future followUpGroup(
-    int? mid,
-    int? tagid,
-    int? pn,
-    int? ps,
-  ) async {
-    var res = await Request().get(Api.followUpGroup, data: {
-      'mid': mid,
-      'tagid': tagid,
-      'pn': pn,
-      'ps': ps,
-    });
+  static Future followUpGroup(int? mid, int? tagid, int? pn, int? ps) async {
+    var res = await Request().get(
+      Api.followUpGroup,
+      data: {'mid': mid, 'tagid': tagid, 'pn': pn, 'ps': ps},
+    );
     if (res.data['code'] == 0) {
       // FollowItemModel
       return {
         'status': true,
         'data': res.data['data']
             .map<FollowItemModel>((e) => FollowItemModel.fromJson(e))
-            .toList()
+            .toList(),
       };
     } else {
-      return {
-        'status': false,
-        'data': [],
-        'msg': res.data['message'],
-      };
+      return {'status': false, 'data': [], 'msg': res.data['message']};
     }
   }
 
@@ -256,35 +220,28 @@ class MemberHttp {
         'status': true,
         'data': res.data['data']
             .map<MemberTagItemModel>((e) => MemberTagItemModel.fromJson(e))
-            .toList()
+            .toList(),
       };
     } else {
-      return {
-        'status': false,
-        'data': [],
-        'msg': res.data['message'],
-      };
+      return {'status': false, 'data': [], 'msg': res.data['message']};
     }
   }
 
   // 获取uo专栏
   static Future getMemberSeasons(int? mid, int? pn, int? ps) async {
-    var res = await Request().get(Api.getMemberSeasonsApi, data: {
-      'mid': mid,
-      'page_num': pn,
-      'page_size': ps,
-    });
+    var res = await Request().get(
+      Api.getMemberSeasonsApi,
+      data: {'mid': mid, 'page_num': pn, 'page_size': ps},
+    );
     if (res.data['code'] == 0) {
       return {
         'status': true,
-        'data': MemberSeasonsDataModel.fromJson(res.data['data']['items_lists'])
+        'data': MemberSeasonsDataModel.fromJson(
+          res.data['data']['items_lists'],
+        ),
       };
     } else {
-      return {
-        'status': false,
-        'data': [],
-        'msg': res.data['message'],
-      };
+      return {'status': false, 'data': [], 'msg': res.data['message']};
     }
   }
 
@@ -313,11 +270,7 @@ class MemberHttp {
             .toList(),
       };
     } else {
-      return {
-        'status': false,
-        'data': [],
-        'msg': res.data['message'],
-      };
+      return {'status': false, 'data': [], 'msg': res.data['message']};
     }
   }
 
@@ -346,11 +299,7 @@ class MemberHttp {
             .toList(),
       };
     } else {
-      return {
-        'status': false,
-        'data': [],
-        'msg': res.data['message'],
-      };
+      return {'status': false, 'data': [], 'msg': res.data['message']};
     }
   }
 
@@ -376,17 +325,13 @@ class MemberHttp {
       try {
         return {
           'status': true,
-          'data': MemberSeasonsList.fromJson(res.data['data'])
+          'data': MemberSeasonsList.fromJson(res.data['data']),
         };
       } catch (err) {
-        print(err);
+        debugPrint('$err');
       }
     } else {
-      return {
-        'status': false,
-        'data': [],
-        'msg': res.data['message'],
-      };
+      return {'status': false, 'data': [], 'msg': res.data['message']};
     }
   }
 
@@ -398,25 +343,19 @@ class MemberHttp {
       'local_id': '0',
       'ts': (DateTime.now().millisecondsSinceEpoch ~/ 1000).toString(),
     };
-    String sign = Utils.appSign(
-      params,
-      Constants.appKey,
-      Constants.appSec,
+    String sign = Utils.appSign(params, Constants.appKey, Constants.appSec);
+    var res = await Request().post(
+      Api.getTVCode,
+      queryParameters: {...params, 'sign': sign},
     );
-    var res = await Request()
-        .post(Api.getTVCode, queryParameters: {...params, 'sign': sign});
     if (res.data['code'] == 0) {
       return {
         'status': true,
         'data': res.data['data']['auth_code'],
-        'msg': '操作成功'
+        'msg': '操作成功',
       };
     } else {
-      return {
-        'status': false,
-        'data': [],
-        'msg': res.data['message'],
-      };
+      return {'status': false, 'data': [], 'msg': res.data['message']};
     }
   }
 
@@ -437,11 +376,7 @@ class MemberHttp {
       if (res.data['code'] == 0) {
         return {'status': true, 'data': [], 'msg': '操作成功'};
       } else {
-        return {
-          'status': false,
-          'data': [],
-          'msg': res.data['message'],
-        };
+        return {'status': false, 'data': [], 'msg': res.data['message']};
       }
     }
   }
@@ -453,28 +388,24 @@ class MemberHttp {
       'local_id': '0',
       'ts': (DateTime.now().millisecondsSinceEpoch ~/ 1000).toString(),
     };
-    String sign = Utils.appSign(
-      params,
-      Constants.appKey,
-      Constants.appSec,
+    String sign = Utils.appSign(params, Constants.appKey, Constants.appSec);
+    var res = await Request().post(
+      Api.qrcodePoll,
+      queryParameters: {...params, 'sign': sign},
     );
-    var res = await Request()
-        .post(Api.qrcodePoll, queryParameters: {...params, 'sign': sign});
     SmartDialog.dismiss();
     if (res.data['code'] == 0) {
       String accessKey = res.data['data']['access_token'];
       Box localCache = GStrorage.localCache;
       Box userInfoCache = GStrorage.userInfo;
       var userInfo = userInfoCache.get('userInfoCache');
-      localCache.put(
-          LocalCacheKey.accessKey, {'mid': userInfo.mid, 'value': accessKey});
+      localCache.put(LocalCacheKey.accessKey, {
+        'mid': userInfo.mid,
+        'value': accessKey,
+      });
       return {'status': true, 'data': [], 'msg': '操作成功'};
     } else {
-      return {
-        'status': false,
-        'data': [],
-        'msg': res.data['message'],
-      };
+      return {'status': false, 'data': [], 'msg': res.data['message']};
     }
   }
 
@@ -484,11 +415,7 @@ class MemberHttp {
     if (res.data['code'] == 0) {
       return {'status': true, 'data': res.data['data']};
     } else {
-      return {
-        'status': false,
-        'data': [],
-        'msg': res.data['message'],
-      };
+      return {'status': false, 'data': [], 'msg': res.data['message']};
     }
   }
 
@@ -510,22 +437,17 @@ class MemberHttp {
       'web_location': 333.999,
     };
     Map params = await WbiSign().makSign(data);
-    var res = await Request().get(Api.followSearch, data: {
-      ...data,
-      'w_rid': params['w_rid'],
-      'wts': params['wts'],
-    });
+    var res = await Request().get(
+      Api.followSearch,
+      data: {...data, 'w_rid': params['w_rid'], 'wts': params['wts']},
+    );
     if (res.data['code'] == 0) {
       return {
         'status': true,
-        'data': FollowDataModel.fromJson(res.data['data'])
+        'data': FollowDataModel.fromJson(res.data['data']),
       };
     } else {
-      return {
-        'status': false,
-        'data': [],
-        'msg': res.data['message'],
-      };
+      return {'status': false, 'data': [], 'msg': res.data['message']};
     }
   }
 
@@ -551,17 +473,13 @@ class MemberHttp {
       try {
         return {
           'status': true,
-          'data': MemberSeasonsDataModel.fromJson(res.data['data'])
+          'data': MemberSeasonsDataModel.fromJson(res.data['data']),
         };
       } catch (err) {
-        print(err);
+        debugPrint('$err');
       }
     } else {
-      return {
-        'status': false,
-        'data': [],
-        'msg': res.data['message'],
-      };
+      return {'status': false, 'data': [], 'msg': res.data['message']};
     }
   }
 
@@ -569,7 +487,8 @@ class MemberHttp {
     var res = await Request().get('https://space.bilibili.com/$mid/article');
     String? headContent = parse(res.data).head?.outerHtml;
     final regex = RegExp(
-        r'<script id="__RENDER_DATA__" type="application/json">(.*?)</script>');
+      r'<script id="__RENDER_DATA__" type="application/json">(.*?)</script>',
+    );
     if (headContent != null) {
       final match = regex.firstMatch(headContent);
       if (match != null && match.groupCount >= 1) {
@@ -598,19 +517,22 @@ class MemberHttp {
       'web_location': 333.999,
       'w_webid': wWebid,
     });
-    var res = await Request().get(Api.opusList, data: {
-      'host_mid': mid,
-      'page': pn,
-      'offset': offset,
-      'web_location': 333.999,
-      'w_webid': wWebid,
-      'w_rid': params['w_rid'],
-      'wts': params['wts'],
-    });
+    var res = await Request().get(
+      Api.opusList,
+      data: {
+        'host_mid': mid,
+        'page': pn,
+        'offset': offset,
+        'web_location': 333.999,
+        'w_webid': wWebid,
+        'w_rid': params['w_rid'],
+        'wts': params['wts'],
+      },
+    );
     if (res.data['code'] == 0) {
       return {
         'status': true,
-        'data': MemberArticleDataModel.fromJson(res.data['data'])
+        'data': MemberArticleDataModel.fromJson(res.data['data']),
       };
     } else {
       return {

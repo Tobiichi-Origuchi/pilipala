@@ -12,8 +12,8 @@ class BottomControl extends StatelessWidget implements PreferredSizeWidget {
     this.controller,
     this.triggerFullScreen,
     this.buildBottomControl,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Size get preferredSize => const Size(double.infinity, kToolbarHeight);
@@ -21,7 +21,7 @@ class BottomControl extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     Color colorTheme = Theme.of(context).colorScheme.primary;
-    final _ = controller!;
+    final ctrl = controller!;
     return Container(
       color: Colors.transparent,
       height: 90,
@@ -29,44 +29,44 @@ class BottomControl extends StatelessWidget implements PreferredSizeWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          Obx(
-            () {
-              final int value = _.sliderPositionSeconds.value;
-              final int max = _.durationSeconds.value;
-              final int buffer = _.bufferedSeconds.value;
-              if (value > max || max <= 0) {
-                return const SizedBox();
-              }
-              return Padding(
-                padding: const EdgeInsets.only(left: 7, right: 7, bottom: 6),
-                child: ProgressBar(
-                  progress: Duration(seconds: value),
-                  buffered: Duration(seconds: buffer),
-                  total: Duration(seconds: max),
-                  progressBarColor: colorTheme,
-                  baseBarColor: Colors.white.withOpacity(0.2),
-                  bufferedBarColor: colorTheme.withOpacity(0.4),
-                  timeLabelLocation: TimeLabelLocation.none,
-                  thumbColor: colorTheme,
-                  barHeight: 3.5,
-                  thumbRadius: 7,
-                  onDragStart: (duration) {
-                    feedBack();
-                    _.onChangedSliderStart();
-                  },
-                  onDragUpdate: (duration) {
-                    _.onUpdatedSliderProgress(duration.timeStamp);
-                  },
-                  onSeek: (duration) {
-                    _.onChangedSliderEnd();
-                    _.onChangedSlider(duration.inSeconds.toDouble());
-                    _.seekTo(Duration(seconds: duration.inSeconds),
-                        type: 'slider');
-                  },
-                ),
-              );
-            },
-          ),
+          Obx(() {
+            final int value = ctrl.sliderPositionSeconds.value;
+            final int max = ctrl.durationSeconds.value;
+            final int buffer = ctrl.bufferedSeconds.value;
+            if (value > max || max <= 0) {
+              return const SizedBox();
+            }
+            return Padding(
+              padding: const EdgeInsets.only(left: 7, right: 7, bottom: 6),
+              child: ProgressBar(
+                progress: Duration(seconds: value),
+                buffered: Duration(seconds: buffer),
+                total: Duration(seconds: max),
+                progressBarColor: colorTheme,
+                baseBarColor: Colors.white.withValues(alpha: 0.2),
+                bufferedBarColor: colorTheme.withValues(alpha: 0.4),
+                timeLabelLocation: TimeLabelLocation.none,
+                thumbColor: colorTheme,
+                barHeight: 3.5,
+                thumbRadius: 7,
+                onDragStart: (duration) {
+                  feedBack();
+                  ctrl.onChangedSliderStart();
+                },
+                onDragUpdate: (duration) {
+                  ctrl.onUpdatedSliderProgress(duration.timeStamp);
+                },
+                onSeek: (duration) {
+                  ctrl.onChangedSliderEnd();
+                  ctrl.onChangedSlider(duration.inSeconds.toDouble());
+                  ctrl.seekTo(
+                    Duration(seconds: duration.inSeconds),
+                    type: 'slider',
+                  );
+                },
+              ),
+            );
+          }),
           Row(children: [...buildBottomControl!]),
           const SizedBox(height: 10),
         ],

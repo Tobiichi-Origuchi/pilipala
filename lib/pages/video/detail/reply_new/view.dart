@@ -64,9 +64,8 @@ class _VideoReplyNewDialogState extends State<VideoReplyNewDialog>
 
   _autoFocus() async {
     await Future.delayed(const Duration(milliseconds: 300));
-    if (context.mounted) {
-      FocusScope.of(context).requestFocus(replyContentFocusNode);
-    }
+    if (!mounted) return;
+    FocusScope.of(context).requestFocus(replyContentFocusNode);
   }
 
   _focuslistener() {
@@ -93,9 +92,9 @@ class _VideoReplyNewDialogState extends State<VideoReplyNewDialog>
     );
     if (result['status']) {
       SmartDialog.showToast(result['data']['success_toast']);
-      Get.back(result: {
-        'data': ReplyItemModel.fromJson(result['data']['reply'], ''),
-      });
+      Get.back(
+        result: {'data': ReplyItemModel.fromJson(result['data']['reply'], '')},
+      );
 
       /// 投稿、番剧页面
       if (isForward.value) {
@@ -114,14 +113,16 @@ class _VideoReplyNewDialogState extends State<VideoReplyNewDialog>
   void onChooseEmote(PackageItem package, Emote emote) {
     final int cursorPosition = _replyContentController.selection.baseOffset;
     final String currentText = _replyContentController.text;
-    final String newText = currentText.substring(0, cursorPosition) +
+    final String newText =
+        currentText.substring(0, cursorPosition) +
         emote.text! +
         currentText.substring(cursorPosition);
     message.value = newText;
     _replyContentController.value = TextEditingValue(
       text: newText,
-      selection:
-          TextSelection.collapsed(offset: cursorPosition + emote.text!.length),
+      selection: TextSelection.collapsed(
+        offset: cursorPosition + emote.text!.length,
+      ),
     );
   }
 
@@ -135,13 +136,16 @@ class _VideoReplyNewDialogState extends State<VideoReplyNewDialog>
       WidgetsBinding.instance.addPostFrameCallback((_) {
         // 键盘高度
         final viewInsets = EdgeInsets.fromViewPadding(
-            View.of(context).viewInsets, View.of(context).devicePixelRatio);
+          View.of(context).viewInsets,
+          View.of(context).devicePixelRatio,
+        );
         _debouncer.run(() {
           if (mounted) {
             if (keyboardHeight == 0 && emoteHeight == 0) {
               setState(() {
-                emoteHeight = keyboardHeight =
-                    keyboardHeight == 0.0 ? viewInsets.bottom : keyboardHeight;
+                emoteHeight = keyboardHeight = keyboardHeight == 0.0
+                    ? viewInsets.bottom
+                    : keyboardHeight;
               });
             }
           }
@@ -162,8 +166,9 @@ class _VideoReplyNewDialogState extends State<VideoReplyNewDialog>
   @override
   Widget build(BuildContext context) {
     double _keyboardHeight = EdgeInsets.fromViewPadding(
-            View.of(context).viewInsets, View.of(context).devicePixelRatio)
-        .bottom;
+      View.of(context).viewInsets,
+      View.of(context).devicePixelRatio,
+    ).bottom;
     return Container(
       clipBehavior: Clip.hardEdge,
       decoration: BoxDecoration(
@@ -177,13 +182,14 @@ class _VideoReplyNewDialogState extends State<VideoReplyNewDialog>
         mainAxisSize: MainAxisSize.min,
         children: [
           ConstrainedBox(
-            constraints: const BoxConstraints(
-              maxHeight: 200,
-              minHeight: 120,
-            ),
+            constraints: const BoxConstraints(maxHeight: 200, minHeight: 120),
             child: Container(
               padding: const EdgeInsets.only(
-                  top: 12, right: 15, left: 15, bottom: 10),
+                top: 12,
+                right: 15,
+                left: 15,
+                bottom: 10,
+              ),
               child: SingleChildScrollView(
                 child: Form(
                   key: _formKey,
@@ -195,11 +201,10 @@ class _VideoReplyNewDialogState extends State<VideoReplyNewDialog>
                     autofocus: false,
                     focusNode: replyContentFocusNode,
                     decoration: const InputDecoration(
-                        hintText: "输入回复内容",
-                        border: InputBorder.none,
-                        hintStyle: TextStyle(
-                          fontSize: 14,
-                        )),
+                      hintText: "输入回复内容",
+                      border: InputBorder.none,
+                      hintStyle: TextStyle(fontSize: 14),
+                    ),
                     style: Theme.of(context).textTheme.bodyLarge,
                     onChanged: (text) {
                       message.value = text;
@@ -211,14 +216,11 @@ class _VideoReplyNewDialogState extends State<VideoReplyNewDialog>
           ),
           Divider(
             height: 1,
-            color: Theme.of(context).dividerColor.withOpacity(0.1),
+            color: Theme.of(context).dividerColor.withValues(alpha: 0.1),
           ),
           Container(
             height: 52,
-            padding: const EdgeInsets.only(
-              left: 12,
-              right: 12,
-            ),
+            padding: const EdgeInsets.only(left: 12, right: 12),
             margin: EdgeInsets.only(
               bottom: toolbarType == 'input' && keyboardHeight == 0.0
                   ? MediaQuery.of(context).padding.bottom
@@ -262,13 +264,14 @@ class _VideoReplyNewDialogState extends State<VideoReplyNewDialog>
                             isForward.value = !isForward.value;
                           },
                           icon: Icon(
-                              isForward.value
-                                  ? Icons.check_box
-                                  : Icons.check_box_outline_blank,
-                              size: 22),
+                            isForward.value
+                                ? Icons.check_box
+                                : Icons.check_box_outline_blank,
+                            size: 22,
+                          ),
                           label: const Text('转发到动态'),
                           style: ButtonStyle(
-                            foregroundColor: MaterialStateProperty.all(
+                            foregroundColor: WidgetStateProperty.all(
                               isForward.value
                                   ? Theme.of(context).colorScheme.primary
                                   : Theme.of(context).colorScheme.outline,
@@ -297,8 +300,8 @@ class _VideoReplyNewDialogState extends State<VideoReplyNewDialog>
               width: double.infinity,
               height: toolbarType == 'input'
                   ? (_keyboardHeight > keyboardHeight
-                      ? _keyboardHeight
-                      : keyboardHeight)
+                        ? _keyboardHeight
+                        : keyboardHeight)
                   : emoteHeight,
               child: EmotePanel(
                 onChoose: (package, emote) => onChooseEmote(package, emote),

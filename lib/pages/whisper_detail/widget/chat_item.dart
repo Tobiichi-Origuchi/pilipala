@@ -37,22 +37,19 @@ enum MsgType {
   final String label;
   const MsgType({required this.value, required this.label});
   static MsgType parse(int value) {
-    return MsgType.values
-        .firstWhere((e) => e.value == value, orElse: () => MsgType.invalid);
+    return MsgType.values.firstWhere(
+      (e) => e.value == value,
+      orElse: () => MsgType.invalid,
+    );
   }
 }
 
 class ChatItem extends StatelessWidget {
   dynamic item;
-  List? e_infos;
+  List? eInfos;
   WhisperDetailController ctr;
 
-  ChatItem({
-    super.key,
-    required this.item,
-    required this.ctr,
-    this.e_infos,
-  });
+  ChatItem({super.key, required this.item, required this.ctr, this.eInfos});
 
   @override
   Widget build(BuildContext context) {
@@ -60,12 +57,13 @@ class ChatItem extends StatelessWidget {
         item.senderUid == GStrorage.userInfo.get('userInfoCache').mid;
 
     bool isPic = item.msgType == MsgType.pic.value; // 图片
-    bool isText = item.msgType == MsgType.text.value; // 文本
-    // bool isArchive = item.msgType == 11; // 投稿
-    // bool isArticle = item.msgType == 12; // 专栏
+    // bool isText = item.msgType == MsgType.text.value; // 文本
+    // // bool isArchive = item.msgType == 11; // 投稿
+    // // bool isArticle = item.msgType == 12; // 专栏
     bool isRevoke = item.msgType == MsgType.revoke.value; // 撤回消息
-    bool isShareV2 = item.msgType == MsgType.share_v2.value;
-    bool isSystem = item.msgType == MsgType.notify_text.value ||
+    // bool isShareV2 = item.msgType == MsgType.share_v2.value;
+    bool isSystem =
+        item.msgType == MsgType.notify_text.value ||
         item.msgType == MsgType.notify_msg.value ||
         item.msgType == MsgType.pic_card.value ||
         item.msgType == MsgType.auto_reply_push.value;
@@ -73,7 +71,7 @@ class ChatItem extends StatelessWidget {
     Color textColor(BuildContext context) {
       return isOwner
           ? Theme.of(context).colorScheme.onPrimary
-          : Theme.of(context).colorScheme.onBackground;
+          : Theme.of(context).colorScheme.onSurface;
     }
 
     const double safeDistanceval = 6;
@@ -82,10 +80,10 @@ class ChatItem extends StatelessWidget {
 
     Widget richTextMessage(BuildContext context) {
       var text = content['content'];
-      if (e_infos != null) {
+      if (eInfos != null) {
         final List<InlineSpan> children = [];
         Map<String, String> emojiMap = {};
-        for (var e in e_infos!) {
+        for (var e in eInfos!) {
           emojiMap[e['text']] = e['url'];
         }
         text.splitMapJoin(
@@ -93,13 +91,15 @@ class ChatItem extends StatelessWidget {
           onMatch: (Match match) {
             final String emojiKey = match[0]!;
             if (emojiMap.containsKey(emojiKey)) {
-              children.add(WidgetSpan(
-                child: NetworkImgLayer(
-                  width: 18,
-                  height: 18,
-                  src: emojiMap[emojiKey]!,
+              children.add(
+                WidgetSpan(
+                  child: NetworkImgLayer(
+                    width: 18,
+                    height: 18,
+                    src: emojiMap[emojiKey]!,
+                  ),
                 ),
-              ));
+              );
             } else {
               children.add(
                 TextSpan(
@@ -115,21 +115,20 @@ class ChatItem extends StatelessWidget {
             return '';
           },
           onNonMatch: (String text) {
-            children.add(TextSpan(
+            children.add(
+              TextSpan(
                 text: text,
                 style: TextStyle(
                   color: textColor(context),
                   letterSpacing: 0.6,
                   height: 1.5,
-                )));
+                ),
+              ),
+            );
             return '';
           },
         );
-        return SelectableText.rich(
-          TextSpan(
-            children: children,
-          ),
-        );
+        return SelectableText.rich(TextSpan(children: children));
       } else {
         return SelectableText(
           text,
@@ -150,13 +149,15 @@ class ChatItem extends StatelessWidget {
           return SystemNotice2(item: item);
         case MsgType.notify_text:
           return SelectableText(
-            jsonDecode(content['content'])
-                .map((m) => m['text'] as String)
-                .join("\n"),
+            jsonDecode(
+              content['content'],
+            ).map((m) => m['text'] as String).join("\n"),
             style: TextStyle(
               letterSpacing: 0.6,
               height: 5,
-              color: Theme.of(context).colorScheme.outline.withOpacity(0.8),
+              color: Theme.of(
+                context,
+              ).colorScheme.outline.withValues(alpha: 0.8),
             ),
           );
         case MsgType.text:
@@ -237,7 +238,7 @@ class ChatItem extends StatelessWidget {
                 style: TextStyle(
                   letterSpacing: 0.6,
                   height: 1.5,
-                  color: textColor(context).withOpacity(0.6),
+                  color: textColor(context).withValues(alpha: 0.6),
                   fontSize: 12,
                 ),
               ),
@@ -254,11 +255,13 @@ class ChatItem extends StatelessWidget {
                   final int cid = await SearchHttp.ab2c(bvid: bvid);
                   final String heroTag = Utils.makeHeroTag(bvid);
                   SmartDialog.dismiss<dynamic>().then(
-                    (e) => Get.toNamed<dynamic>('/video?bvid=$bvid&cid=$cid',
-                        arguments: <String, String?>{
-                          'pic': content['thumb'] ?? '',
-                          'heroTag': heroTag,
-                        }),
+                    (e) => Get.toNamed<dynamic>(
+                      '/video?bvid=$bvid&cid=$cid',
+                      arguments: <String, String?>{
+                        'pic': content['thumb'] ?? '',
+                        'heroTag': heroTag,
+                      },
+                    ),
                   );
                 },
                 child: NetworkImgLayer(
@@ -283,7 +286,7 @@ class ChatItem extends StatelessWidget {
                 style: TextStyle(
                   letterSpacing: 0.6,
                   height: 1.5,
-                  color: textColor(context).withOpacity(0.6),
+                  color: textColor(context).withValues(alpha: 0.6),
                   fontSize: 12,
                 ),
               ),
@@ -295,13 +298,10 @@ class ChatItem extends StatelessWidget {
               maxWidth: 300.0, // 设置最大宽度为200.0
             ),
             decoration: BoxDecoration(
-              color: Theme.of(context)
-                  .colorScheme
-                  .secondaryContainer
-                  .withOpacity(0.4),
-              borderRadius: const BorderRadius.all(
-                Radius.circular(16),
-              ),
+              color: Theme.of(
+                context,
+              ).colorScheme.secondaryContainer.withValues(alpha: 0.4),
+              borderRadius: const BorderRadius.all(Radius.circular(16)),
             ),
             margin: const EdgeInsets.all(12),
             padding: const EdgeInsets.all(12),
@@ -321,10 +321,13 @@ class ChatItem extends StatelessWidget {
                   const SizedBox(height: 6),
                   GestureDetector(
                     onTap: () async {
-                      RegExp bvRegex =
-                          RegExp(r'BV[0-9A-Za-z]{10}', caseSensitive: false);
-                      Iterable<Match> matches =
-                          bvRegex.allMatches(i['jump_url']);
+                      RegExp bvRegex = RegExp(
+                        r'BV[0-9A-Za-z]{10}',
+                        caseSensitive: false,
+                      );
+                      Iterable<Match> matches = bvRegex.allMatches(
+                        i['jump_url'],
+                      );
                       if (matches.isNotEmpty) {
                         Match match = matches.first;
                         String bvid = match.group(0)!;
@@ -334,11 +337,12 @@ class ChatItem extends StatelessWidget {
                           final String heroTag = Utils.makeHeroTag(bvid);
                           SmartDialog.dismiss<dynamic>().then(
                             (e) => Get.toNamed<dynamic>(
-                                '/video?bvid=$bvid&cid=$cid',
-                                arguments: <String, String?>{
-                                  'pic': i['cover_url'],
-                                  'heroTag': heroTag,
-                                }),
+                              '/video?bvid=$bvid&cid=$cid',
+                              arguments: <String, String?>{
+                                'pic': i['cover_url'],
+                                'heroTag': heroTag,
+                              },
+                            ),
                           );
                         } catch (err) {
                           SmartDialog.dismiss();
@@ -346,8 +350,10 @@ class ChatItem extends StatelessWidget {
                         }
                       } else {
                         SmartDialog.showToast('未匹配到 BV 号');
-                        Get.toNamed('/webview',
-                            arguments: {'url': i['jump_url']});
+                        Get.toNamed(
+                          '/webview',
+                          arguments: {'url': i['jump_url']},
+                        );
                       }
                     },
                     child: Row(
@@ -359,39 +365,44 @@ class ChatItem extends StatelessWidget {
                         ),
                         const SizedBox(width: 6),
                         Expanded(
-                            child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              i['field1'],
-                              maxLines: 2,
-                              style: TextStyle(
-                                letterSpacing: 0.6,
-                                height: 1.5,
-                                color: textColor(context),
-                                fontWeight: FontWeight.bold,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                i['field1'],
+                                maxLines: 2,
+                                style: TextStyle(
+                                  letterSpacing: 0.6,
+                                  height: 1.5,
+                                  color: textColor(context),
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                            Text(
-                              i['field2'],
-                              style: TextStyle(
-                                letterSpacing: 0.6,
-                                height: 1.5,
-                                color: textColor(context).withOpacity(0.6),
-                                fontSize: 12,
+                              Text(
+                                i['field2'],
+                                style: TextStyle(
+                                  letterSpacing: 0.6,
+                                  height: 1.5,
+                                  color: textColor(
+                                    context,
+                                  ).withValues(alpha: 0.6),
+                                  fontSize: 12,
+                                ),
                               ),
-                            ),
-                            Text(
-                              i['field3'],
-                              style: TextStyle(
-                                letterSpacing: 0.6,
-                                height: 1.5,
-                                color: textColor(context).withOpacity(0.6),
-                                fontSize: 12,
+                              Text(
+                                i['field3'],
+                                style: TextStyle(
+                                  letterSpacing: 0.6,
+                                  height: 1.5,
+                                  color: textColor(
+                                    context,
+                                  ).withValues(alpha: 0.6),
+                                  fontSize: 12,
+                                ),
                               ),
-                            ),
-                          ],
-                        )),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -417,99 +428,95 @@ class ChatItem extends StatelessWidget {
     return isSystem
         ? messageContent(context)
         : isRevoke
-            ? const SizedBox()
-            : Container(
-                padding: const EdgeInsets.only(top: 6, bottom: 6),
-                decoration: BoxDecoration(
-                    border: Border(
-                  left: item.msgStatus == 1 && !isOwner
-                      ? BorderSide(
-                          width: 4, color: Theme.of(context).dividerColor)
-                      : BorderSide.none,
-                  right: item.msgStatus == 1 && isOwner
-                      ? BorderSide(
-                          width: 4, color: Theme.of(context).primaryColor)
-                      : BorderSide.none,
-                )),
-                child: Row(
-                  mainAxisAlignment: !isOwner
-                      ? MainAxisAlignment.start
-                      : MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const SizedBox(width: safeDistanceval),
-                    Container(
-                      constraints: const BoxConstraints(
-                        maxWidth: 300.0, // 设置最大宽度为200.0
+        ? const SizedBox()
+        : Container(
+            padding: const EdgeInsets.only(top: 6, bottom: 6),
+            decoration: BoxDecoration(
+              border: Border(
+                left: item.msgStatus == 1 && !isOwner
+                    ? BorderSide(
+                        width: 4,
+                        color: Theme.of(context).dividerColor,
+                      )
+                    : BorderSide.none,
+                right: item.msgStatus == 1 && isOwner
+                    ? BorderSide(
+                        width: 4,
+                        color: Theme.of(context).primaryColor,
+                      )
+                    : BorderSide.none,
+              ),
+            ),
+            child: Row(
+              mainAxisAlignment: !isOwner
+                  ? MainAxisAlignment.start
+                  : MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(width: safeDistanceval),
+                Container(
+                  constraints: const BoxConstraints(
+                    maxWidth: 300.0, // 设置最大宽度为200.0
+                  ),
+                  decoration: BoxDecoration(
+                    color: isOwner
+                        ? Theme.of(context).colorScheme.primary.withAlpha(180)
+                        : Theme.of(context).colorScheme.outlineVariant
+                              .withValues(alpha: 0.6)
+                              .withAlpha(125),
+                    borderRadius: BorderRadius.only(
+                      topLeft: const Radius.circular(borderRadiusVal),
+                      topRight: const Radius.circular(borderRadiusVal),
+                      bottomLeft: Radius.circular(
+                        isOwner ? borderRadiusVal : 2,
                       ),
-                      decoration: BoxDecoration(
-                        color: isOwner
-                            ? Theme.of(context)
-                                .colorScheme
-                                .primary
-                                .withAlpha(180)
-                            : Theme.of(context)
-                                .colorScheme
-                                .outlineVariant
-                                .withOpacity(0.6)
-                                .withAlpha(125),
-                        borderRadius: BorderRadius.only(
-                          topLeft: const Radius.circular(borderRadiusVal),
-                          topRight: const Radius.circular(borderRadiusVal),
-                          bottomLeft:
-                              Radius.circular(isOwner ? borderRadiusVal : 2),
-                          bottomRight:
-                              Radius.circular(isOwner ? 2 : borderRadiusVal),
-                        ),
-                      ),
-                      margin: const EdgeInsets.only(
-                        left: 8,
-                        right: 8,
-                      ),
-                      padding: const EdgeInsets.all(paddingVal),
-                      child: Column(
-                        crossAxisAlignment: isOwner
-                            ? CrossAxisAlignment.end
-                            : CrossAxisAlignment.start,
-                        children: [
-                          messageContent(context),
-                          SizedBox(height: isPic ? 7 : 4),
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                Utils.dateFormat(item.timestamp),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .labelSmall!
-                                    .copyWith(
-                                        color: isOwner
-                                            ? Theme.of(context)
-                                                .colorScheme
-                                                .onPrimary
-                                                .withOpacity(0.8)
-                                            : Theme.of(context)
-                                                .colorScheme
-                                                .onSecondaryContainer
-                                                .withOpacity(0.8)),
-                              ),
-                              item.msgStatus == 1
-                                  ? Text(
-                                      '  已撤回',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .labelSmall!,
-                                    )
-                                  : const SizedBox()
-                            ],
-                          )
-                        ],
+                      bottomRight: Radius.circular(
+                        isOwner ? 2 : borderRadiusVal,
                       ),
                     ),
-                    const SizedBox(width: safeDistanceval),
-                  ],
+                  ),
+                  margin: const EdgeInsets.only(left: 8, right: 8),
+                  padding: const EdgeInsets.all(paddingVal),
+                  child: Column(
+                    crossAxisAlignment: isOwner
+                        ? CrossAxisAlignment.end
+                        : CrossAxisAlignment.start,
+                    children: [
+                      messageContent(context),
+                      SizedBox(height: isPic ? 7 : 4),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            Utils.dateFormat(item.timestamp),
+                            style: Theme.of(context).textTheme.labelSmall!
+                                .copyWith(
+                                  color: isOwner
+                                      ? Theme.of(context).colorScheme.onPrimary
+                                            .withValues(alpha: 0.8)
+                                      : Theme.of(context)
+                                            .colorScheme
+                                            .onSecondaryContainer
+                                            .withValues(alpha: 0.8),
+                                ),
+                          ),
+                          item.msgStatus == 1
+                              ? Text(
+                                  '  已撤回',
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.labelSmall!,
+                                )
+                              : const SizedBox(),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              );
+                const SizedBox(width: safeDistanceval),
+              ],
+            ),
+          );
   }
 }
 
@@ -528,10 +535,9 @@ class SystemNotice extends StatelessWidget {
             maxWidth: 300.0, // 设置最大宽度为200.0
           ),
           decoration: BoxDecoration(
-            color: Theme.of(context)
-                .colorScheme
-                .secondaryContainer
-                .withOpacity(0.4),
+            color: Theme.of(
+              context,
+            ).colorScheme.secondaryContainer.withValues(alpha: 0.4),
             borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(16),
               topRight: Radius.circular(16),
@@ -544,24 +550,24 @@ class SystemNotice extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(content['title'],
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleMedium!
-                      .copyWith(fontWeight: FontWeight.bold)),
+              Text(
+                content['title'],
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold),
+              ),
               Text(
                 Utils.dateFormat(item.timestamp),
-                style: Theme.of(context)
-                    .textTheme
-                    .labelSmall!
-                    .copyWith(color: Theme.of(context).colorScheme.outline),
+                style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                  color: Theme.of(context).colorScheme.outline,
+                ),
               ),
               Divider(
-                color: Theme.of(context).colorScheme.primary.withOpacity(0.05),
+                color: Theme.of(
+                  context,
+                ).colorScheme.primary.withValues(alpha: 0.05),
               ),
-              SelectableText(
-                content['text'],
-              )
+              SelectableText(content['text']),
             ],
           ),
         ),

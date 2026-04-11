@@ -16,6 +16,7 @@ import '../utils/subtitle.dart';
 import '../utils/wbi_sign.dart';
 import 'api.dart';
 import 'init.dart';
+import 'package:flutter/foundation.dart';
 
 /// res.data['code'] == 0 请求正常返回结果
 /// res.data['data'] 为结果
@@ -24,8 +25,10 @@ import 'init.dart';
 class VideoHttp {
   static Box localCache = GStrorage.localCache;
   static Box setting = GStrorage.setting;
-  static bool enableRcmdDynamic =
-      setting.get(SettingBoxKey.enableRcmdDynamic, defaultValue: true);
+  static bool enableRcmdDynamic = setting.get(
+    SettingBoxKey.enableRcmdDynamic,
+    defaultValue: true,
+  );
   static Box userInfoCache = GStrorage.userInfo;
 
   // 首页推荐视频
@@ -40,13 +43,15 @@ class VideoHttp {
           'ps': ps,
           'fresh_idx': freshIdx,
           'brush': freshIdx,
-          'fresh_type': 4
+          'fresh_type': 4,
         },
       );
       if (res.data['code'] == 0) {
         List<RecVideoItemModel> list = [];
-        List<int> blackMidsList =
-            setting.get(SettingBoxKey.blackMidsList, defaultValue: [-1]);
+        List<int> blackMidsList = setting.get(
+          SettingBoxKey.blackMidsList,
+          defaultValue: [-1],
+        );
         for (var i in res.data['data']['item']) {
           //过滤掉live与ad，以及拉黑用户
           if (i['goto'] == 'av' &&
@@ -68,8 +73,10 @@ class VideoHttp {
   }
 
   // 添加额外的loginState变量模拟未登录状态
-  static Future rcmdVideoListApp(
-      {bool loginStatus = true, required int freshIdx}) async {
+  static Future rcmdVideoListApp({
+    bool loginStatus = true,
+    required int freshIdx,
+  }) async {
     var res = await Request().get(
       Api.recommendListApp,
       data: {
@@ -82,16 +89,20 @@ class VideoHttp {
         'pull': freshIdx == 0 ? 'true' : 'false',
         'appkey': Constants.appKey,
         'access_key': loginStatus
-            ? (localCache
-                    .get(LocalCacheKey.accessKey, defaultValue: {})['value'] ??
-                '')
-            : ''
+            ? (localCache.get(
+                    LocalCacheKey.accessKey,
+                    defaultValue: {},
+                  )['value'] ??
+                  '')
+            : '',
       },
     );
     if (res.data['code'] == 0) {
       List<RecVideoItemAppModel> list = [];
-      List<int> blackMidsList =
-          setting.get(SettingBoxKey.blackMidsList, defaultValue: [-1]);
+      List<int> blackMidsList = setting.get(
+        SettingBoxKey.blackMidsList,
+        defaultValue: [-1],
+      );
       for (var i in res.data['data']['items']) {
         // 屏蔽推广和拉黑用户
         if (i['card_goto'] != 'ad_av' &&
@@ -113,14 +124,13 @@ class VideoHttp {
   // 最热视频
   static Future hotVideoList({required int pn, required int ps}) async {
     try {
-      var res = await Request().get(
-        Api.hotList,
-        data: {'pn': pn, 'ps': ps},
-      );
+      var res = await Request().get(Api.hotList, data: {'pn': pn, 'ps': ps});
       if (res.data['code'] == 0) {
         List<HotVideoItemModel> list = [];
-        List<int> blackMidsList =
-            setting.get(SettingBoxKey.blackMidsList, defaultValue: [-1]);
+        List<int> blackMidsList = setting.get(
+          SettingBoxKey.blackMidsList,
+          defaultValue: [-1],
+        );
         for (var i in res.data['data']['list']) {
           if (!blackMidsList.contains(i['owner']['mid'])) {
             list.add(HotVideoItemModel.fromJson(i));
@@ -136,8 +146,12 @@ class VideoHttp {
   }
 
   // 视频流
-  static Future videoUrl(
-      {int? avid, String? bvid, required int cid, int? qn}) async {
+  static Future videoUrl({
+    int? avid,
+    String? bvid,
+    required int cid,
+    int? qn,
+  }) async {
     Map<String, dynamic> data = {
       'cid': cid,
       'qn': qn ?? 80,
@@ -170,7 +184,7 @@ class VideoHttp {
       if (res.data['code'] == 0) {
         return {
           'status': true,
-          'data': PlayUrlModel.fromJson(res.data['data'])
+          'data': PlayUrlModel.fromJson(res.data['data']),
         };
       } else {
         return {
@@ -231,7 +245,7 @@ class VideoHttp {
   // 获取投币状态
   static Future hasCoinVideo({required String bvid}) async {
     var res = await Request().get(Api.hasCoinVideo, data: {'bvid': bvid});
-    print('res: $res');
+    debugPrint('res: $res');
     if (res.data['code'] == 0) {
       return {'status': true, 'data': res.data['data']};
     } else {
@@ -271,10 +285,7 @@ class VideoHttp {
   static Future oneThree({required String bvid}) async {
     var res = await Request().post(
       Api.oneThree,
-      data: {
-        'bvid': bvid,
-        'csrf': await Request.getCsrf(),
-      },
+      data: {'bvid': bvid, 'csrf': await Request.getCsrf()},
     );
     if (res.data['code'] == 0) {
       return {'status': true, 'data': res.data['data']};
@@ -301,8 +312,11 @@ class VideoHttp {
   }
 
   // （取消）收藏
-  static Future favVideo(
-      {required int aid, String? addIds, String? delIds}) async {
+  static Future favVideo({
+    required int aid,
+    String? addIds,
+    String? delIds,
+  }) async {
     var res = await Request().post(
       Api.favVideo,
       data: {
@@ -322,8 +336,10 @@ class VideoHttp {
 
   // 查看视频被收藏在哪个文件夹
   static Future videoInFolder({required int mid, required int rid}) async {
-    var res = await Request()
-        .get(Api.videoInFolder, data: {'up_mid': mid, 'rid': rid});
+    var res = await Request().get(
+      Api.videoInFolder,
+      data: {'up_mid': mid, 'rid': rid},
+    );
     if (res.data['code'] == 0) {
       FavFolderData data = FavFolderData.fromJson(res.data['data']);
       return {'status': true, 'data': data};
@@ -380,8 +396,11 @@ class VideoHttp {
   }
 
   // 操作用户关系
-  static Future relationMod(
-      {required int mid, required int act, required int reSrc}) async {
+  static Future relationMod({
+    required int mid,
+    required int act,
+    required int reSrc,
+  }) async {
     var res = await Request().post(
       Api.relationMod,
       data: {
@@ -393,8 +412,10 @@ class VideoHttp {
     );
     if (res.data['code'] == 0) {
       if (act == 5) {
-        List<int> blackMidsList =
-            setting.get(SettingBoxKey.blackMidsList, defaultValue: [-1]);
+        List<int> blackMidsList = setting.get(
+          SettingBoxKey.blackMidsList,
+          defaultValue: [-1],
+        );
         blackMidsList.add(mid);
         setting.put(SettingBoxKey.blackMidsList, blackMidsList);
       }
@@ -428,10 +449,7 @@ class VideoHttp {
   static Future bangumiAdd({int? seasonId}) async {
     var res = await Request().post(
       Api.bangumiAdd,
-      data: {
-        'season_id': seasonId,
-        'csrf': await Request.getCsrf(),
-      },
+      data: {'season_id': seasonId, 'csrf': await Request.getCsrf()},
     );
     if (res.data['code'] == 0) {
       return {'status': true, 'msg': res.data['result']['toast']};
@@ -444,10 +462,7 @@ class VideoHttp {
   static Future bangumiDel({int? seasonId}) async {
     var res = await Request().post(
       Api.bangumiDel,
-      data: {
-        'season_id': seasonId,
-        'csrf': await Request.getCsrf(),
-      },
+      data: {'season_id': seasonId, 'csrf': await Request.getCsrf()},
     );
     if (res.data['code'] == 0) {
       return {'status': true, 'msg': res.data['result']['toast']};
@@ -458,11 +473,10 @@ class VideoHttp {
 
   // 查看视频同时在看人数
   static Future onlineTotal({int? aid, String? bvid, int? cid}) async {
-    var res = await Request().get(Api.onlineTotal, data: {
-      'aid': aid,
-      'bvid': bvid,
-      'cid': cid,
-    });
+    var res = await Request().get(
+      Api.onlineTotal,
+      data: {'aid': aid, 'bvid': bvid, 'cid': cid},
+    );
     if (res.data['code'] == 0) {
       return {'status': true, 'data': res.data['data']};
     } else {
@@ -470,11 +484,7 @@ class VideoHttp {
     }
   }
 
-  static Future aiConclusion({
-    String? bvid,
-    int? cid,
-    int? upMid,
-  }) async {
+  static Future aiConclusion({String? bvid, int? cid, int? upMid}) async {
     Map params = await WbiSign().makSign({
       'bvid': bvid,
       'cid': cid,
@@ -492,10 +502,10 @@ class VideoHttp {
   }
 
   static Future getSubtitle({int? cid, String? bvid}) async {
-    var res = await Request().get(Api.getSubtitleConfig, data: {
-      'cid': cid,
-      'bvid': bvid,
-    });
+    var res = await Request().get(
+      Api.getSubtitleConfig,
+      data: {'cid': cid, 'bvid': bvid},
+    );
     try {
       if (res.data['code'] == 0) {
         return {
@@ -517,8 +527,10 @@ class VideoHttp {
       var res = await Request().get(rankApi);
       if (res.data['code'] == 0) {
         List<HotVideoItemModel> list = [];
-        List<int> blackMidsList =
-            setting.get(SettingBoxKey.blackMidsList, defaultValue: [-1]);
+        List<int> blackMidsList = setting.get(
+          SettingBoxKey.blackMidsList,
+          defaultValue: [-1],
+        );
         for (var i in res.data['data']['list']) {
           if (!blackMidsList.contains(i['owner']['mid'])) {
             list.add(HotVideoItemModel.fromJson(i));
@@ -536,8 +548,9 @@ class VideoHttp {
   // 获取字幕内容
   static Future<Map<String, dynamic>> getSubtitleContent(url) async {
     var res = await Request().get('https:$url');
-    final String content =
-        await SubTitleUtils.convertToWebVTT(res.data['body']);
+    final String content = await SubTitleUtils.convertToWebVTT(
+      res.data['body'],
+    );
     final List body = res.data['body'];
     return {'content': content, 'body': body};
   }

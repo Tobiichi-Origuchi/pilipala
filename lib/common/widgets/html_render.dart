@@ -7,12 +7,7 @@ import 'package:pilipala/utils/highlight.dart';
 
 // ignore: must_be_immutable
 class HtmlRender extends StatelessWidget {
-  const HtmlRender({
-    this.htmlContent,
-    this.imgCount,
-    this.imgList,
-    super.key,
-  });
+  const HtmlRender({this.htmlContent, this.imgCount, this.imgList, super.key});
 
   final String? htmlContent;
   final int? imgCount;
@@ -55,7 +50,6 @@ class HtmlRender extends StatelessWidget {
                 imgUrl = imgUrl.replaceAll('http://', 'https://');
               }
               imgUrl = imgUrl.contains('@') ? imgUrl.split('@').first : imgUrl;
-              final bool isEmote = imgUrl.contains('/emote/');
               final bool isMall = imgUrl.contains('/mall/');
               if (isMall) {
                 return const SizedBox();
@@ -66,36 +60,38 @@ class HtmlRender extends StatelessWidget {
                     HeroDialogRoute<void>(
                       builder: (BuildContext context) =>
                           InteractiveviewerGallery(
-                        sources: imgList ?? [imgUrl],
-                        initIndex: imgList?.indexOf(imgUrl) ?? 0,
-                        itemBuilder: (
-                          BuildContext context,
-                          int index,
-                          bool isFocus,
-                          bool enablePageView,
-                        ) {
-                          return GestureDetector(
-                            behavior: HitTestBehavior.opaque,
-                            onTap: () {
-                              if (enablePageView) {
-                                Navigator.of(context).pop();
-                              }
-                            },
-                            child: Center(
-                              child: Hero(
-                                tag: imgList?[index] ?? imgUrl,
-                                child: CachedNetworkImage(
-                                  fadeInDuration:
-                                      const Duration(milliseconds: 0),
-                                  imageUrl: imgList?[index] ?? imgUrl,
-                                  fit: BoxFit.contain,
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                        onPageChanged: (int pageIndex) {},
-                      ),
+                            sources: imgList ?? [imgUrl],
+                            initIndex: imgList?.indexOf(imgUrl) ?? 0,
+                            itemBuilder:
+                                (
+                                  BuildContext context,
+                                  int index,
+                                  bool isFocus,
+                                  bool enablePageView,
+                                ) {
+                                  return GestureDetector(
+                                    behavior: HitTestBehavior.opaque,
+                                    onTap: () {
+                                      if (enablePageView) {
+                                        Navigator.of(context).pop();
+                                      }
+                                    },
+                                    child: Center(
+                                      child: Hero(
+                                        tag: imgList?[index] ?? imgUrl,
+                                        child: CachedNetworkImage(
+                                          fadeInDuration: const Duration(
+                                            milliseconds: 0,
+                                          ),
+                                          imageUrl: imgList?[index] ?? imgUrl,
+                                          fit: BoxFit.contain,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                            onPageChanged: (int pageIndex) {},
+                          ),
                     ),
                   );
                 },
@@ -122,17 +118,10 @@ class HtmlRender extends StatelessWidget {
           color: Theme.of(context).colorScheme.primary,
           textDecoration: TextDecoration.none,
         ),
-        'p': Style(
-          margin: Margins.only(bottom: 10),
-        ),
-        'span': Style(
-          fontSize: FontSize.large,
-          height: Height(1.65),
-        ),
+        'p': Style(margin: Margins.only(bottom: 10)),
+        'span': Style(fontSize: FontSize.large, height: Height(1.65)),
         'div': Style(height: Height.auto()),
-        'li > p': Style(
-          display: Display.inline,
-        ),
+        'li > p': Style(display: Display.inline),
         'li': Style(
           padding: HtmlPaddings.only(bottom: 4),
           textAlign: TextAlign.justify,

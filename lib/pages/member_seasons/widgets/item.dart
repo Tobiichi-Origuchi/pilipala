@@ -12,10 +12,7 @@ import 'package:pilipala/utils/utils.dart';
 class MemberSeasonsItem extends StatelessWidget {
   final dynamic seasonItem;
 
-  const MemberSeasonsItem({
-    Key? key,
-    required this.seasonItem,
-  }) : super(key: key);
+  const MemberSeasonsItem({super.key, required this.seasonItem});
 
   @override
   Widget build(BuildContext context) {
@@ -26,43 +23,46 @@ class MemberSeasonsItem extends StatelessWidget {
       margin: EdgeInsets.zero,
       child: InkWell(
         onTap: () async {
-          int cid =
-              await SearchHttp.ab2c(aid: seasonItem.aid, bvid: seasonItem.bvid);
-          Get.toNamed('/video?bvid=${seasonItem.bvid}&cid=$cid',
-              arguments: {'videoItem': seasonItem, 'heroTag': heroTag});
+          int cid = await SearchHttp.ab2c(
+            aid: seasonItem.aid,
+            bvid: seasonItem.bvid,
+          );
+          Get.toNamed(
+            '/video?bvid=${seasonItem.bvid}&cid=$cid',
+            arguments: {'videoItem': seasonItem, 'heroTag': heroTag},
+          );
         },
-        onLongPress: () => imageSaveDialog(
-          context,
-          seasonItem,
-          SmartDialog.dismiss,
-        ),
+        onLongPress: () =>
+            imageSaveDialog(context, seasonItem, SmartDialog.dismiss),
         child: Column(
           children: [
             AspectRatio(
               aspectRatio: StyleString.aspectRatio,
-              child: LayoutBuilder(builder: (context, boxConstraints) {
-                double maxWidth = boxConstraints.maxWidth;
-                double maxHeight = boxConstraints.maxHeight;
-                return Stack(
-                  children: [
-                    Hero(
-                      tag: heroTag,
-                      child: NetworkImgLayer(
-                        src: seasonItem.pic,
-                        width: maxWidth,
-                        height: maxHeight,
+              child: LayoutBuilder(
+                builder: (context, boxConstraints) {
+                  double maxWidth = boxConstraints.maxWidth;
+                  double maxHeight = boxConstraints.maxHeight;
+                  return Stack(
+                    children: [
+                      Hero(
+                        tag: heroTag,
+                        child: NetworkImgLayer(
+                          src: seasonItem.pic,
+                          width: maxWidth,
+                          height: maxHeight,
+                        ),
                       ),
-                    ),
-                    if (seasonItem.pubdate != null)
-                      PBadge(
-                        bottom: 6,
-                        right: 6,
-                        type: 'gray',
-                        text: Utils.timeFormat(seasonItem.duration),
-                      )
-                  ],
-                );
-              }),
+                      if (seasonItem.pubdate != null)
+                        PBadge(
+                          bottom: 6,
+                          right: 6,
+                          type: 'gray',
+                          text: Utils.timeFormat(seasonItem.duration),
+                        ),
+                    ],
+                  );
+                },
+              ),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(5, 6, 0, 0),
@@ -82,13 +82,15 @@ class MemberSeasonsItem extends StatelessWidget {
                       const Spacer(),
                       Text(
                         Utils.CustomStamp_str(
-                            timestamp: seasonItem.pubdate, date: 'YY-MM-DD'),
+                          timestamp: seasonItem.pubdate,
+                          date: 'YY-MM-DD',
+                        ),
                         style: TextStyle(
                           fontSize: 11,
                           color: Theme.of(context).colorScheme.outline,
                         ),
                       ),
-                      const SizedBox(width: 6)
+                      const SizedBox(width: 6),
                     ],
                   ),
                 ],

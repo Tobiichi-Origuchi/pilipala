@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
 import 'package:pilipala/common/constants.dart';
 import 'package:pilipala/common/widgets/badge.dart';
 import 'package:pilipala/common/widgets/network_img_layer.dart';
-import 'package:pilipala/http/search.dart';
-import 'package:pilipala/models/bangumi/info.dart';
-import 'package:pilipala/models/common/search_type.dart';
 import 'package:pilipala/utils/route_push.dart';
 import 'package:pilipala/utils/utils.dart';
 
 Widget searchMbangumiPanel(BuildContext context, ctr, list) {
-  TextStyle style =
-      TextStyle(fontSize: Theme.of(context).textTheme.labelMedium!.fontSize);
+  TextStyle style = TextStyle(
+    fontSize: Theme.of(context).textTheme.labelMedium!.fontSize,
+  );
   return ListView.builder(
     controller: ctr!.scrollController,
     addAutomaticKeepAlives: false,
@@ -31,24 +27,24 @@ Widget searchMbangumiPanel(BuildContext context, ctr, list) {
         },
         child: Padding(
           padding: const EdgeInsets.fromLTRB(
-              StyleString.safeSpace, 7, StyleString.safeSpace, 7),
+            StyleString.safeSpace,
+            7,
+            StyleString.safeSpace,
+            7,
+          ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Stack(
                 children: [
-                  NetworkImgLayer(
-                    width: 111,
-                    height: 148,
-                    src: i.cover,
-                  ),
+                  NetworkImgLayer(width: 111, height: 148, src: i.cover),
                   PBadge(
                     text: i.mediaType == 1 ? '番剧' : '国创',
                     top: 6.0,
                     right: 4.0,
                     bottom: null,
                     left: null,
-                  )
+                  ),
                 ],
               ),
               const SizedBox(width: 10),
@@ -62,17 +58,19 @@ Widget searchMbangumiPanel(BuildContext context, ctr, list) {
                       overflow: TextOverflow.ellipsis,
                       text: TextSpan(
                         style: TextStyle(
-                            color: Theme.of(context).colorScheme.onSurface),
+                          color: Theme.of(context).colorScheme.onSurface,
+                        ),
                         children: [
                           for (var i in i.titleList) ...[
                             TextSpan(
                               text: i['text'],
                               style: TextStyle(
                                 fontSize: MediaQuery.textScalerOf(context)
-                                    .scale(Theme.of(context)
-                                        .textTheme
-                                        .titleSmall!
-                                        .fontSize!),
+                                    .scale(
+                                      Theme.of(
+                                        context,
+                                      ).textTheme.titleSmall!.fontSize!,
+                                    ),
                                 fontWeight: FontWeight.bold,
                                 color: i['type'] == 'em'
                                     ? Theme.of(context).colorScheme.primary
@@ -84,16 +82,20 @@ Widget searchMbangumiPanel(BuildContext context, ctr, list) {
                       ),
                     ),
                     const SizedBox(height: 12),
-                    Text('评分:${i.mediaScore['score'].toString()}',
-                        style: style),
+                    Text(
+                      '评分:${i.mediaScore['score'].toString()}',
+                      style: style,
+                    ),
                     Row(
                       children: [
                         Text(i.areas, style: style),
                         const SizedBox(width: 3),
                         const Text('·'),
                         const SizedBox(width: 3),
-                        Text(Utils.dateFormat(i.pubtime).toString(),
-                            style: style),
+                        Text(
+                          Utils.dateFormat(i.pubtime).toString(),
+                          style: style,
+                        ),
                       ],
                     ),
                     Row(

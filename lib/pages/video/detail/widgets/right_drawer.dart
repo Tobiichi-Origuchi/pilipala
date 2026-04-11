@@ -11,9 +11,11 @@ class _RightDrawerState extends State<RightDrawer> {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-        shadowColor: Colors.transparent,
-        elevation: 0,
-        backgroundColor:
-            Theme.of(context).colorScheme.surface.withOpacity(0.8));
+      shadowColor: Colors.transparent,
+      elevation: 0,
+      backgroundColor: Theme.of(
+        context,
+      ).colorScheme.surface.withValues(alpha: 0.8),
+    );
   }
 }

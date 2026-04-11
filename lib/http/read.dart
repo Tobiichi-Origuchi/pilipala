@@ -4,6 +4,7 @@ import 'package:pilipala/models/read/opus.dart';
 import 'package:pilipala/models/read/read.dart';
 import 'package:pilipala/utils/wbi_sign.dart';
 import 'index.dart';
+import 'package:flutter/foundation.dart';
 
 class ReadHttp {
   static List<String> extractScriptContents(String htmlContent) {
@@ -19,9 +20,10 @@ class ReadHttp {
 
   // 解析专栏 opus格式
   static Future parseArticleOpus({required String id}) async {
-    var res = await Request().get('https://www.bilibili.com/opus/$id', extra: {
-      'ua': 'pc',
-    });
+    var res = await Request().get(
+      'https://www.bilibili.com/opus/$id',
+      extra: {'ua': 'pc'},
+    );
     String? headContent = parse(res.data).head?.outerHtml;
     var document = parse(headContent);
     var linkTags = document.getElementsByTagName('link');
@@ -39,14 +41,15 @@ class ReadHttp {
         if (match != null) {
           cvId = match.group(1)!;
         } else {
-          print('No match found.');
+          debugPrint('No match found.');
         }
         isCv = true;
         break;
       }
     }
-    String scriptContent =
-        extractScriptContents(parse(res.data).body!.outerHtml)[0];
+    String scriptContent = extractScriptContents(
+      parse(res.data).body!.outerHtml,
+    )[0];
     int startIndex = scriptContent.indexOf('{');
     int endIndex = scriptContent.lastIndexOf('};');
     String jsonContent = scriptContent.substring(startIndex, endIndex + 1);
@@ -66,17 +69,15 @@ class ReadHttp {
       'https://www.bilibili.com/read/cv$id',
       extra: {'ua': 'pc'},
     );
-    String scriptContent =
-        extractScriptContents(parse(res.data).body!.outerHtml)[0];
+    String scriptContent = extractScriptContents(
+      parse(res.data).body!.outerHtml,
+    )[0];
     int startIndex = scriptContent.indexOf('{');
     int endIndex = scriptContent.lastIndexOf('};');
     String jsonContent = scriptContent.substring(startIndex, endIndex + 1);
     // 解析JSON字符串为Map
     Map<String, dynamic> jsonData = json.decode(jsonContent);
-    return {
-      'status': true,
-      'data': ReadDataModel.fromJson(jsonData),
-    };
+    return {'status': true, 'data': ReadDataModel.fromJson(jsonData)};
   }
 
   //
@@ -101,16 +102,9 @@ class ReadHttp {
       },
     );
     if (res.data['code'] == 0) {
-      return {
-        'status': true,
-        'data': res.data['data'],
-      };
+      return {'status': true, 'data': res.data['data']};
     } else {
-      return {
-        'status': false,
-        'data': [],
-        'msg': res.data['message'],
-      };
+      return {'status': false, 'data': [], 'msg': res.data['message']};
     }
   }
 }

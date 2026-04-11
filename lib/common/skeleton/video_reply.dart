@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'skeleton.dart';
 
 class VideoReplySkeleton extends StatelessWidget {
-  const VideoReplySkeleton({Key? key}) : super(key: key);
+  const VideoReplySkeleton({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -15,25 +15,21 @@ class VideoReplySkeleton extends StatelessWidget {
             child: Row(
               children: [
                 ClipOval(
-                  child: Container(
-                    width: 34,
-                    height: 34,
-                    color: bgColor,
-                  ),
+                  child: Container(width: 34, height: 34, color: bgColor),
                 ),
                 const SizedBox(width: 12),
-                Container(
-                  width: 80,
-                  height: 13,
-                  color: bgColor,
-                )
+                Container(width: 80, height: 13, color: bgColor),
               ],
             ),
           ),
           Container(
             width: double.infinity,
-            margin:
-                const EdgeInsets.only(top: 4, left: 57, right: 6, bottom: 6),
+            margin: const EdgeInsets.only(
+              top: 4,
+              left: 57,
+              right: 6,
+              bottom: 6,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
@@ -72,9 +68,9 @@ class VideoReplySkeleton extends StatelessWidget {
                       margin: const EdgeInsets.only(bottom: 4),
                       color: bgColor,
                     ),
-                    const SizedBox(width: 8)
+                    const SizedBox(width: 8),
                   ],
-                )
+                ),
               ],
             ),
           ),

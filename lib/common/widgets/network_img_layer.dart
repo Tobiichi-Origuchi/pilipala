@@ -74,8 +74,8 @@ class NetworkImgLayer extends ConsumerWidget {
               type == 'avatar'
                   ? 50
                   : type == 'emote'
-                      ? 0
-                      : StyleString.imgRadius.x,
+                  ? 0
+                  : StyleString.imgRadius.x,
             ),
             child: CachedNetworkImage(
               imageUrl: imageUrl,
@@ -104,12 +104,16 @@ class NetworkImgLayer extends ConsumerWidget {
       height: height,
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.onInverseSurface.withOpacity(0.4),
-        borderRadius: BorderRadius.circular(type == 'avatar'
-            ? 50
-            : type == 'emote'
-                ? 0
-                : StyleString.imgRadius.x),
+        color: Theme.of(
+          context,
+        ).colorScheme.onInverseSurface.withValues(alpha: 0.4),
+        borderRadius: BorderRadius.circular(
+          type == 'avatar'
+              ? 50
+              : type == 'emote'
+              ? 0
+              : StyleString.imgRadius.x,
+        ),
       ),
       child: type == 'bg'
           ? const SizedBox()

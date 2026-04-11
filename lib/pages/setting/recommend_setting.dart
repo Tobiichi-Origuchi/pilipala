@@ -32,44 +32,43 @@ class _RecommendSettingState extends State<RecommendSetting> {
   void initState() {
     super.initState();
     // 首页默认推荐类型
-    defaultRcmdType =
-        setting.get(SettingBoxKey.defaultRcmdType, defaultValue: 'web');
+    defaultRcmdType = setting.get(
+      SettingBoxKey.defaultRcmdType,
+      defaultValue: 'web',
+    );
     userInfo = userInfoCache.get('userInfoCache');
     userLogin = userInfo != null;
     accessKeyInfo = localCache.get(LocalCacheKey.accessKey, defaultValue: null);
     // filterUnfollowedRatio = setting
     //     .get(SettingBoxKey.filterUnfollowedRatio, defaultValue: 0);
-    minDurationForRcmd =
-        setting.get(SettingBoxKey.minDurationForRcmd, defaultValue: 0);
-    minLikeRatioForRecommend =
-        setting.get(SettingBoxKey.minLikeRatioForRecommend, defaultValue: 0);
+    minDurationForRcmd = setting.get(
+      SettingBoxKey.minDurationForRcmd,
+      defaultValue: 0,
+    );
+    minLikeRatioForRecommend = setting.get(
+      SettingBoxKey.minLikeRatioForRecommend,
+      defaultValue: 0,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     TextStyle titleStyle = Theme.of(context).textTheme.titleMedium!;
-    TextStyle subTitleStyle = Theme.of(context)
-        .textTheme
-        .labelMedium!
-        .copyWith(color: Theme.of(context).colorScheme.outline);
+    TextStyle subTitleStyle = Theme.of(context).textTheme.labelMedium!.copyWith(
+      color: Theme.of(context).colorScheme.outline,
+    );
     return Scaffold(
       appBar: AppBar(
         centerTitle: false,
         titleSpacing: 0,
-        title: Text(
-          '推荐设置',
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
+        title: Text('推荐设置', style: Theme.of(context).textTheme.titleMedium),
       ),
       body: ListView(
         children: [
           ListTile(
             dense: false,
             title: Text('首页推荐类型', style: titleStyle),
-            subtitle: Text(
-              '当前使用「$defaultRcmdType端」推荐¹',
-              style: subTitleStyle,
-            ),
+            subtitle: Text('当前使用「$defaultRcmdType端」推荐¹', style: subTitleStyle),
             onTap: () async {
               String? result = await showDialog(
                 context: context,
@@ -93,30 +92,32 @@ class _RecommendSettingState extends State<RecommendSetting> {
                     }
                     // 显示一个确认框，告知用户可能会导致账号被风控
                     SmartDialog.show(
-                        animationType: SmartAnimationType.centerFade_otherSlide,
-                        builder: (context) {
-                          return AlertDialog(
-                            title: const Text('提示'),
-                            content: const Text(
-                                '使用app端推荐需获取access_key，有小概率触发风控导致账号退出（在官方版本app重新登录即可解除），是否继续？'),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  result = null;
-                                  SmartDialog.dismiss();
-                                },
-                                child: const Text('取消'),
-                              ),
-                              TextButton(
-                                onPressed: () async {
-                                  SmartDialog.dismiss();
-                                  await MemberHttp.cookieToKey();
-                                },
-                                child: const Text('确定'),
-                              ),
-                            ],
-                          );
-                        });
+                      animationType: SmartAnimationType.centerFade_otherSlide,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: const Text('提示'),
+                          content: const Text(
+                            '使用app端推荐需获取access_key，有小概率触发风控导致账号退出（在官方版本app重新登录即可解除），是否继续？',
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                result = null;
+                                SmartDialog.dismiss();
+                              },
+                              child: const Text('取消'),
+                            ),
+                            TextButton(
+                              onPressed: () async {
+                                SmartDialog.dismiss();
+                                await MemberHttp.cookieToKey();
+                              },
+                              child: const Text('确定'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
                   }
                 }
                 if (result != null) {
@@ -154,11 +155,12 @@ class _RecommendSettingState extends State<RecommendSetting> {
                 context: context,
                 builder: (context) {
                   return SelectDialog<int>(
-                      title: '选择点赞率（0即不过滤）',
-                      value: minLikeRatioForRecommend,
-                      values: [0, 1, 2, 3, 4].map((e) {
-                        return {'title': '$e %', 'value': e};
-                      }).toList());
+                    title: '选择点赞率（0即不过滤）',
+                    value: minLikeRatioForRecommend,
+                    values: [0, 1, 2, 3, 4].map((e) {
+                      return {'title': '$e %', 'value': e};
+                    }).toList(),
+                  );
                 },
               );
               if (result != null) {
@@ -181,11 +183,12 @@ class _RecommendSettingState extends State<RecommendSetting> {
                 context: context,
                 builder: (context) {
                   return SelectDialog<int>(
-                      title: '选择时长（0即不过滤）',
-                      value: minDurationForRcmd,
-                      values: [0, 30, 60, 90, 120].map((e) {
-                        return {'title': '$e 秒', 'value': e};
-                      }).toList());
+                    title: '选择时长（0即不过滤）',
+                    value: minDurationForRcmd,
+                    values: [0, 30, 60, 90, 120].map((e) {
+                      return {'title': '$e 秒', 'value': e};
+                    }).toList(),
+                  );
                 },
               );
               if (result != null) {
@@ -247,12 +250,13 @@ class _RecommendSettingState extends State<RecommendSetting> {
               '* 其它（如热门视频、手动搜索、链接跳转等）均不受过滤器影响。\n'
               '* 设定较严苛的条件可导致推荐项数锐减或多次请求，请酌情选择。\n'
               '* 后续可能会增加更多过滤条件，敬请期待。',
-              style: Theme.of(context)
-                  .textTheme
-                  .labelSmall!
-                  .copyWith(color: Theme.of(context).colorScheme.outline.withOpacity(0.7)),
+              style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                color: Theme.of(
+                  context,
+                ).colorScheme.outline.withValues(alpha: 0.7),
+              ),
             ),
-          )
+          ),
         ],
       ),
     );

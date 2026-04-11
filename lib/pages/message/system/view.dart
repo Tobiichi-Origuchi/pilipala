@@ -12,8 +12,9 @@ class MessageSystemPage extends StatefulWidget {
 }
 
 class _MessageSystemPageState extends State<MessageSystemPage> {
-  final MessageSystemController _messageSystemCtr =
-      Get.put(MessageSystemController());
+  final MessageSystemController _messageSystemCtr = Get.put(
+    MessageSystemController(),
+  );
   late Future _futureBuilderFuture;
   final ScrollController scrollController = ScrollController();
 
@@ -26,9 +27,7 @@ class _MessageSystemPageState extends State<MessageSystemPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('系统通知'),
-      ),
+      appBar: AppBar(title: const Text('系统通知')),
       body: RefreshIndicator(
         onRefresh: () async {
           await _messageSystemCtr.queryAndProcessMessages();
@@ -56,7 +55,7 @@ class _MessageSystemPageState extends State<MessageSystemPage> {
                         indent: 14,
                         endIndent: 14,
                         height: 1,
-                        color: Colors.grey.withOpacity(0.1),
+                        color: Colors.grey.withValues(alpha: 0.1),
                       );
                     },
                   ),
@@ -69,11 +68,11 @@ class _MessageSystemPageState extends State<MessageSystemPage> {
                       errMsg: snapshot.data['msg'],
                       fn: () {
                         setState(() {
-                          _futureBuilderFuture =
-                              _messageSystemCtr.queryMessageSystem();
+                          _futureBuilderFuture = _messageSystemCtr
+                              .queryMessageSystem();
                         });
                       },
-                    )
+                    ),
                   ],
                 );
               }
@@ -92,11 +91,12 @@ class SystemItem extends StatelessWidget {
   final int index;
   final MessageSystemController messageSystemCtr;
 
-  const SystemItem(
-      {super.key,
-      required this.item,
-      required this.index,
-      required this.messageSystemCtr});
+  const SystemItem({
+    super.key,
+    required this.item,
+    required this.index,
+    required this.messageSystemCtr,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -105,9 +105,10 @@ class SystemItem extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(item.title!,
-              style:
-                  const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          Text(
+            item.title!,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
           const SizedBox(height: 4),
           Text(
             item.timeAt!,

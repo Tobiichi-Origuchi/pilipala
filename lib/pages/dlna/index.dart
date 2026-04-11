@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 class LiveDlnaPage extends StatefulWidget {
   final String datasource;
 
-  const LiveDlnaPage({Key? key, required this.datasource}) : super(key: key);
+  const LiveDlnaPage({super.key, required this.datasource});
 
   @override
   State<LiveDlnaPage> createState() => _LiveDlnaPageState();
@@ -72,20 +72,19 @@ class _LiveDlnaPageState extends State<LiveDlnaPage> {
       cur = const Center(child: CircularProgressIndicator());
     } else if (_deviceList.isEmpty) {
       cur = Center(
-        child: Text(
-          '没有找到设备',
-          style: Theme.of(context).textTheme.bodyLarge,
-        ),
+        child: Text('没有找到设备', style: Theme.of(context).textTheme.bodyLarge),
       );
     } else {
       cur = ListView(
         children: _deviceList.keys
-            .map<Widget>((key) => ListTile(
-                  contentPadding: const EdgeInsets.all(2),
-                  title: Text(_deviceList[key]!.info.friendlyName),
-                  subtitle: Text(key),
-                  onTap: () => selectDevice(key),
-                ))
+            .map<Widget>(
+              (key) => ListTile(
+                contentPadding: const EdgeInsets.all(2),
+                title: Text(_deviceList[key]!.info.friendlyName),
+                subtitle: Text(key),
+                onTap: () => selectDevice(key),
+              ),
+            )
             .toList(),
       );
     }
@@ -101,11 +100,7 @@ class _LiveDlnaPageState extends State<LiveDlnaPage> {
           ),
         ],
       ),
-      content: SizedBox(
-        height: 200,
-        width: 200,
-        child: cur,
-      ),
+      content: SizedBox(height: 200, width: 200, child: cur),
     );
   }
 }

@@ -14,10 +14,7 @@ late double sheetHeight;
 class AiDetail extends StatelessWidget {
   final ModelResult? modelResult;
 
-  const AiDetail({
-    Key? key,
-    this.modelResult,
-  }) : super(key: key);
+  const AiDetail({super.key, this.modelResult});
 
   @override
   Widget build(BuildContext context) {
@@ -93,13 +90,14 @@ class AiDetail extends StatelessWidget {
                                       try {
                                         final controller =
                                             Get.find<VideoDetailController>(
-                                          tag: Get.arguments['heroTag'],
-                                        );
+                                              tag: Get.arguments['heroTag'],
+                                            );
                                         controller.plPlayerController.seekTo(
                                           Duration(
                                             seconds: Utils.duration(
                                               Utils.tampToSeektime(
-                                                  part.timestamp!),
+                                                part.timestamp!,
+                                              ),
                                             ).toInt(),
                                           ),
                                         );
@@ -109,19 +107,20 @@ class AiDetail extends StatelessWidget {
                                       TextSpan(
                                         style: TextStyle(
                                           fontSize: 13,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .onSurface,
+                                          color: Theme.of(
+                                            context,
+                                          ).colorScheme.onSurface,
                                           height: 1.5,
                                         ),
                                         children: [
                                           TextSpan(
                                             text: Utils.tampToSeektime(
-                                                part.timestamp!),
+                                              part.timestamp!,
+                                            ),
                                             style: TextStyle(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .primary,
+                                              color: Theme.of(
+                                                context,
+                                              ).colorScheme.primary,
                                             ),
                                           ),
                                           const TextSpan(text: ' '),
@@ -138,7 +137,7 @@ class AiDetail extends StatelessWidget {
                         ],
                       );
                     },
-                  )
+                  ),
                 ],
               ),
             ),
@@ -164,15 +163,21 @@ class AiDetail extends StatelessWidget {
           int previousEndIndex = 0;
           for (Match match in matches) {
             if (match.start > previousEndIndex) {
-              spanChildren.add(TextSpan(
-                  text: currentDesc.rawText
-                      .substring(previousEndIndex, match.start)));
+              spanChildren.add(
+                TextSpan(
+                  text: currentDesc.rawText.substring(
+                    previousEndIndex,
+                    match.start,
+                  ),
+                ),
+              );
             }
             spanChildren.add(
               TextSpan(
                 text: match.group(0),
                 style: TextStyle(
-                    color: Theme.of(context).colorScheme.primary), // 设置颜色为蓝色
+                  color: Theme.of(context).colorScheme.primary,
+                ), // 设置颜色为蓝色
                 recognizer: TapGestureRecognizer()
                   ..onTap = () {
                     // 处理点击事件
@@ -195,8 +200,9 @@ class AiDetail extends StatelessWidget {
           }
 
           if (previousEndIndex < currentDesc.rawText.length) {
-            spanChildren.add(TextSpan(
-                text: currentDesc.rawText.substring(previousEndIndex)));
+            spanChildren.add(
+              TextSpan(text: currentDesc.rawText.substring(previousEndIndex)),
+            );
           }
 
           TextSpan result = TextSpan(children: spanChildren);
