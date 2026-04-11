@@ -91,7 +91,7 @@ class PlPlayerController {
   Rx<bool> _isSliderMoving = false.obs;
   PlaylistMode _looping = PlaylistMode.none;
   bool _autoPlay = false;
-  final bool _listenersInitialized = false;
+  bool _listenersInitialized = false;
 
   // 记录历史记录
   String _bvid = '';
@@ -666,6 +666,7 @@ class PlPlayerController {
         );
       }),
     ]);
+    _listenersInitialized = true;
   }
 
   /// 移除事件监听
